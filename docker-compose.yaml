@@ -1,0 +1,23 @@
+version: "3"
+services:
+  php-cli:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    entrypoint: bash
+    hostname: php-cli
+    volumes:
+      - ./:/var/www/html
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    image: php_sdk
+    container_name: "paysafe_ph_sdk_php"
+    networks:
+      - internal
+    volumes:
+      - ./:/var/www/html
+networks:
+  internal:
+    driver: bridge

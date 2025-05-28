@@ -1,0 +1,14 @@
+<?php
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+
+namespace Paysafe\PhpSdk\Model\Monitor\Enums;
+
+/**
+ * This is the status of Payments API service.
+ */
+class ServiceStatus
+{
+	const READY = "READY";
+
+
+}
