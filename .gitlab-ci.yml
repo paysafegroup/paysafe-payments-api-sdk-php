@@ -1,0 +1,166 @@
+# All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE
+include:
+  - template: "Jobs/Code-Quality.gitlab-ci.yml"
+  - template: "Security/SAST.gitlab-ci.yml"
+  - project: 'paysafe/ci-cd/pipeline-templates'
+    file: '/jobs/ci/gitlab/gitlab-provided-images.yml'
+  - project: 'paysafe/ci-cd/pipeline-templates'
+    file: '/jobs/ci/gitlab/security/sast/common.yml'
+  - project: 'paysafe/ci-cd/pipeline-templates'
+    file: '/jobs/ci/gitlab/security/dependency-scan/common.yml'
+
+stages:
+  - code-quality
+  - test
+  - publish
+
+code_quality:
+  stage: code-quality
+  image: "${ECR_DOMAIN_NAME_EU}/gitlab/executor/ci/build-docker:0.0.6"
+  services:
+    - name: "${ECR_DOMAIN_NAME_EU}/docker:23.0.6-dind"
+      alias: docker
+  variables:
+    # See: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-kubernetes
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    ECR_REGION: "eu-central-1"
+    AWS_ECR_URL: "${ECR_DOMAIN_NAME_EU}"
+    CODE_QUALITY_IMAGE: "${ECR_DOMAIN_NAME_EU}/gitlab/ci-cd/codequality:0.96.0"
+    CODE_QUALITY_BUILD_DIR: "."
+
+  before_script:
+    - aws ecr get-login-password --region "${ECR_REGION}" | docker login -u AWS --password-stdin "${AWS_ECR_URL}"
+    - echo "Files to be scanned"
+    - find .
+
+  after_script:
+    - docker logout;
+  rules: [ if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH  == "master"' ]
+
+sonarqube-check:
+  stage: code-quality
+  image: '${ECR_DOMAIN_NAME_EU}/gitlab/executor/ci/build-marketing:0.2.5'
+  variables:
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
+    GIT_STRATEGY: clone
+    GIT_DEPTH: 0
+  cache:
+    - key: '$CI_JOB_NAME'
+      paths:
+        - .sonar/cache
+      when: 'always'
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.host.url="${SONAR_URL}" -Dsonar.login="${SONAR_TOKEN}"
+  allow_failure: true
+  rules: [ if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH  == "master"' ]
+
+sast:
+  stage: code-quality
+
+dependency_scanning:
+  stage: code-quality
+
+test:
+  stage: test
+  allow_failure: true
+  rules: [ if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH  == "master"' ]
+
+  image: '${ECR_DOMAIN_NAME_EU}/gitlab/executor/ci/build-marketing-php-7:0.1.6'
+  cache:
+    key: vendor
+    paths:
+      - vendor/
+
+  before_script:
+  - apt-get update && apt-get install -y unzip
+  - curl -sS https://getcomposer.org/installer | php
+  - php composer.phar install --prefer-dist --no-progress --no-suggest
+
+  script:
+    ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+e2e-test:
+  stage: test
+  allow_failure: true
+  rules: [ if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH  == "master"' ]
+
+  image: '${ECR_DOMAIN_NAME_EU}/gitlab/executor/ci/build-marketing-php-7:0.1.6'
+  cache:
+    key: vendor
+    paths:
+      - vendor/
+
+  before_script:
+    - apt-get update && apt-get install -y unzip
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --prefer-dist --no-progress --no-suggest
+
+  script:
+    ./vendor/bin/phpunit --configuration=phpunit.e2e.xml
+
+mirror_to_github:
+  stage: publish
+  image: "${ECR_DOMAIN_NAME_EU}/gitlab/executor/ci/build-docker:1.1.0"
+  variables:
+    GIT_STRATEGY: clone
+    GIT_DEPTH: 0
+    GITHUB_PROJECT_NAME: paysafe-payments-api-sdk-php
+    GITHUB_USER_EMAIL: svc_github_mirror@paysafe.com
+    GITHUB_USER_NAME: SVC_GITHUB_MIRROR
+
+  when:
+    manual
+  rules: [ if: '$CI_COMMIT_BRANCH  == "master"' ]
+  allow_failure: true
+  script:
+    - |
+      printf "Starting mirroring job from GitLab to GitHub...\n"
+      
+      git config user.email "${GITHUB_USER_EMAIL}"
+      git config user.name "${GITHUB_USER_NAME}"
+      
+      printf "Checkout new orphan branch from latest master:\n"
+      
+      git checkout master
+      git pull
+      git checkout --orphan release_branch || { echo "Failed to checkout new branch for release"; exit 1; }
+      
+      printf "Removing unneeded files...\n"
+      
+      git rm --cached --ignore-unmatch sonar-project.properties
+      git rm --cached --ignore-unmatch phpunit.e2e.xml
+      git rm -r --cached --ignore-unmatch tests/E2e
+      
+      printf "Reading VERSION to extract release version...\n"
+      VERSION_FILE="./src/VERSION"
+
+      if [[ ! -f "$VERSION_FILE" ]]; then
+        echo "Error: Version file '$VERSION_FILE' not found, aborting." >&2
+        exit 1
+      fi
+
+      VERSION="$(< "$VERSION_FILE")"
+      printf "Version: $VERSION"
+      
+      if [[ "$VERSION" == *-SNAPSHOT ]]; then
+        echo "Error: Snapshot version detected ('$VERSION'), aborting." >&2
+        exit 1
+      fi
+      
+      DATE="`date +'%Y-%m-%d'`"
+      MESSAGE="[$DATE] Release $VERSION"
+      GIT_TAG="v$VERSION"
+      
+      printf "Pushing to remote GitHub repository...\n"
+      
+      git commit -m "$MESSAGE" || { echo "Commit failed"; exit 1; }
+
+      git tag -f -a $GIT_TAG -m "$MESSAGE"
+      
+      git push --force -u "https://${GITHUB_USER_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/paysafegroup/${GITHUB_PROJECT_NAME}" release_branch:main
+      git push --force "https://${GITHUB_USER_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/paysafegroup/${GITHUB_PROJECT_NAME}" $GIT_TAG
+
+      printf "Mirroring job completed!"

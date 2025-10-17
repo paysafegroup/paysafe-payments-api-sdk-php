@@ -1,0 +1,528 @@
+<?php
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+
+namespace Paysafe\PhpSdk\Model\Lpm;
+
+use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Common\BillingDetails;
+use Paysafe\PhpSdk\Model\Common\GatewayResponse;
+use Paysafe\PhpSdk\Model\Common\Profile\Profile;
+use Paysafe\PhpSdk\Model\Common\ReturnLink;
+
+/**
+ * VippreferredRegistration
+ */
+class VippreferredRegistration extends BaseModel
+{
+
+	private string $merchantRefNum;
+	private string $paymentType;
+	private Profile $profile;
+	private BillingDetails $billingDetails;
+	private array $returnLinks;
+	private Vippreferred $vippreferred;
+	private string $id;
+	private string $txnTime;
+	private string $status;
+	private bool $liveMode;
+	private GatewayResponse $gatewayResponse;
+	private bool $enablePlaid;
+
+	/**
+	 * Builder function for merchantRefNum
+	 * 
+	 * @param string $merchantRefNum
+	 * 
+	 * @return $this
+	 */
+	public function merchantRefNum(string $merchantRefNum): self
+	{
+		$this->setMerchantRefNum($merchantRefNum);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for merchantRefNum
+	 * 
+	 * @param string $merchantRefNum
+	 * 
+	 * @return void
+	 */
+	public function setMerchantRefNum(string $merchantRefNum): void
+	{
+		$this->merchantRefNum = $merchantRefNum;
+	}
+
+	/**
+	 * This is the reference number for the merchant.
+	 * 
+	 * @return string
+	 */
+	public function getMerchantRefNum(): string
+	{
+		return $this->merchantRefNum;
+	}
+
+	/**
+	 * Builder function for paymentType
+	 * 
+	 * @param string $paymentType
+	 * 
+	 * @return $this
+	 */
+	public function paymentType(string $paymentType): self
+	{
+		$this->setPaymentType($paymentType);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for paymentType
+	 * 
+	 * @param string $paymentType
+	 * 
+	 * @return void
+	 */
+	public function setPaymentType(string $paymentType): void
+	{
+		$this->paymentType = $paymentType;
+	}
+
+	/**
+	 * This is the payment type. Possible values: VIPPREFERRED
+	 * 
+	 * @return string
+	 */
+	public function getPaymentType(): string
+	{
+		return $this->paymentType;
+	}
+
+	/**
+	 * Builder function for profile
+	 * 
+	 * @param Profile $profile
+	 * 
+	 * @return $this
+	 */
+	public function profile(Profile $profile): self
+	{
+		$this->setProfile($profile);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for profile
+	 * 
+	 * @param Profile $profile
+	 * 
+	 * @return void
+	 */
+	public function setProfile(Profile $profile): void
+	{
+		$this->profile = $profile;
+	}
+
+	/**
+	 * This is customer's profile details.
+	 * 
+	 * @return Profile
+	 */
+	public function getProfile(): Profile
+	{
+		return $this->profile;
+	}
+
+	/**
+	 * Builder function for billingDetails
+	 * 
+	 * @param BillingDetails $billingDetails
+	 * 
+	 * @return $this
+	 */
+	public function billingDetails(BillingDetails $billingDetails): self
+	{
+		$this->setBillingDetails($billingDetails);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for billingDetails
+	 * 
+	 * @param BillingDetails $billingDetails
+	 * 
+	 * @return void
+	 */
+	public function setBillingDetails(BillingDetails $billingDetails): void
+	{
+		$this->billingDetails = $billingDetails;
+	}
+
+	/**
+	 * Customer's billing details. Required if AVS (Address verification) is enabled.<br />
+	 * If included in the request, this will serve as the billing address for transaction processing. <br />
+	 * Any billing details returned in Apple Pay Token by Apple Pay will be ignored. <br />
+	 * 3DS Flow: It is recommended to send billingDetails to improve acceptance rate.
+	 * 
+	 * @return BillingDetails
+	 */
+	public function getBillingDetails(): BillingDetails
+	{
+		return $this->billingDetails;
+	}
+
+	/**
+	 * Builder function for returnLinks
+	 * 
+	 * @param ReturnLink[] $returnLinks
+	 * 
+	 * @return $this
+	 */
+	public function returnLinks(array $returnLinks): self
+	{
+		$this->setReturnLinks($returnLinks);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for returnLinks
+	 * 
+	 * @param ReturnLink[] $returnLinks
+	 * 
+	 * @return void
+	 */
+	public function setReturnLinks(array $returnLinks): void
+	{
+		$this->returnLinks = $returnLinks;
+	}
+
+	/**
+	 * The URL endpoints to redirect the customer to after a redirection to an alternative payment
+     * or 3D Secure site.
+	 * You can customize the return URL based on the transaction status.
+	 * 
+	 * @return ReturnLink[]
+	 */
+	public function getReturnLinks(): array
+	{
+		return $this->returnLinks;
+	}
+
+	/**
+	 * Add new returnLinksItem
+	 * 
+	 * @param ReturnLink $returnLinksItem
+	 * 
+	 * @return $this
+	 */
+	public function addReturnLinksItem(ReturnLink $returnLinksItem): self
+	{
+		if ($this->returnLinks === null) {
+			$this->setReturnLinks([$returnLinksItem]);
+			
+			return $this;
+		}
+		
+		$returnLinks = $this->getReturnLinks();
+		$returnLinks[] = $returnLinksItem;
+		$this->setReturnLinks($returnLinks);
+		
+		return $this;
+	}
+
+	/**
+	 * Remove returnLinksItem
+	 * 
+	 * @param ReturnLink $returnLinksItem
+	 * 
+	 * @return $this
+	 */
+	public function removeReturnLinksItem(ReturnLink $returnLinksItem): self
+	{
+		$this->setReturnLinks(array_diff($this->getReturnLinks(), [$returnLinksItem]));
+		
+		return $this;
+	}
+
+	/**
+	 * Builder function for vippreferred
+	 * 
+	 * @param Vippreferred $vippreferred
+	 * 
+	 * @return $this
+	 */
+	public function vippreferred(Vippreferred $vippreferred): self
+	{
+		$this->setVippreferred($vippreferred);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for vippreferred
+	 * 
+	 * @param Vippreferred $vippreferred
+	 * 
+	 * @return void
+	 */
+	public function setVippreferred(Vippreferred $vippreferred): void
+	{
+		$this->vippreferred = $vippreferred;
+	}
+
+	/**
+	 * These are the details of the vip preferred account used for the transaction.
+	 * 
+	 * @return Vippreferred
+	 */
+	public function getVippreferred(): Vippreferred
+	{
+		return $this->vippreferred;
+	}
+
+	/**
+	 * Builder function for id
+	 * 
+	 * @param string $id
+	 * 
+	 * @return $this
+	 */
+	public function id(string $id): self
+	{
+		$this->setId($id);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for id
+	 * 
+	 * @param string $id
+	 * 
+	 * @return void
+	 */
+	public function setId(string $id): void
+	{
+		$this->id = $id;
+	}
+
+	/**
+	 * This is the ID returned in the response. This ID can be used for future associated requests.
+	 * 
+	 * @return string
+	 */
+	public function getId(): string
+	{
+		return $this->id;
+	}
+
+	/**
+	 * Builder function for txnTime
+	 * 
+	 * @param string $txnTime
+	 * 
+	 * @return $this
+	 */
+	public function txnTime(string $txnTime): self
+	{
+		$this->setTxnTime($txnTime);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for txnTime
+	 * 
+	 * @param string $txnTime
+	 * 
+	 * @return void
+	 */
+	public function setTxnTime(string $txnTime): void
+	{
+		$this->txnTime = $txnTime;
+	}
+
+	/**
+	 * This is the date and time the request was processed. For example: 2014-01-26T10:32:28Z
+	 * 
+	 * @return string
+	 */
+	public function getTxnTime(): string
+	{
+		return $this->txnTime;
+	}
+
+	/**
+	 * Builder function for status
+	 * 
+	 * @param string $status
+	 * 
+	 * @return $this
+	 */
+	public function status(string $status): self
+	{
+		$this->setStatus($status);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for status
+	 * 
+	 * @param string $status
+	 * 
+	 * @return void
+	 */
+	public function setStatus(string $status): void
+	{
+		$this->status = $status;
+	}
+
+	/**
+	 * This is the status of the transaction request.
+	 * 
+	 * @return string
+	 */
+	public function getStatus(): string
+	{
+		return $this->status;
+	}
+
+	/**
+	 * Builder function for liveMode
+	 * 
+	 * @param bool $liveMode
+	 * 
+	 * @return $this
+	 */
+	public function liveMode(bool $liveMode): self
+	{
+		$this->setLiveMode($liveMode);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for liveMode
+	 * 
+	 * @param bool $liveMode
+	 * 
+	 * @return void
+	 */
+	public function setLiveMode(bool $liveMode): void
+	{
+		$this->liveMode = $liveMode;
+	}
+
+	/**
+	 * 'This flag indicated the environment.  - true - Production Environment - false - Non-Production Environment.
+	 * 
+	 * @return bool
+	 */
+	public function getLiveMode(): bool
+	{
+		return $this->liveMode;
+	}
+
+	/**
+	 * Builder function for gatewayResponse
+	 * 
+	 * @param GatewayResponse $gatewayResponse
+	 * 
+	 * @return $this
+	 */
+	public function gatewayResponse(GatewayResponse $gatewayResponse): self
+	{
+		$this->setGatewayResponse($gatewayResponse);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for gatewayResponse
+	 * 
+	 * @param GatewayResponse $gatewayResponse
+	 * 
+	 * @return void
+	 */
+	public function setGatewayResponse(GatewayResponse $gatewayResponse): void
+	{
+		$this->gatewayResponse = $gatewayResponse;
+	}
+
+	/**
+	 * This is the read-only raw response returned by an acquirer or PSP.
+	 * 
+	 * @return GatewayResponse
+	 */
+	public function getGatewayResponse(): GatewayResponse
+	{
+		return $this->gatewayResponse;
+	}
+
+	/**
+	 * Builder function for enablePlaid
+	 * 
+	 * @param bool $enablePlaid
+	 * 
+	 * @return $this
+	 */
+	public function enablePlaid(bool $enablePlaid): self
+	{
+		$this->setEnablePlaid($enablePlaid);
+		
+		return $this;
+	}
+
+	/**
+	 * Setter function for enablePlaid
+	 * 
+	 * @param bool $enablePlaid
+	 * 
+	 * @return void
+	 */
+	public function setEnablePlaid(bool $enablePlaid): void
+	{
+		$this->enablePlaid = $enablePlaid;
+	}
+
+	/**
+	 * This is the flag to indicate the plaid activation status. <br />
+	 * - true - Plaid flow will be triggered during bank addition. <br />
+	 * - false - Manual entry of Bank Account Number and Routing Number during bank addition.
+	 * 
+	 * @return bool
+	 */
+	public function getEnablePlaid(): bool
+	{
+		return $this->enablePlaid;
+	}
+
+	/**
+	 * Convert the object to a string representation.
+	 * 
+	 * @return string
+	 */
+	public function __toString(): string
+	{
+		return "class VippreferredRegistration {" . PHP_EOL
+			. "    merchantRefNum: " . $this->toIndentedString($this->merchantRefNum) . PHP_EOL
+			. "    paymentType: " . $this->toIndentedString($this->paymentType) . PHP_EOL
+			. "    profile: " . $this->toIndentedString($this->profile) . PHP_EOL
+			. "    billingDetails: " . $this->toIndentedString($this->billingDetails) . PHP_EOL
+			. "    returnLinks: " . $this->toIndentedString($this->returnLinks) . PHP_EOL
+			. "    vippreferred: " . $this->toIndentedString($this->vippreferred) . PHP_EOL
+			. "    id: " . $this->toIndentedString($this->id) . PHP_EOL
+			. "    txnTime: " . $this->toIndentedString($this->txnTime) . PHP_EOL
+			. "    status: " . $this->toIndentedString($this->status) . PHP_EOL
+			. "    liveMode: " . $this->toIndentedString($this->liveMode) . PHP_EOL
+			. "    gatewayResponse: " . $this->toIndentedString($this->gatewayResponse) . PHP_EOL
+			. "    enablePlaid: " . $this->toIndentedString($this->enablePlaid) . PHP_EOL
+			. "}";
+	}
+}
