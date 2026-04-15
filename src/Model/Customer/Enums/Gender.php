@@ -1,0 +1,15 @@
+<?php
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+
+namespace Paysafe\PhpSdk\Model\Customer\Enums;
+
+/**
+ * This field indicates the Customer's gender. M - Male F - Female
+ */
+class Gender
+{
+	const M = "M";
+	const F = "F";
+
+
+}
