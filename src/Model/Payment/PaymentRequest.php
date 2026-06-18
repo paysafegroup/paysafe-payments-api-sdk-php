@@ -69,7 +69,7 @@ class PaymentRequest extends BaseModel
 	private AccordD $accordD;
 	private Recipient $recipient;
 	private Splitpay $splitpay;
-	private StoredCredential $storedCredentialDetails;
+	private StoredCredential $storedCredential;
 	private AirlineTravelDetails $airlineTravelDetails;
 	private FundingTransaction $fundingTransaction;
 	private CruiselineTravelDetails $cruiselineTravelDetails;
@@ -607,29 +607,29 @@ class PaymentRequest extends BaseModel
 	}
 
 	/**
-	 * Builder function for storedCredentialDetails
-	 * 
-	 * @param StoredCredential $storedCredentialDetails
-	 * 
+	 * Builder function for storedCredential
+	 *
+	 * @param StoredCredential $storedCredential
+	 *
 	 * @return $this
 	 */
-	public function storedCredentialDetails(StoredCredential $storedCredentialDetails): self
+	public function storedCredential(StoredCredential $storedCredential): self
 	{
-		$this->setStoredCredentialDetails($storedCredentialDetails);
-		
+		$this->setStoredCredential($storedCredential);
+
 		return $this;
 	}
 
 	/**
-	 * Setter function for storedCredentialDetails
-	 * 
-	 * @param StoredCredential $storedCredentialDetails
-	 * 
+	 * Setter function for storedCredential
+	 *
+	 * @param StoredCredential $storedCredential
+	 *
 	 * @return void
 	 */
-	public function setStoredCredentialDetails(StoredCredential $storedCredentialDetails): void
+	public function setStoredCredential(StoredCredential $storedCredential): void
 	{
-		$this->storedCredentialDetails = $storedCredentialDetails;
+		$this->storedCredential = $storedCredential;
 	}
 
 	/**
@@ -649,12 +649,18 @@ class PaymentRequest extends BaseModel
      * However, cvv is not required
 	 * when the occurrence parameter is set to SUBSEQUENT. <br />
 	 * • The storedCredential object cannot be used for Apple Pay or Google Pay transactions.
-	 * 
+	 *
+	 * NOTE: this getter name is load-bearing. The SDK serializes with Symfony ObjectNormalizer and
+	 * no @SerializedName mappings, so the emitted JSON key is derived from this getter name
+	 * (getStoredCredential -> "storedCredential"). The Payments API rejects any other name with
+	 * error 5023 "field not recognized". Do NOT rename without re-checking the Paysafe API spec
+	 * (the upstream SDK ships this as "storedCredentialDetails", which the API does not accept).
+	 *
 	 * @return StoredCredential
 	 */
-	public function getStoredCredentialDetails(): StoredCredential
+	public function getStoredCredential(): StoredCredential
 	{
-		return $this->storedCredentialDetails;
+		return $this->storedCredential;
 	}
 
 	/**
@@ -1101,7 +1107,7 @@ class PaymentRequest extends BaseModel
 			. "    accordD: " . $this->toIndentedString($this->accordD) . PHP_EOL
 			. "    recipient: " . $this->toIndentedString($this->recipient) . PHP_EOL
 			. "    splitpay: " . $this->toIndentedString($this->splitpay) . PHP_EOL
-			. "    storedCredentialDetails: " . $this->toIndentedString($this->storedCredentialDetails) . PHP_EOL
+			. "    storedCredential: " . $this->toIndentedString($this->storedCredential) . PHP_EOL
 			. "    airlineTravelDetails: " . $this->toIndentedString($this->airlineTravelDetails) . PHP_EOL
 			. "    fundingTransaction: " . $this->toIndentedString($this->fundingTransaction) . PHP_EOL
 			. "    cruiselineTravelDetails: " . $this->toIndentedString($this->cruiselineTravelDetails) . PHP_EOL
