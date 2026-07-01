@@ -1,456 +1,456 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Customer;
-
 use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Card\Card;
 use Paysafe\PhpSdk\Model\Card\CardExpiry;
+
 
 /**
  * Card details to be used for the transaction
  */
 class UpdateCustomerRequestCard extends BaseModel
 {
+    /**
+     * This is the card number
+     */
+    private ?string $cardNum = null;
+    private ?string $cardCategory = null;
+    /**
+     * This is the card id returned in the response during save card flow.
+     */
+    private ?string $cardId = null;
+    private ?CardExpiry $cardExpiry = null;
+    /**
+     * This is the 3- or 4-digit security code that appears on the card following the card number.
+     */
+    private ?string $cvv = null;
+    /**
+     * This is the name of the card holder. **Note:** Holder name must contain only Latin characters (English Alphabet), Space, Apostrophe('), Dot(.) or Hyphen(-). Unicode normalization is done.
+     */
+    private ?string $holderName = null;
+    private ?string $cardType = null;
+    /**
+     * These are the last four digits of the card used for the request
+     */
+    private ?string $lastDigits = null;
+    /**
+     * These are the first 6 digits of the card Bank Identification Number (BIN), for example: the first 6 digits of the card number.
+     */
+    private ?string $cardBin = null;
+    /**
+     * This is the card issuing country
+     */
+    private ?string $issuingCountry = null;
+    private ?string $status = null;
 
-	private string $cardNum;
-	private string $cardCategory;
-	private string $cardId;
-	private CardExpiry $cardExpiry;
-	private string $cvv;
-	private string $holderName;
-	private string $cardType;
-	private string $lastDigits;
-	private string $cardBin;
-	private string $issuingCountry;
-	private string $status;
+    /**
+     * Builder function for cardNum
+     *
+     * @param string $cardNum
+     *
+     * @return $this
+     */
+    public function cardNum(?string $cardNum): self
+    {
+        $this->setCardNum($cardNum);
 
-	/**
-	 * Builder function for cardNum
-	 * 
-	 * @param string $cardNum
-	 * 
-	 * @return $this
-	 */
-	public function cardNum(string $cardNum): self
-	{
-		$this->setCardNum($cardNum);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cardNum
-	 * 
-	 * @param string $cardNum
-	 * 
-	 * @return void
-	 */
-	public function setCardNum(string $cardNum): void
-	{
-		$this->cardNum = $cardNum;
-	}
+    /**
+     * Setter function for cardNum
+     *
+     * @param string $cardNum
+     *
+     * @return void
+     */
+    public function setCardNum(?string $cardNum): void
+    {
+        $this->cardNum = $cardNum;
+    }
 
-	/**
-	 * This is the card number.
-	 * 
-	 * @return string
-	 */
-	public function getCardNum(): string
-	{
-		return $this->cardNum;
-	}
+    /**
+     * Getter function for cardNum
+     *
+     * @return ?string
+     */
+    public function getCardNum(): ?string
+    {
+        return $this->cardNum;
+    }
+    /**
+     * Builder function for cardCategory
+     *
+     * @param string $cardCategory
+     *
+     * @return $this
+     */
+    public function cardCategory(?string $cardCategory): self
+    {
+        $this->setCardCategory($cardCategory);
 
-	/**
-	 * Builder function for cardCategory
-	 * 
-	 * @param string $cardCategory
-	 * 
-	 * @return $this
-	 */
-	public function cardCategory(string $cardCategory): self
-	{
-		$this->setCardCategory($cardCategory);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cardCategory
-	 * 
-	 * @param string $cardCategory
-	 * 
-	 * @return void
-	 */
-	public function setCardCategory(string $cardCategory): void
-	{
-		$this->cardCategory = $cardCategory;
-	}
+    /**
+     * Setter function for cardCategory
+     *
+     * @param string $cardCategory
+     *
+     * @return void
+     */
+    public function setCardCategory(?string $cardCategory): void
+    {
+        $this->cardCategory = $cardCategory;
+    }
 
-	/**
-	 * DEBIT or CREDIT.
-	 * 
-	 * @return string
-	 */
-	public function getCardCategory(): string
-	{
-		return $this->cardCategory;
-	}
+    /**
+     * Getter function for cardCategory
+     *
+     * @return ?string
+     */
+    public function getCardCategory(): ?string
+    {
+        return $this->cardCategory;
+    }
+    /**
+     * Builder function for cardId
+     *
+     * @param string $cardId
+     *
+     * @return $this
+     */
+    public function cardId(?string $cardId): self
+    {
+        $this->setCardId($cardId);
 
-	/**
-	 * Builder function for cardId
-	 * 
-	 * @param string $cardId
-	 * 
-	 * @return $this
-	 */
-	public function cardId(string $cardId): self
-	{
-		$this->setCardId($cardId);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cardId
-	 * 
-	 * @param string $cardId
-	 * 
-	 * @return void
-	 */
-	public function setCardId(string $cardId): void
-	{
-		$this->cardId = $cardId;
-	}
+    /**
+     * Setter function for cardId
+     *
+     * @param string $cardId
+     *
+     * @return void
+     */
+    public function setCardId(?string $cardId): void
+    {
+        $this->cardId = $cardId;
+    }
 
-	/**
-	 * This is the card id returned in the response during save card flow.
-	 * 
-	 * @return string
-	 */
-	public function getCardId(): string
-	{
-		return $this->cardId;
-	}
+    /**
+     * Getter function for cardId
+     *
+     * @return ?string
+     */
+    public function getCardId(): ?string
+    {
+        return $this->cardId;
+    }
+    /**
+     * Builder function for cardExpiry
+     *
+     * @param CardExpiry $cardExpiry
+     *
+     * @return $this
+     */
+    public function cardExpiry(?CardExpiry $cardExpiry): self
+    {
+        $this->setCardExpiry($cardExpiry);
 
-	/**
-	 * Builder function for cardExpiry
-	 * 
-	 * @param CardExpiry $cardExpiry
-	 * 
-	 * @return $this
-	 */
-	public function cardExpiry(CardExpiry $cardExpiry): self
-	{
-		$this->setCardExpiry($cardExpiry);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cardExpiry
-	 * 
-	 * @param CardExpiry $cardExpiry
-	 * 
-	 * @return void
-	 */
-	public function setCardExpiry(CardExpiry $cardExpiry): void
-	{
-		$this->cardExpiry = $cardExpiry;
-	}
+    /**
+     * Setter function for cardExpiry
+     *
+     * @param CardExpiry $cardExpiry
+     *
+     * @return void
+     */
+    public function setCardExpiry(?CardExpiry $cardExpiry): void
+    {
+        $this->cardExpiry = $cardExpiry;
+    }
 
-	/**
-	 * This is the card's expiry date.
-	 * 
-	 * @return CardExpiry
-	 */
-	public function getCardExpiry(): CardExpiry
-	{
-		return $this->cardExpiry;
-	}
+    /**
+     * Getter function for cardExpiry
+     *
+     * @return ?CardExpiry
+     */
+    public function getCardExpiry(): ?CardExpiry
+    {
+        return $this->cardExpiry;
+    }
+    /**
+     * Builder function for cvv
+     *
+     * @param string $cvv
+     *
+     * @return $this
+     */
+    public function cvv(?string $cvv): self
+    {
+        $this->setCvv($cvv);
 
-	/**
-	 * Builder function for cvv
-	 * 
-	 * @param string $cvv
-	 * 
-	 * @return $this
-	 */
-	public function cvv(string $cvv): self
-	{
-		$this->setCvv($cvv);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cvv
-	 * 
-	 * @param string $cvv
-	 * 
-	 * @return void
-	 */
-	public function setCvv(string $cvv): void
-	{
-		$this->cvv = $cvv;
-	}
+    /**
+     * Setter function for cvv
+     *
+     * @param string $cvv
+     *
+     * @return void
+     */
+    public function setCvv(?string $cvv): void
+    {
+        $this->cvv = $cvv;
+    }
 
-	/**
-	 * This is the 3- or 4-digit security code that appears on the card following the card number.
-	 * 
-	 * @return string
-	 */
-	public function getCvv(): string
-	{
-		return $this->cvv;
-	}
+    /**
+     * Getter function for cvv
+     *
+     * @return ?string
+     */
+    public function getCvv(): ?string
+    {
+        return $this->cvv;
+    }
+    /**
+     * Builder function for holderName
+     *
+     * @param string $holderName
+     *
+     * @return $this
+     */
+    public function holderName(?string $holderName): self
+    {
+        $this->setHolderName($holderName);
 
-	/**
-	 * Builder function for holderName
-	 * 
-	 * @param string $holderName
-	 * 
-	 * @return $this
-	 */
-	public function holderName(string $holderName): self
-	{
-		$this->setHolderName($holderName);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for holderName
-	 * 
-	 * @param string $holderName
-	 * 
-	 * @return void
-	 */
-	public function setHolderName(string $holderName): void
-	{
-		$this->holderName = $holderName;
-	}
+    /**
+     * Setter function for holderName
+     *
+     * @param string $holderName
+     *
+     * @return void
+     */
+    public function setHolderName(?string $holderName): void
+    {
+        $this->holderName = $holderName;
+    }
 
-	/**
-	 * This is the name of the card holder. <b>Note:</b> Holder name must contain only Latin characters
-     * (English Alphabet), Space, Apostrophe('), Dot(.)
-	 * or Hyphen(-).<br /> Unicode normalization is done.
-	 * 
-	 * @return string
-	 */
-	public function getHolderName(): string
-	{
-		return $this->holderName;
-	}
+    /**
+     * Getter function for holderName
+     *
+     * @return ?string
+     */
+    public function getHolderName(): ?string
+    {
+        return $this->holderName;
+    }
+    /**
+     * Builder function for cardType
+     *
+     * @param string $cardType
+     *
+     * @return $this
+     */
+    public function cardType(?string $cardType): self
+    {
+        $this->setCardType($cardType);
 
-	/**
-	 * Builder function for cardType
-	 * 
-	 * @param string $cardType
-	 * 
-	 * @return $this
-	 */
-	public function cardType(string $cardType): self
-	{
-		$this->setCardType($cardType);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cardType
-	 * 
-	 * @param string $cardType
-	 * 
-	 * @return void
-	 */
-	public function setCardType(string $cardType): void
-	{
-		$this->cardType = $cardType;
-	}
+    /**
+     * Setter function for cardType
+     *
+     * @param string $cardType
+     *
+     * @return void
+     */
+    public function setCardType(?string $cardType): void
+    {
+        $this->cardType = $cardType;
+    }
 
-	/**
-	 * This is type of card used for the request.    <br />
-	 * • AM – American Express   <br />
-	 * • DI – Discover   <br />
-	 * • JC – JCB    <br />
-	 * • MC – Mastercard    <br />
-	 * • MD – Maestro    <br />
-	 * • SO – Solo    <br />
-	 * • VI – Visa    <br />
-	 * • VD – Visa Debit   <br />
-	 * • VE – Visa Electron
-	 * 
-	 * @return string
-	 */
-	public function getCardType(): string
-	{
-		return $this->cardType;
-	}
+    /**
+     * Getter function for cardType
+     *
+     * @return ?string
+     */
+    public function getCardType(): ?string
+    {
+        return $this->cardType;
+    }
+    /**
+     * Builder function for lastDigits
+     *
+     * @param string $lastDigits
+     *
+     * @return $this
+     */
+    public function lastDigits(?string $lastDigits): self
+    {
+        $this->setLastDigits($lastDigits);
 
-	/**
-	 * Builder function for lastDigits
-	 * 
-	 * @param string $lastDigits
-	 * 
-	 * @return $this
-	 */
-	public function lastDigits(string $lastDigits): self
-	{
-		$this->setLastDigits($lastDigits);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for lastDigits
-	 * 
-	 * @param string $lastDigits
-	 * 
-	 * @return void
-	 */
-	public function setLastDigits(string $lastDigits): void
-	{
-		$this->lastDigits = $lastDigits;
-	}
+    /**
+     * Setter function for lastDigits
+     *
+     * @param string $lastDigits
+     *
+     * @return void
+     */
+    public function setLastDigits(?string $lastDigits): void
+    {
+        $this->lastDigits = $lastDigits;
+    }
 
-	/**
-	 * These are the last four digits of the card used for the request.
-	 * 
-	 * @return string
-	 */
-	public function getLastDigits(): string
-	{
-		return $this->lastDigits;
-	}
+    /**
+     * Getter function for lastDigits
+     *
+     * @return ?string
+     */
+    public function getLastDigits(): ?string
+    {
+        return $this->lastDigits;
+    }
+    /**
+     * Builder function for cardBin
+     *
+     * @param string $cardBin
+     *
+     * @return $this
+     */
+    public function cardBin(?string $cardBin): self
+    {
+        $this->setCardBin($cardBin);
 
-	/**
-	 * Builder function for cardBin
-	 * 
-	 * @param string $cardBin
-	 * 
-	 * @return $this
-	 */
-	public function cardBin(string $cardBin): self
-	{
-		$this->setCardBin($cardBin);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for cardBin
-	 * 
-	 * @param string $cardBin
-	 * 
-	 * @return void
-	 */
-	public function setCardBin(string $cardBin): void
-	{
-		$this->cardBin = $cardBin;
-	}
+    /**
+     * Setter function for cardBin
+     *
+     * @param string $cardBin
+     *
+     * @return void
+     */
+    public function setCardBin(?string $cardBin): void
+    {
+        $this->cardBin = $cardBin;
+    }
 
-	/**
-	 * These are the first 6 digits of the card Bank Identification Number (BIN),
-     * for example: the first 6 digits of the card number.
-	 * 
-	 * @return string
-	 */
-	public function getCardBin(): string
-	{
-		return $this->cardBin;
-	}
+    /**
+     * Getter function for cardBin
+     *
+     * @return ?string
+     */
+    public function getCardBin(): ?string
+    {
+        return $this->cardBin;
+    }
+    /**
+     * Builder function for issuingCountry
+     *
+     * @param string $issuingCountry
+     *
+     * @return $this
+     */
+    public function issuingCountry(?string $issuingCountry): self
+    {
+        $this->setIssuingCountry($issuingCountry);
 
-	/**
-	 * Builder function for issuingCountry
-	 * 
-	 * @param string $issuingCountry
-	 * 
-	 * @return $this
-	 */
-	public function issuingCountry(string $issuingCountry): self
-	{
-		$this->setIssuingCountry($issuingCountry);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for issuingCountry
-	 * 
-	 * @param string $issuingCountry
-	 * 
-	 * @return void
-	 */
-	public function setIssuingCountry(string $issuingCountry): void
-	{
-		$this->issuingCountry = $issuingCountry;
-	}
+    /**
+     * Setter function for issuingCountry
+     *
+     * @param string $issuingCountry
+     *
+     * @return void
+     */
+    public function setIssuingCountry(?string $issuingCountry): void
+    {
+        $this->issuingCountry = $issuingCountry;
+    }
 
-	/**
-	 * This is the card issuing country.
-	 * 
-	 * @return string
-	 */
-	public function getIssuingCountry(): string
-	{
-		return $this->issuingCountry;
-	}
+    /**
+     * Getter function for issuingCountry
+     *
+     * @return ?string
+     */
+    public function getIssuingCountry(): ?string
+    {
+        return $this->issuingCountry;
+    }
+    /**
+     * Builder function for status
+     *
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function status(?string $status): self
+    {
+        $this->setStatus($status);
 
-	/**
-	 * Builder function for status
-	 * 
-	 * @param string $status
-	 * 
-	 * @return $this
-	 */
-	public function status(string $status): self
-	{
-		$this->setStatus($status);
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter function for status
-	 * 
-	 * @param string $status
-	 * 
-	 * @return void
-	 */
-	public function setStatus(string $status): void
-	{
-		$this->status = $status;
-	}
+    /**
+     * Setter function for status
+     *
+     * @param string $status
+     *
+     * @return void
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
 
-	/**
-	 * Optional.  Present only if the card is part of a Customer.
-	 * 
-	 * @return string
-	 */
-	public function getStatus(): string
-	{
-		return $this->status;
-	}
-
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class UpdateCustomerRequestCard {" . PHP_EOL
-			. "    cardNum: " . $this->toIndentedString($this->cardNum) . PHP_EOL
-			. "    cardCategory: " . $this->toIndentedString($this->cardCategory) . PHP_EOL
-			. "    cardId: " . $this->toIndentedString($this->cardId) . PHP_EOL
-			. "    cardExpiry: " . $this->toIndentedString($this->cardExpiry) . PHP_EOL
-			. "    cvv: " . $this->toIndentedString($this->cvv) . PHP_EOL
-			. "    holderName: " . $this->toIndentedString($this->holderName) . PHP_EOL
-			. "    cardType: " . $this->toIndentedString($this->cardType) . PHP_EOL
-			. "    lastDigits: " . $this->toIndentedString($this->lastDigits) . PHP_EOL
-			. "    cardBin: " . $this->toIndentedString($this->cardBin) . PHP_EOL
-			. "    issuingCountry: " . $this->toIndentedString($this->issuingCountry) . PHP_EOL
-			. "    status: " . $this->toIndentedString($this->status) . PHP_EOL
-			. "}";
-	}
+    /**
+     * Getter function for status
+     *
+     * @return ?string
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class UpdateCustomerRequestCard {" . PHP_EOL
+            . "    cardNum: " . $this->toIndentedString($this->cardNum ?? null) . PHP_EOL
+            . "    cardCategory: " . $this->toIndentedString($this->cardCategory ?? null) . PHP_EOL
+            . "    cardId: " . $this->toIndentedString($this->cardId ?? null) . PHP_EOL
+            . "    cardExpiry: " . $this->toIndentedString($this->cardExpiry ?? null) . PHP_EOL
+            . "    cvv: " . $this->toIndentedString($this->cvv ?? null) . PHP_EOL
+            . "    holderName: " . $this->toIndentedString($this->holderName ?? null) . PHP_EOL
+            . "    cardType: " . $this->toIndentedString($this->cardType ?? null) . PHP_EOL
+            . "    lastDigits: " . $this->toIndentedString($this->lastDigits ?? null) . PHP_EOL
+            . "    cardBin: " . $this->toIndentedString($this->cardBin ?? null) . PHP_EOL
+            . "    issuingCountry: " . $this->toIndentedString($this->issuingCountry ?? null) . PHP_EOL
+            . "    status: " . $this->toIndentedString($this->status ?? null) . PHP_EOL
+            . "}";
+    }
 }

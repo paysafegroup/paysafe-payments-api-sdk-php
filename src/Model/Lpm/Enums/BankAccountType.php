@@ -1,5 +1,7 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Lpm\Enums;
 
@@ -8,9 +10,7 @@ namespace Paysafe\PhpSdk\Model\Lpm\Enums;
  */
 class BankAccountType
 {
-	const SAVINGS = "SAVINGS";
-	const CHECKING = "CHECKING";
-	const LOAN = "LOAN";
-
-
+    const SAVINGS = 'SAVINGS';
+    const CHECKING = 'CHECKING';
+    const LOAN = 'LOAN';
 }

@@ -1,5 +1,6 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Client;
 
 /**
@@ -28,6 +29,7 @@ class RequestOptions
      * @param int|null $connectTimeout
      * @param int|null $responseTimeout
      * @param int|null $maxAutomaticRetries
+     * @param string $simulator
      */
     public function __construct(
         ?int $connectTimeout = null,
@@ -46,9 +48,10 @@ class RequestOptions
         return $this->simulator;
     }
 
-    public function setSimulator(string $simulator): void
+    public function setSimulator(string $simulator): self
     {
         $this->simulator = $simulator;
+        return $this;
     }
 
     /**
@@ -64,9 +67,10 @@ class RequestOptions
     /**
      * @param int $connectTimeout
      */
-    public function setConnectTimeout(int $connectTimeout): void
+    public function setConnectTimeout(int $connectTimeout): self
     {
         $this->connectTimeout = $connectTimeout;
+        return $this;
     }
 
     /**
@@ -82,9 +86,10 @@ class RequestOptions
     /**
      * @param int $responseTimeout
      */
-    public function setResponseTimeout(int $responseTimeout): void
+    public function setResponseTimeout(int $responseTimeout): self
     {
         $this->responseTimeout = $responseTimeout;
+        return $this;
     }
 
     /**
@@ -100,8 +105,9 @@ class RequestOptions
     /**
      * @param int $maxAutomaticRetries
      */
-    public function setMaxAutomaticRetries(int $maxAutomaticRetries): void
+    public function setMaxAutomaticRetries(int $maxAutomaticRetries): self
     {
         $this->maxAutomaticRetries = $maxAutomaticRetries;
+        return $this;
     }
 }

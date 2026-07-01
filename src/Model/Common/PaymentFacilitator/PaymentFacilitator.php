@@ -1,33 +1,34 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common\PaymentFacilitator;
-
 use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Payment\Payment;
+
 
 /**
- * Contains information about Payment facilitator.
- *
-* >**Note:** This object is only for Payment facilitator merchants.
+ * Contains informaion regarding the Payment facilitator
  */
 class PaymentFacilitator extends BaseModel
 {
-
-    private SubMerchant $subMerchant;
+    private ?SubMerchant $subMerchant = null;
 
     /**
      * Builder function for subMerchant
      *
      * @param SubMerchant $subMerchant
      *
-     * @return PaymentFacilitator
+     * @return $this
      */
-    public function subMerchant(SubMerchant $subMerchant): self
+    public function subMerchant(?SubMerchant $subMerchant): self
     {
         $this->setSubMerchant($subMerchant);
 
         return $this;
     }
+
     /**
      * Setter function for subMerchant
      *
@@ -35,7 +36,7 @@ class PaymentFacilitator extends BaseModel
      *
      * @return void
      */
-    public function setSubMerchant(SubMerchant $subMerchant): void
+    public function setSubMerchant(?SubMerchant $subMerchant): void
     {
         $this->subMerchant = $subMerchant;
     }
@@ -43,13 +44,12 @@ class PaymentFacilitator extends BaseModel
     /**
      * Getter function for subMerchant
      *
-     * @return SubMerchant
+     * @return ?SubMerchant
      */
-    public function getSubMerchant(): SubMerchant
+    public function getSubMerchant(): ?SubMerchant
     {
         return $this->subMerchant;
     }
-
     /**
      * Convert the object to a string representation.
      *
@@ -57,8 +57,8 @@ class PaymentFacilitator extends BaseModel
      */
     public function __toString(): string
     {
-        return "class PaymentFacilitator {" . PHP_EOL .
-            "	subMerchant: " . $this->toIndentedString($this->subMerchant) . PHP_EOL .
-            "}";
+        return "class PaymentFacilitator {" . PHP_EOL
+            . "    subMerchant: " . $this->toIndentedString($this->subMerchant ?? null) . PHP_EOL
+            . "}";
     }
 }

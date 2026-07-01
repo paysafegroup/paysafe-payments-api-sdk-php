@@ -1,99 +1,57 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Card;
-
 use Paysafe\PhpSdk\Model\BaseModel;
 
+
 /**
- * Card information
- * <ul>
- *   <li>
- *     <b>lastDigits:</b> These are the last four digits of the card used for the request.
- *   </li>
- *   <li>
- *     <b>cardExpiry:</b> This is the card's expiry date.
- *   </li>
- *   <li>
- *     <b>cardBin:</b> These are the first 6 digits of the card Bank Identification Number (BIN).
- *     For example: the first 6 digits of the card number. <br />
- *     Example: 411111
- *   </li>
- *   <li>
- *     <b>cardType:</b> This is type of card used for the request. <br />
- *     <i>Allowed values: AM, DI, JC, MC, MD, SO, VI, VD, VE</i>
- *   </li>
- *   <li>
- *     <b>holderName:</b> This is the name of the card holder. <br />
- *     For 3DS2, Holder name must contain only Latin characters (English Alphabet), Space, Apostrophe ('), Dot (.)
- *      or Hyphen (-) <br />
- *     Example: Suresh
- *   </li>
- *   <li>
- *     <b>status:</b> This is <b>Optional</b> - it is present only if the card is stored for the Customer. <br />
- *     <i>Allowed values: ACTIVE, SUSPENDED</i>
- *   </li>
- *   <li>
- *     <b>cardCategory:</b> The type of card being used. <br />
- *     <i>Allowed values: CREDIT, DEBIT</i>
- *   </li>
- *   <li>
- *     <b>tokenType:</b> This is the token type. <br />
- *     <i>Allowed values: APPLE_PAY, NETWORK_TOKEN</i>
- *   </li>
- *   <li>
- *     <b>applePay:</b> When tokenType=APPLE_PAY. Apple Pay token information.
- *     Returned when the stored payment method is an Apple Pay token.
- *   </li>
- *   <li>
- *     <b>networkToken:</b> Holds network token fields.
- *   </li>
- *   <li>
- *     <b>issuingCountry:</b> This is the card issuing country. <br />
- *     Example: US
- *   </li>
- * </ul>
+ * Card information.
  */
 class Card extends BaseModel
 {
-    private string $cardNum;
-    private string $cardId;
-    private CardExpiry $cardExpiry;
-    private string $cvv;
-    private string $holderName;
-    private string $cardType;
-    private string $lastDigits;
-    private string $cardBin;
-    private string $issuingCountry;
-    private string $status;
-    private ApplePayTokenDetails $applePay;
-    private string $tokenType;
-    private ExternalNetworkTokenRequest $networkToken;
+    /**
+     * The card number used for the request
+     */
+    private ?string $cardNum = null;
+    /**
+     * The card id returned in the response during save card flow
+     */
+    private ?string $cardId = null;
+    private ?CardExpiry $cardExpiry = null;
+    /**
+     * The 3- or 4-digit security code that appears on the card following the card number
+     */
+    private ?string $cvv = null;
+    /**
+     * The name of the cardholder
+     */
+    private ?string $holderName = null;
+    private ?string $cardType = null;
+    /**
+     * The last four digits of the card used for the request
+     */
+    private ?string $lastDigits = null;
+    /**
+     * The first 6 digits of the card Bank Identification Number (BIN)
+     */
+    private ?string $cardBin = null;
+    /**
+     * The card issuing country
+     */
+    private ?string $issuingCountry = null;
+    private ?string $status = null;
 
     /**
-     * @param string $cardNum
+     * Builder function for cardNum
      *
-     * @return void
-     */
-    public function setCardNum(string $cardNum): void
-    {
-        $this->cardNum = $cardNum;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCardNum(): string
-    {
-        return $this->cardNum;
-    }
-
-    /**
      * @param string $cardNum
      *
      * @return $this
      */
-    public function cardNum(string $cardNum): self
+    public function cardNum(?string $cardNum): self
     {
         $this->setCardNum($cardNum);
 
@@ -101,29 +59,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $cardId
+     * Setter function for cardNum
+     *
+     * @param string $cardNum
      *
      * @return void
      */
-    public function setCardId(string $cardId): void
+    public function setCardNum(?string $cardNum): void
     {
-        $this->cardId = $cardId;
+        $this->cardNum = $cardNum;
     }
 
     /**
-     * @return string
+     * Getter function for cardNum
+     *
+     * @return ?string
      */
-    public function getCardId(): string
+    public function getCardNum(): ?string
     {
-        return $this->cardId;
+        return $this->cardNum;
     }
-
     /**
+     * Builder function for cardId
+     *
      * @param string $cardId
      *
      * @return $this
      */
-    public function cardId(string $cardId): self
+    public function cardId(?string $cardId): self
     {
         $this->setCardId($cardId);
 
@@ -131,29 +94,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param CardExpiry $cardExpiry
+     * Setter function for cardId
+     *
+     * @param string $cardId
      *
      * @return void
      */
-    public function setCardExpiry(CardExpiry $cardExpiry): void
+    public function setCardId(?string $cardId): void
     {
-        $this->cardExpiry = $cardExpiry;
+        $this->cardId = $cardId;
     }
 
     /**
-     * @return CardExpiry
+     * Getter function for cardId
+     *
+     * @return ?string
      */
-    public function getCardExpiry(): CardExpiry
+    public function getCardId(): ?string
     {
-        return $this->cardExpiry;
+        return $this->cardId;
     }
-
     /**
+     * Builder function for cardExpiry
+     *
      * @param CardExpiry $cardExpiry
      *
      * @return $this
      */
-    public function cardExpiry(CardExpiry $cardExpiry): self
+    public function cardExpiry(?CardExpiry $cardExpiry): self
     {
         $this->setCardExpiry($cardExpiry);
 
@@ -161,29 +129,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $cvv
+     * Setter function for cardExpiry
+     *
+     * @param CardExpiry $cardExpiry
      *
      * @return void
      */
-    public function setCvv(string $cvv): void
+    public function setCardExpiry(?CardExpiry $cardExpiry): void
     {
-        $this->cvv = $cvv;
+        $this->cardExpiry = $cardExpiry;
     }
 
     /**
-     * @return string
+     * Getter function for cardExpiry
+     *
+     * @return ?CardExpiry
      */
-    public function getCvv(): string
+    public function getCardExpiry(): ?CardExpiry
     {
-        return $this->cvv;
+        return $this->cardExpiry;
     }
-
     /**
+     * Builder function for cvv
+     *
      * @param string $cvv
      *
      * @return $this
      */
-    public function cvv(string $cvv): self
+    public function cvv(?string $cvv): self
     {
         $this->setCvv($cvv);
 
@@ -191,29 +164,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $holderName
+     * Setter function for cvv
+     *
+     * @param string $cvv
      *
      * @return void
      */
-    public function setHolderName(string $holderName): void
+    public function setCvv(?string $cvv): void
     {
-        $this->holderName = $holderName;
+        $this->cvv = $cvv;
     }
 
     /**
-     * @return string
+     * Getter function for cvv
+     *
+     * @return ?string
      */
-    public function getHolderName(): string
+    public function getCvv(): ?string
     {
-        return $this->holderName;
+        return $this->cvv;
     }
-
     /**
+     * Builder function for holderName
+     *
      * @param string $holderName
      *
      * @return $this
      */
-    public function holderName(string $holderName): self
+    public function holderName(?string $holderName): self
     {
         $this->setHolderName($holderName);
 
@@ -221,29 +199,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $cardType
+     * Setter function for holderName
+     *
+     * @param string $holderName
      *
      * @return void
      */
-    public function setCardType(string $cardType): void
+    public function setHolderName(?string $holderName): void
     {
-        $this->cardType = $cardType;
+        $this->holderName = $holderName;
     }
 
     /**
-     * @return string
+     * Getter function for holderName
+     *
+     * @return ?string
      */
-    public function getCardType(): string
+    public function getHolderName(): ?string
     {
-        return $this->cardType;
+        return $this->holderName;
     }
-
     /**
+     * Builder function for cardType
+     *
      * @param string $cardType
      *
      * @return $this
      */
-    public function cardType(string $cardType): self
+    public function cardType(?string $cardType): self
     {
         $this->setCardType($cardType);
 
@@ -251,29 +234,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $lastDigits
+     * Setter function for cardType
+     *
+     * @param string $cardType
      *
      * @return void
      */
-    public function setLastDigits(string $lastDigits): void
+    public function setCardType(?string $cardType): void
     {
-        $this->lastDigits = $lastDigits;
+        $this->cardType = $cardType;
     }
 
     /**
-     * @return string
+     * Getter function for cardType
+     *
+     * @return ?string
      */
-    public function getLastDigits(): string
+    public function getCardType(): ?string
     {
-        return $this->lastDigits;
+        return $this->cardType;
     }
-
     /**
+     * Builder function for lastDigits
+     *
      * @param string $lastDigits
      *
      * @return $this
      */
-    public function lastDigits(string $lastDigits): self
+    public function lastDigits(?string $lastDigits): self
     {
         $this->setLastDigits($lastDigits);
 
@@ -281,29 +269,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $cardBin
+     * Setter function for lastDigits
+     *
+     * @param string $lastDigits
      *
      * @return void
      */
-    public function setCardBin(string $cardBin): void
+    public function setLastDigits(?string $lastDigits): void
     {
-        $this->cardBin = $cardBin;
+        $this->lastDigits = $lastDigits;
     }
 
     /**
-     * @return string
+     * Getter function for lastDigits
+     *
+     * @return ?string
      */
-    public function getCardBin(): string
+    public function getLastDigits(): ?string
     {
-        return $this->cardBin;
+        return $this->lastDigits;
     }
-
     /**
+     * Builder function for cardBin
+     *
      * @param string $cardBin
      *
      * @return $this
      */
-    public function cardBin(string $cardBin): self
+    public function cardBin(?string $cardBin): self
     {
         $this->setCardBin($cardBin);
 
@@ -311,29 +304,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $issuingCountry
+     * Setter function for cardBin
+     *
+     * @param string $cardBin
      *
      * @return void
      */
-    public function setIssuingCountry(string $issuingCountry): void
+    public function setCardBin(?string $cardBin): void
     {
-        $this->issuingCountry = $issuingCountry;
+        $this->cardBin = $cardBin;
     }
 
     /**
-     * @return string
+     * Getter function for cardBin
+     *
+     * @return ?string
      */
-    public function getIssuingCountry(): string
+    public function getCardBin(): ?string
     {
-        return $this->issuingCountry;
+        return $this->cardBin;
     }
-
     /**
+     * Builder function for issuingCountry
+     *
      * @param string $issuingCountry
      *
      * @return $this
      */
-    public function issuingCountry(string $issuingCountry): self
+    public function issuingCountry(?string $issuingCountry): self
     {
         $this->setIssuingCountry($issuingCountry);
 
@@ -341,29 +339,34 @@ class Card extends BaseModel
     }
 
     /**
-     * @param string $status
+     * Setter function for issuingCountry
+     *
+     * @param string $issuingCountry
      *
      * @return void
      */
-    public function setStatus(string $status): void
+    public function setIssuingCountry(?string $issuingCountry): void
     {
-        $this->status = $status;
+        $this->issuingCountry = $issuingCountry;
     }
 
     /**
-     * @return string
+     * Getter function for issuingCountry
+     *
+     * @return ?string
      */
-    public function getStatus(): string
+    public function getIssuingCountry(): ?string
     {
-        return $this->status;
+        return $this->issuingCountry;
     }
-
     /**
+     * Builder function for status
+     *
      * @param string $status
      *
      * @return $this
      */
-    public function status(string $status): self
+    public function status(?string $status): self
     {
         $this->setStatus($status);
 
@@ -371,96 +374,26 @@ class Card extends BaseModel
     }
 
     /**
-     * @param ApplePayTokenDetails $applePay
+     * Setter function for status
+     *
+     * @param string $status
      *
      * @return void
      */
-    public function setApplePay(ApplePayTokenDetails $applePay): void
+    public function setStatus(?string $status): void
     {
-        $this->applePay = $applePay;
+        $this->status = $status;
     }
 
     /**
-     * @return ApplePayTokenDetails
-     */
-    public function getApplePay(): ApplePayTokenDetails
-    {
-        return $this->applePay;
-    }
-
-    /**
-     * @param ApplePayTokenDetails $applePay
+     * Getter function for status
      *
-     * @return $this
+     * @return ?string
      */
-    public function applePay(ApplePayTokenDetails $applePay): self
+    public function getStatus(): ?string
     {
-        $this->setApplePay($applePay);
-
-        return $this;
+        return $this->status;
     }
-
-    /**
-     * @param string $tokenType
-     *
-     * @return void
-     */
-    public function setTokenType(string $tokenType): void
-    {
-        $this->tokenType = $tokenType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTokenType(): string
-    {
-        return $this->tokenType;
-    }
-
-    /**
-     * @param string $tokenType
-     *
-     * @return $this
-     */
-    public function tokenType(string $tokenType): self
-    {
-        $this->setTokenType($tokenType);
-
-        return $this;
-    }
-
-    /**
-     * @param ExternalNetworkTokenRequest $networkToken
-     *
-     * @return void
-     */
-    public function setNetworkToken(ExternalNetworkTokenRequest $networkToken): void
-    {
-        $this->networkToken = $networkToken;
-    }
-
-    /**
-     * @return ExternalNetworkTokenRequest
-     */
-    public function getNetworkToken(): ExternalNetworkTokenRequest
-    {
-        return $this->networkToken;
-    }
-
-    /**
-     * @param ExternalNetworkTokenRequest $networkToken
-     *
-     * @return $this
-     */
-    public function networkToken(ExternalNetworkTokenRequest $networkToken): self
-    {
-        $this->setNetworkToken($networkToken);
-
-        return $this;
-    }
-
-
     /**
      * Convert the object to a string representation.
      *
@@ -469,19 +402,16 @@ class Card extends BaseModel
     public function __toString(): string
     {
         return "class Card {" . PHP_EOL
-            . "    cardNum: " . $this->toIndentedString($this->cardNum) . "\n"
-            . "    cardId: " . $this->toIndentedString($this->cardId) . "\n"
-            . "    cardExpiry: " . $this->toIndentedString($this->cardExpiry) . "\n"
-            . "    cvv: " . $this->toIndentedString($this->cvv) . "\n"
-            . "    holderName: " . $this->toIndentedString($this->holderName) . "\n"
-            . "    cardType: " . $this->toIndentedString($this->cardType) . "\n"
-            . "    lastDigits: " . $this->toIndentedString($this->lastDigits) . "\n"
-            . "    cardBin: " . $this->toIndentedString($this->cardBin) . "\n"
-            . "    issuingCountry: " . $this->toIndentedString($this->issuingCountry) . "\n"
-            . "    status: " . $this->toIndentedString($this->status) . "\n"
-            . "    applePay: " . $this->toIndentedString($this->applePay) . "\n"
-            . "    tokenType: " . $this->toIndentedString($this->tokenType) . "\n"
-            . "    networkToken: " . $this->toIndentedString($this->networkToken) . "\n"
+            . "    cardNum: " . $this->toIndentedString($this->cardNum ?? null) . PHP_EOL
+            . "    cardId: " . $this->toIndentedString($this->cardId ?? null) . PHP_EOL
+            . "    cardExpiry: " . $this->toIndentedString($this->cardExpiry ?? null) . PHP_EOL
+            . "    cvv: " . $this->toIndentedString($this->cvv ?? null) . PHP_EOL
+            . "    holderName: " . $this->toIndentedString($this->holderName ?? null) . PHP_EOL
+            . "    cardType: " . $this->toIndentedString($this->cardType ?? null) . PHP_EOL
+            . "    lastDigits: " . $this->toIndentedString($this->lastDigits ?? null) . PHP_EOL
+            . "    cardBin: " . $this->toIndentedString($this->cardBin ?? null) . PHP_EOL
+            . "    issuingCountry: " . $this->toIndentedString($this->issuingCountry ?? null) . PHP_EOL
+            . "    status: " . $this->toIndentedString($this->status ?? null) . PHP_EOL
             . "}";
     }
 }

@@ -1,0 +1,50 @@
+{
+  "paymentType": "CARD",
+  "currencyCode": "USD",
+  "txnTime": "2025-01-27T12:01:35Z",
+  "billingDetails": {
+    "street": "abcd",
+    "city": "defg",
+    "zip": "94404",
+    "state": "AL",
+    "country": "US"
+  },
+  "customerIp": "172.10.12.64",
+  "status": "COMPLETED",
+  "description": "Winning payment from Loto 649",
+  "gatewayResponse": {
+    "code": "OPN",
+    "responseCode": "00",
+    "authCode": "187919",
+    "avsResponse": "NOT_PROCESSED",
+    "cvvVerification": "MATCH",
+    "nameVerification": "NOT_PROCESSED",
+    "firstNameVerification": "NOT_PROCESSED",
+    "lastNameVerification": "NOT_PROCESSED",
+    "serializable": true
+  },
+  "card": {
+    "cardExpiry": {
+      "month": 10,
+      "year": 2028
+    },
+    "lastDigits": "2719",
+    "issuingCountry": "US"
+  },
+  "paymentFacilitator": {
+    "subMerchant": {
+      "id": "123456789",
+      "name": "PayFacSubMerchant",
+      "address": {
+        "street": "100 Queen Street West",
+        "city": "Toronto",
+        "country": "CA",
+        "zip": "M5H 2N2",
+        "state": "ON"
+      },
+      "phone": "478234562331",
+      "email": "payfac@mail.com",
+      "url": "www.payfac.com"
+    }
+  }
+}

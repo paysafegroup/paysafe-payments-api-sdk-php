@@ -3,12 +3,13 @@
   "description": "Paysafe Payments API SDK for PHP",
   "type": "library",
   "license": "MIT",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "require": {
     "php": ">=7.4.0",
     "ext-curl": "*",
     "ext-json": "*",
     "guzzlehttp/guzzle": "^7.9",
+    "guzzlehttp/psr7": "^2.10.2",
     "symfony/serializer": "^5.4",
     "symfony/property-access": "^5.4",
     "phpdocumentor/reflection-docblock": "^5.6",
@@ -17,6 +18,11 @@
   "autoload": {
     "psr-4": {
       "Paysafe\\PhpSdk\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "": "tests/"
     }
   },
   "require-dev": {

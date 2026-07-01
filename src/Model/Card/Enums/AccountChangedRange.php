@@ -1,18 +1,17 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Card\Enums;
 
 /**
- * Enum that indicates the length of time between the most recent password change and the API call
- * of the current transaction.
+ * Length of time between the most recent change to the cardholder account and the current transaction.
  */
 class AccountChangedRange
 {
-	const DURING_TRANSACTION = "DURING_TRANSACTION";
-	const LESS_THAN_THIRTY_DAYS = "LESS_THAN_THIRTY_DAYS";
-	const THIRTY_TO_SIXTY_DAYS = "THIRTY_TO_SIXTY_DAYS";
-	const MORE_THAN_SIXTY_DAYS = "MORE_THAN_SIXTY_DAYS";
-
-
+    const DURING_TRANSACTION = 'DURING_TRANSACTION';
+    const LESS_THAN_THIRTY_DAYS = 'LESS_THAN_THIRTY_DAYS';
+    const THIRTY_TO_SIXTY_DAYS = 'THIRTY_TO_SIXTY_DAYS';
+    const MORE_THAN_SIXTY_DAYS = 'MORE_THAN_SIXTY_DAYS';
 }

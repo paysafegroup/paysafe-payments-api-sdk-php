@@ -1,27 +1,54 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model;
-
 use Paysafe\PhpSdk\Model\Common\Error\Error;
-use Paysafe\PhpSdk\Model\BaseModel;
 
-abstract class BaseApiResponse extends BaseModel
+
+/**
+ * Represents the base for every response object.
+ */
+class BaseApiResponse extends BaseModel
 {
-    private Error $error;
+    private ?Error $error = null;
 
-    public function getError(): Error
-
+    /**
+     * Builder function for error
+     *
+     * @param Error $error
+     *
+     * @return $this
+     */
+    public function error(?Error $error): self
     {
-        return $this->error;
+        $this->setError($error);
+
+        return $this;
     }
 
-    public function setError(Error $error): void
-
+    /**
+     * Setter function for error
+     *
+     * @param Error $error
+     *
+     * @return void
+     */
+    public function setError(?Error $error): void
     {
         $this->error = $error;
     }
 
+    /**
+     * Getter function for error
+     *
+     * @return ?Error
+     */
+    public function getError(): ?Error
+    {
+        return $this->error;
+    }
     /**
      * Convert the object to a string representation.
      *
@@ -30,7 +57,7 @@ abstract class BaseApiResponse extends BaseModel
     public function __toString(): string
     {
         return "class BaseApiResponse {" . PHP_EOL
-            . "    error: " . $this->toIndentedString($this->error) . "\n"
+            . "    error: " . $this->toIndentedString($this->error ?? null) . PHP_EOL
             . "}";
     }
 }

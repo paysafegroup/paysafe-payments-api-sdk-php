@@ -1,6 +1,7 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Client;
 
 use Paysafe\PhpSdk\Service\CustomerAddressService;
@@ -8,19 +9,34 @@ use Paysafe\PhpSdk\Service\CustomerPaymentHandleService;
 use Paysafe\PhpSdk\Service\CustomerService;
 use Paysafe\PhpSdk\Service\CustomerSingleUseTokenService;
 use Paysafe\PhpSdk\Service\LookUpPaymentMethodsService;
+use Paysafe\PhpSdk\Service\MandateService;
 use Paysafe\PhpSdk\Service\MonitorService;
 use Paysafe\PhpSdk\Service\OriginalCreditService;
 use Paysafe\PhpSdk\Service\PaymentHandleService;
 use Paysafe\PhpSdk\Service\PaymentService;
+use Paysafe\PhpSdk\Service\RawRequestService;
 use Paysafe\PhpSdk\Service\RefundService;
 use Paysafe\PhpSdk\Service\SettlementService;
 use Paysafe\PhpSdk\Service\StandaloneCreditService;
 use Paysafe\PhpSdk\Service\VerificationService;
 use Paysafe\PhpSdk\Service\VoidAuthorizationService;
+use Paysafe\PhpSdk\Webhook\WebhookHandler;
+use Paysafe\PhpSdk\Logging\LoggingLevel;
+use Psr\Log\LoggerInterface;
 
+/**
+ * Abstract service registry providing lazy-initialized access to all Paysafe API service classes.
+ *
+ * Each service is instantiated on first access and reused for subsequent calls (singleton per client).
+ * This class is not intended to be used directly — use {@see \Paysafe\PhpSdk\PaysafeClient} instead.
+ *
+ * @see \Paysafe\PhpSdk\PaysafeClient
+ */
 abstract class PaysafeServices
 {
     protected PaysafeApiClient $paysafeApiClient;
+    protected ?LoggerInterface $logger = null;
+    protected string $loggingLevel = LoggingLevel::ERROR;
 
     protected ?MonitorService $monitorService = null;
     protected ?LookUpPaymentMethodsService $lookUpPaymentMethodsService = null;
@@ -36,6 +52,9 @@ abstract class PaysafeServices
     protected ?CustomerPaymentHandleService $customerPaymentHandleService = null;
     protected ?CustomerSingleUseTokenService $customerSingleUseTokenService = null;
     protected ?RefundService $refundService = null;
+    protected ?MandateService $mandateService = null;
+    protected ?RawRequestService $rawRequestService = null;
+    protected ?WebhookHandler $webhookHandler = null;
 
     /**
      * Returns the MonitorService instance.
@@ -98,7 +117,7 @@ abstract class PaysafeServices
      */
     public function paymentService(): PaymentService
     {
-        if ($this->paymentService == null) {
+        if ($this->paymentService === null) {
             $this->paymentService = new PaymentService($this->paysafeApiClient);
         }
 
@@ -112,7 +131,7 @@ abstract class PaysafeServices
      */
     public function voidAuthorizationService(): VoidAuthorizationService
     {
-        if ($this->voidAuthorizationService == null) {
+        if ($this->voidAuthorizationService === null) {
             $this->voidAuthorizationService = new VoidAuthorizationService($this->paysafeApiClient);
         }
 
@@ -126,7 +145,7 @@ abstract class PaysafeServices
      */
     public function settlementService(): SettlementService
     {
-        if ($this->settlementService == null) {
+        if ($this->settlementService === null) {
             $this->settlementService = new SettlementService($this->paysafeApiClient);
         }
 
@@ -140,7 +159,7 @@ abstract class PaysafeServices
      */
     public function originalCreditService(): OriginalCreditService
     {
-        if ($this->originalCreditService == null) {
+        if ($this->originalCreditService === null) {
             $this->originalCreditService = new OriginalCreditService($this->paysafeApiClient);
         }
 
@@ -154,7 +173,7 @@ abstract class PaysafeServices
      */
     public function standaloneCreditService(): StandaloneCreditService
     {
-        if ($this->standaloneCreditService == null) {
+        if ($this->standaloneCreditService === null) {
             $this->standaloneCreditService = new StandaloneCreditService($this->paysafeApiClient);
         }
 
@@ -168,7 +187,7 @@ abstract class PaysafeServices
      */
     public function customerService(): CustomerService
     {
-        if ($this->customerService == null) {
+        if ($this->customerService === null) {
             $this->customerService = new CustomerService($this->paysafeApiClient);
         }
 
@@ -182,7 +201,7 @@ abstract class PaysafeServices
      */
     public function customerAddressService(): CustomerAddressService
     {
-        if ($this->customerAddressService == null) {
+        if ($this->customerAddressService === null) {
             $this->customerAddressService = new CustomerAddressService($this->paysafeApiClient);
         }
 
@@ -196,7 +215,7 @@ abstract class PaysafeServices
      */
     public function customerPaymentHandleService(): CustomerPaymentHandleService
     {
-        if ($this->customerPaymentHandleService == null) {
+        if ($this->customerPaymentHandleService === null) {
             $this->customerPaymentHandleService = new CustomerPaymentHandleService($this->paysafeApiClient);
         }
 
@@ -210,7 +229,7 @@ abstract class PaysafeServices
      */
     public function customerSingleUseTokenService(): CustomerSingleUseTokenService
     {
-        if ($this->customerSingleUseTokenService == null) {
+        if ($this->customerSingleUseTokenService === null) {
             $this->customerSingleUseTokenService = new CustomerSingleUseTokenService($this->paysafeApiClient);
         }
 
@@ -224,11 +243,58 @@ abstract class PaysafeServices
      */
     public function refundService(): RefundService
     {
-        if ($this->refundService == null) {
+        if ($this->refundService === null) {
             $this->refundService = new RefundService($this->paysafeApiClient);
         }
 
         return $this->refundService;
     }
 
+    /**
+     * Returns the MandateService instance.
+     * *
+     * @return MandateService
+     */
+    public function mandateService(): MandateService
+    {
+        if ($this->mandateService === null) {
+            $this->mandateService = new MandateService($this->paysafeApiClient);
+        }
+
+        return $this->mandateService;
+    }
+
+    /**
+     * Returns the RawRequestService instance.
+     * *
+     * @return RawRequestService
+     */
+    public function rawRequestService(): RawRequestService
+    {
+        if ($this->rawRequestService === null) {
+            $this->rawRequestService = new RawRequestService(
+                $this->paysafeApiClient,
+                $this->logger ?? PaysafeApiBase::createDefaultLogger()
+            );
+        }
+
+        return $this->rawRequestService;
+    }
+
+    /**
+     * Returns the Webhook handler instance.
+     * *
+     * @return WebhookHandler
+     */
+    public function webhookHandler(): WebhookHandler
+    {
+        if ($this->webhookHandler === null) {
+            $this->webhookHandler = new WebhookHandler(
+                $this->logger ?? PaysafeApiBase::createDefaultLogger(),
+                $this->loggingLevel
+            );
+        }
+
+        return $this->webhookHandler;
+    }
 }

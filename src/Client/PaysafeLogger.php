@@ -1,19 +1,23 @@
 <?php
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Client;
 
 use Monolog\Handler\HandlerInterface;
 use Monolog\Logger;
 use Paysafe\PhpSdk\Exception\ExceptionBuilder;
+use Psr\Log\LoggerInterface;
 
 class PaysafeLogger
 {
-    private static ?Logger $logger = null;
+    private static ?LoggerInterface $logger = null;
 
     /**
-     * @return Logger
+     * @return LoggerInterface
      */
-    public static function getLogger(): Logger
+    public static function getLogger(): LoggerInterface
     {
         if (!isset(self::$logger)) {
             self::$logger = new Logger(ExceptionBuilder::class);
@@ -23,7 +27,19 @@ class PaysafeLogger
     }
 
     /**
-     * Replace the logger handler
+     * Set a custom PSR LoggerInterface type logger
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return void
+     */
+    public static function setLogger(LoggerInterface $logger): void
+    {
+        self::$logger = $logger;
+    }
+
+    /**
+     * Replace the logger handler in a Monolog Logger
      *
      * @param HandlerInterface $handler
      *
@@ -31,6 +47,12 @@ class PaysafeLogger
      */
     public static function addLoggerHandler(HandlerInterface $handler): void
     {
-        self::getLogger()->pushHandler($handler);
+        $logger = self::getLogger();
+        if (!$logger instanceof Logger) {
+            throw new \LogicException(
+                'Cannot add a Monolog handler because a custom logger has been set. Use setLogger() to replace it instead.'
+            );
+        }
+        $logger->pushHandler($handler);
     }
 }

@@ -1,0 +1,22 @@
+{
+  "merchantRefNum": "replace_with_dynamic_value",
+  "amount": 500,
+  "currencyCode": "USD",
+  "paymentType": "CARD",
+  "card": {
+    "cardNum": "4111111111111111",
+    "cvv": "123",
+    "cardExpiry": {
+      "month": 10,
+      "year": 2025
+    }
+  },
+  "billingDetails": {
+    "street": "TEST",
+    "city": "CA",
+    "zip": "12345",
+    "state": "CA",
+    "country": "US"
+  },
+  "description": "Winning payment from Loto 649"
+}

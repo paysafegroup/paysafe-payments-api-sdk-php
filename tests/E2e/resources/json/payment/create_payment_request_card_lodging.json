@@ -1,0 +1,22 @@
+{
+  "amount": 500,
+  "currencyCode": "USD",
+  "dupCheck": true,
+  "settleWithAuth": true,
+  "customerIp": "172.0.0.1",
+  "description": "Hotel",
+  "lodgingDetails": {
+    "hotelFolioNumber": "Customer Folio Number",
+    "checkInDate": "2028-12-15",
+    "checkOutDate": "2028-12-20",
+    "customerServicePhone": "8311234567",
+    "propertyLocalPhone": "8311234567",
+    "extraCharges": [
+      "RESTAURANT"
+    ],
+    "roomRate": 200,
+    "programCode": "LODGING",
+    "numberOfNights": 5,
+    "isFireSafetyActCompliant": true
+  }
+}

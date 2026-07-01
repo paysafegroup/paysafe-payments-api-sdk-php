@@ -1,0 +1,61 @@
+{
+  "id": "29441aa1-dc3d-43a8-8a6e-6557b1cd17d4",
+  "paymentType": "PAYSAFECARD",
+  "paymentHandleToken": "PHtJCQfFEDJtLUTQ",
+  "merchantRefNum": "merchant-ref-paysafecard-001",
+  "currencyCode": "USD",
+  "txnTime": "2023-06-23T11:18:43Z",
+  "billingDetails": {
+    "street": "100Queen",
+    "street2": "Unit201",
+    "city": "Toronto",
+    "zip": "M5H2N2",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "INITIATED",
+  "links": [
+    {
+      "rel": "redirect_payment",
+      "href": "https://api.qa.paysafe.com/alternatepayments/v1/redirect?accountId=1020576590_USD&paymentHandleId=29441aa1-dc3d-43a8-8a6e-6557b1cd17d4&token=eyJhbGciOiJIUzI1NiJ9"
+    }
+  ],
+  "liveMode": false,
+  "usage": "SINGLE_USE",
+  "action": "REDIRECT",
+  "executionMode": "SYNCHRONOUS",
+  "amount": 500,
+  "merchantDescriptor": {
+    "dynamicDescriptor": "OnlineStore",
+    "phone": "12345678"
+  },
+  "timeToLiveSeconds": 599,
+  "gatewayResponse": {
+    "processor": "PAYSAFECARD",
+    "id": "a3339473-db83-4b43-9af7-d7eaa3557d8c"
+  },
+  "returnLinks": [
+    {
+      "rel": "on_completed",
+      "href": "https://usgaminggamblig.com/payment/return/success"
+    },
+    {
+      "rel": "default",
+      "href": "https://usgaminggamblig.com/payment/"
+    },
+    {
+      "rel": "on_failed",
+      "href": "https://usgaminggamblig.com/payment/return/failed"
+    }
+  ],
+  "transactionType": "PAYMENT",
+  "gatewayReconciliationId": "a3339473-db83-4b43-9af7-d7eaa3557d8c",
+  "updatedTime": "2023-06-23T11:18:44Z",
+  "statusTime": "2023-06-23T11:18:44Z",
+  "paysafecard": {
+    "consumerId": "merchantclientid",
+    "minAgeRestriction": 18,
+    "kycLevelRestriction": "SIMPLE",
+    "countryRestriction": "DE"
+  }
+}

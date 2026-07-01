@@ -14,13 +14,18 @@
          verbose="true">
     <testsuites>
         <!-- Service Unit Tests Suite -->
-        <testsuite name="ServiceUnit">
+        <testsuite name="Service">
             <directory suffix="Test.php">tests/Service</directory>
         </testsuite>
 
         <!-- Unit Tests Suite -->
         <testsuite name="Unit">
             <directory suffix="Test.php">tests/Unit</directory>
+        </testsuite>
+
+        <!-- Webhook Tests Suite -->
+        <testsuite name="Webhook">
+            <directory suffix="Test.php">tests/Webhook</directory>
         </testsuite>
     </testsuites>
 

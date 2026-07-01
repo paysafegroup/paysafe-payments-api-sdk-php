@@ -1,0 +1,19 @@
+{
+  "amount": 500,
+  "currencyCode": "USD",
+  "dupCheck": false,
+  "settleWithAuth": false,
+  "customerIp": "111.111.111.111",
+  "description": "Magazine subscription",
+  "keywords": [
+    "SILVER"
+  ],
+  "acquirerData": {
+    "code": "VAN",
+    "discretionaryData": {
+      "field1": "TXN101212",
+      "field2": "999888",
+      "field3": "123456"
+    }
+  }
+}

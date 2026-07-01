@@ -1,14 +1,14 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Exception\Error;
 
-use Paysafe\PhpSdk\Model\BaseModel;
 
 /**
  * Contains error info for the given field.
  */
-class FieldError extends BaseModel implements \Serializable
+class FieldError implements \Serializable
 {
 
     /**
@@ -26,8 +26,6 @@ class FieldError extends BaseModel implements \Serializable
      */
     public function __construct(string $field = null, string $error = null)
     {
-        parent::__construct();
-
         $this->field = $field;
         $this->error = $error;
     }
@@ -131,5 +129,22 @@ class FieldError extends BaseModel implements \Serializable
     public function unserialize($data): void
     {
         list($this->field, $this->error) = unserialize($data);
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     *
+     * @param mixed $o
+     *
+     * @return string
+     */
+    protected function toIndentedString($o): string
+    {
+        if ($o === null) {
+            return "null";
+        }
+
+        return str_replace("\n", "\n    ", (string)$o);
     }
 }

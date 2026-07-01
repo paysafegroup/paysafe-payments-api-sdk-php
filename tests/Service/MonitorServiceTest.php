@@ -7,7 +7,7 @@ use GuzzleHttp\Psr7\Response;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Service\MonitorService;
 
-class MonitorServiceTest extends BasePaysafeTest
+class MonitorServiceTest extends BasePaysafeService
 {
     const MONITOR_ENDPOINT = "/paymenthub/v1/monitor";
 
@@ -38,7 +38,7 @@ class MonitorServiceTest extends BasePaysafeTest
                      [
                          'Content-Type' => 'application/json',
                      ],
-                     self::MONITOR_STATUS_READY
+                     $this->get_resource_json('monitor/verify_that_service_is_accessible_response.json')
                  )
              );
          $replaceService = function() use ($mockCore) {

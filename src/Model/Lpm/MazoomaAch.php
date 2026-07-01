@@ -1,59 +1,66 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Lpm;
-
 use Paysafe\PhpSdk\Model\BaseModel;
 
+
+/**
+ * MazoomaAch.
+ */
 class MazoomaAch extends BaseModel
 {
-	private string $paymentHandleToken;
+    /**
+     * This is a unique identifier for each user bank account which is saved at Mazooma end
+     */
+    private ?string $paymentHandleToken = null;
 
-	/**
-	 * Builder function for paymentHandleToken
-	 * 
-	 * @param string $paymentHandleToken
-	 * 
-	 * @return $this
-	 */
-	public function paymentHandleToken(string $paymentHandleToken): self
-	{
-		$this->setPaymentHandleToken($paymentHandleToken);
-		
-		return $this;
-	}
+    /**
+     * Builder function for paymentHandleToken
+     *
+     * @param string $paymentHandleToken
+     *
+     * @return $this
+     */
+    public function paymentHandleToken(?string $paymentHandleToken): self
+    {
+        $this->setPaymentHandleToken($paymentHandleToken);
 
-	/**
-	 * Setter function for paymentHandleToken
-	 * 
-	 * @param string $paymentHandleToken
-	 * 
-	 * @return void
-	 */
-	public function setPaymentHandleToken(string $paymentHandleToken): void
-	{
-		$this->paymentHandleToken = $paymentHandleToken;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for paymentHandleToken
-	 * 
-	 * @return string
-	 */
-	public function getPaymentHandleToken(): string
-	{
-		return $this->paymentHandleToken;
-	}
+    /**
+     * Setter function for paymentHandleToken
+     *
+     * @param string $paymentHandleToken
+     *
+     * @return void
+     */
+    public function setPaymentHandleToken(?string $paymentHandleToken): void
+    {
+        $this->paymentHandleToken = $paymentHandleToken;
+    }
 
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class MazoomaAch {" . PHP_EOL
-			. "    paymentHandleToken: " . $this->toIndentedString($this->paymentHandleToken) . PHP_EOL
-			. "}";
-	}
+    /**
+     * Getter function for paymentHandleToken
+     *
+     * @return ?string
+     */
+    public function getPaymentHandleToken(): ?string
+    {
+        return $this->paymentHandleToken;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class MazoomaAch {" . PHP_EOL
+            . "    paymentHandleToken: " . $this->toIndentedString($this->paymentHandleToken ?? null) . PHP_EOL
+            . "}";
+    }
 }

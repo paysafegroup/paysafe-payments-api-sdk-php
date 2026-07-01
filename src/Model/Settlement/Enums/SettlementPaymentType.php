@@ -1,5 +1,7 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Settlement\Enums;
 
@@ -8,11 +10,9 @@ namespace Paysafe\PhpSdk\Model\Settlement\Enums;
  */
 class SettlementPaymentType
 {
-	const CARD = "CARD";
-	const PAYSAFECASH = "PAYSAFECASH";
-	const PAYSAFECARD = "PAYSAFECARD";
-	const PAYPAL = "PAYPAL";
-	const INTERAC = "INTERAC";
-
-
+    const CARD = 'CARD';
+    const PAYSAFECASH = 'PAYSAFECASH';
+    const PAYSAFECARD = 'PAYSAFECARD';
+    const PAYPAL = 'PAYPAL';
+    const INTERAC = 'INTERAC';
 }

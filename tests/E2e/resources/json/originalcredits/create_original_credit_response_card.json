@@ -1,0 +1,17 @@
+{
+  "id": "replace_with_dynamic_value",
+  "merchantRefNum": "replace_with_dynamic_value",
+  "amount": 500,
+  "currencyCode": "USD",
+  "txnTime": "replace_with_dynamic_value",
+  "paymentType": "CARD",
+  "status": "PENDING",
+  "billingDetails": {
+    "street": "TEST",
+    "city": "CA",
+    "zip": "12345",
+    "state": "CA",
+    "country": "US"
+  },
+  "description": "Winning payment from Loto 649"
+}

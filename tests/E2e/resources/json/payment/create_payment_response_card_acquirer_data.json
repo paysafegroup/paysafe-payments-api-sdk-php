@@ -1,0 +1,57 @@
+{
+  "id": "ac71f5c7-da09-405b-b2b6-a7d129453bc2",
+  "paymentType": "CARD",
+  "paymentHandleToken": "SCClXrpOdU6PPZsE",
+  "merchantRefNum": "100001216",
+  "currencyCode": "USD",
+  "settleWithAuth": false,
+  "txnTime": "2025-01-28T11:16:06Z",
+  "billingDetails": {
+    "street": "abcd",
+    "city": "defg",
+    "zip": "94404",
+    "state": "AL",
+    "country": "US"
+  },
+  "customerIp": "111.111.111.111",
+  "status": "COMPLETED",
+  "amount": 500,
+  "preAuth": false,
+  "description": "Magazine subscription",
+  "availableToSettle": 500,
+  "gatewayResponse": {
+    "code": "NAG",
+    "responseCode": "00",
+    "responseCodeDescription": "Approved",
+    "authCode": "225144",
+    "avsResponse": "NOT_PROCESSED",
+    "cvvVerification": "MATCH",
+    "serializable": true
+  },
+  "keywords": [
+    "SILVER"
+  ],
+  "merchantDescriptor": {
+    "dynamicDescriptor": "SDK-Test"
+  },
+  "acquirerData": {
+    "code": "VAN",
+    "discretionaryData": {
+      "field1": "TXN101212",
+      "field2": "999888",
+      "field3": "123456"
+    }
+  },
+  "card": {
+    "cardExpiry": {
+      "month": 10,
+      "year": 2028
+    },
+    "holderName": "Dilip",
+    "cardType": "VI",
+    "cardBin": "400000",
+    "lastDigits": "2719",
+    "cardCategory": "CREDIT",
+    "issuingCountry": "US"
+  }
+}

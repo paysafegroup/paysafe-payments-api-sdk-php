@@ -49,7 +49,7 @@ class AutomaticRetryTest extends TestCase
 
         // Assertions to verify that request was eventually successful
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Success', (string)$response->getBody());
+        $this->assertEquals('Success', (string)$response->getBody()->getContents());
     }
 
     /**

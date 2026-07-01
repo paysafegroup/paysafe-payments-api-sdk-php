@@ -1,0 +1,23 @@
+{
+  "payload": {
+    "accountId": "123456",
+    "id": "99d13831-253d-42fd-751d-45fdaf8f4239",
+    "merchantRefNum": "merchant123",
+    "amount": 500,
+    "currencyCode": "USD",
+    "status": "COMPLETED",
+    "paymentType": "CARD",
+    "txnTime": "2025-08-29T09:12:20.744",
+    "paymentHandleToken": "token123"
+  },
+  "attemptNumber": 1,
+  "type": "PAYMENT_HANDLE",
+  "resourceId": "99d13831-253d-42fd-751d-45fdaf8f4239",
+  "links": [
+    {
+      "rel": "payment_handle"
+    }
+  ],
+  "eventDate": "2026-04-28T12:41:05Z",
+  "eventName": "PAYMENT_HANDLE_COMPLETED"
+}

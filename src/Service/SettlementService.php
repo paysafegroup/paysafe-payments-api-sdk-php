@@ -1,6 +1,7 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Service;
 
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
@@ -8,10 +9,10 @@ use Paysafe\PhpSdk\Client\RequestOptions;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
 use Paysafe\PhpSdk\Model\Common\Cancel\CancelResponse;
-use Paysafe\PhpSdk\Model\Settlement\SettlementList;
-use Paysafe\PhpSdk\Service\Interfaces\SettlementServiceInterface;
 use Paysafe\PhpSdk\Model\Settlement\Settlement;
+use Paysafe\PhpSdk\Model\Settlement\SettlementList;
 use Paysafe\PhpSdk\Model\Settlement\SettlementRequest;
+use Paysafe\PhpSdk\Service\Interfaces\SettlementServiceInterface;
 
 /**
  * Service for managing settlements.

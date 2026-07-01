@@ -5,7 +5,6 @@ namespace Service;
 
 use GuzzleHttp\Psr7\Response;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
-use Paysafe\PhpSdk\Exception\ApiConnectionException;
 use Paysafe\PhpSdk\Exception\ApiException;
 use Paysafe\PhpSdk\Exception\InvalidCredentialsException;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
@@ -13,22 +12,20 @@ use Paysafe\PhpSdk\Exception\RequestDeclinedException;
 use Paysafe\PhpSdk\Exception\UnauthorizedException;
 use Paysafe\PhpSdk\Model\Card\Card;
 use Paysafe\PhpSdk\Model\Card\CardExpiry;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\OrderItemDetails;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\PaymentAccountDetails;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\PurchasedGiftCardDetails;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\ShippingDetailsUsage;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\ThreeDs;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\UserAccountDetails;
-use Paysafe\PhpSdk\Model\Card\ThreeDs\UserLogin;
+use Paysafe\PhpSdk\Model\Card\Threeds\OrderItemDetails;
+use Paysafe\PhpSdk\Model\Card\Threeds\PaymentAccountDetails;
+use Paysafe\PhpSdk\Model\Card\Threeds\PurchasedGiftCardDetails;
+use Paysafe\PhpSdk\Model\Card\Threeds\ShippingDetailsUsage;
+use Paysafe\PhpSdk\Model\Card\Threeds\ThreeDs;
+use Paysafe\PhpSdk\Model\Card\Threeds\UserAccountDetails;
+use Paysafe\PhpSdk\Model\Card\Threeds\UserLogin;
 use Paysafe\PhpSdk\Model\Common\BillingDetails;
-use Paysafe\PhpSdk\Model\Common\Meta;
 use Paysafe\PhpSdk\Model\Common\ReturnLink;
 use Paysafe\PhpSdk\Model\PaymentHandle\PaymentHandle;
-use Paysafe\PhpSdk\Model\PaymentHandle\PaymentHandleList;
 use Paysafe\PhpSdk\Model\PaymentHandle\PaymentHandleRequest;
 use Paysafe\PhpSdk\Service\PaymentHandleService;
 
-class PaymentHandleServiceTest extends BasePaysafeTest
+class PaymentHandleServiceTest extends BasePaysafeService
 {
     const PAYMENT_HANDLES_ENDPOINT = "/paymenthub/v1/paymenthandles";
     const MERCHANT_REF_NUM = "rzkPbqSIHGGOmja8jf2tCKIHg";
@@ -48,12 +45,12 @@ class PaymentHandleServiceTest extends BasePaysafeTest
      * @covers \Paysafe\PhpSdk\Service\PaymentHandleService::createPaymentHandle
      *
      * @return void
+     *
+     * @throws PaysafeSdkException
      */
     public function testCreatePaymentHandle_isSuccessful(): void
     {
         $paymentHandleService = clone $this->paymentHandleService;
-
-        $mockedResponse = $this->mockCreatePaymentHandleResponse();
 
         $mockCore = $this->createMock(PaysafeApiClient::class);
         $mockCore->method('executePost')
@@ -63,7 +60,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $mockedResponse
+                    $this->get_resource_json('paymenthandle/create_payment_handle_card_3ds_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -72,32 +69,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
         $doReplaceService = $replaceService->bindTo($paymentHandleService, PaymentHandleService::class);
         $doReplaceService();
 
-        $paymentHandleRequest = new PaymentHandleRequest();
-        $paymentHandleRequest->setMerchantRefNum(self::MERCHANT_REF_NUM);
-        $paymentHandleRequest->setTransactionType("PAYMENT");
-        $paymentHandleRequest->setThreeDs($this->createThreeDsObject());
-        $cardExpiry = new CardExpiry();
-        $cardExpiry->setMonth("10");
-        $cardExpiry->setYear("10");
-        $card = new Card();
-        $card->setCardNum("4000000000001026");
-        $card->setCardExpiry($cardExpiry);
-        $card->setCvv("111");
-        $card->setIssuingCountry("US");
-        $paymentHandleRequest->setCard($card);
-        $paymentHandleRequest->setAccountId("1009688230");
-        $paymentHandleRequest->setPaymentType('CARD');
-        $paymentHandleRequest->setAmount(500);
-        $paymentHandleRequest->setCurrencyCode('USD');
-        $billingDetails = new BillingDetails();
-        $billingDetails->setNickName("Home");
-        $billingDetails->setStreet("Street name");
-        $billingDetails->setCity("City Name");
-        $billingDetails->setState("AL");
-        $billingDetails->setCountry("US");
-        $billingDetails->setZip("94404");
-        $paymentHandleRequest->setBillingDetails($billingDetails);
-        $paymentHandleRequest->setReturnLinks($this->createReturnLinksList());
+        $paymentHandleRequest = $this->buildPaymentHandleRequest();
 
         $response = $paymentHandleService->createPaymentHandle($paymentHandleRequest);
         $this->assertNotNull($response);
@@ -122,7 +94,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -165,7 +137,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INTERNAL_SERVER_ERROR_RESPONSE
+                        $this->get_resource_json('error/500_internal_server_error_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -206,7 +178,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::REQUEST_DECLINED_RESPONSE
+                        $this->get_resource_json('error/402_request_declined_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -238,8 +210,8 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                 "Refer to Issuer",
                 $paymentHandle->getGatewayResponse()->getResponseCodeDescription()
             );
-            $this->assertEquals("random-uuid", $paymentHandle->getId());
-            $this->assertEquals("123456", $paymentHandle->getMerchantRefNum());
+            $this->assertEquals("550e8400-e29b-41d4-a716-446655440000", $paymentHandle->getId());
+            $this->assertEquals("12345", $paymentHandle->getMerchantRefNum());
 
             $this->assertEquals("ALTERNATE-PAYMENTS-GATEWAY-4", $paymentHandle->getError()->getCode());
             $this->assertEquals("Transaction declined", $paymentHandle->getError()->getMessage());
@@ -275,7 +247,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -317,7 +289,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetPaymentHandleBymerchantRefNum()
+                    $this->get_resource_json('paymenthandle/get_payment_handle_using_merchant_ref_number_card_response.json')
                 )
             );
         $replaceService = function () use ($mockCore) {
@@ -353,7 +325,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -398,7 +370,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -443,7 +415,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -487,7 +459,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetPaymentHandleByIdResponse()
+                    $this->get_resource_json('paymenthandle/get_payment_handle_by_id_card_response.json')
                 )
             );
         $replaceService = function () use ($mockCore) {
@@ -520,7 +492,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -565,7 +537,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -610,7 +582,7 @@ class PaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -726,295 +698,37 @@ class PaymentHandleServiceTest extends BasePaysafeTest
     }
 
     /**
-     * @return string
+     * @return PaymentHandleRequest
      */
-    private function mockCreatePaymentHandleResponse(): string
+    private function buildPaymentHandleRequest(): PaymentHandleRequest
     {
-        return "{\n" .
-        "  \"id\": \"b5c30668-5724-4499-9b9a-c326c943d31c\",\n" .
-        "  \"accountId\": \"1009688230\",\n" .
-        "  \"paymentType\": \"CARD\",\n" .
-        "  \"paymentHandleToken\": \"SC2INoYvSe2MzQuB\",\n" .
-        "  \"merchantRefNum\": \"fc5b62df1202e491475d\",\n" .
-        "  \"currencyCode\": \"USD\",\n" .
-        "  \"txnTime\": \"2023-01-27T10:14:26Z\",\n" .
-        "  \"billingDetails\": {\n" .
-        "    \"nickName\": \"Home\",\n" .
-        "    \"street\": \"TEST\",\n" .
-        "    \"city\": \"CA\",\n" .
-        "    \"zip\": \"94404\",\n" .
-        "    \"state\": \"CA\",\n" .
-        "    \"country\": \"US\"\n" .
-        "  },\n" .
-        "  \"customerIp\": \"10.195.93.117\",\n" .
-        "  \"status\": \"PAYABLE\",\n" .
-        "  \"amount\": 500,\n" .
-        "  \"action\": \"NONE\",\n" .
-        "  \"usage\": \"SINGLE_USE\",\n" .
-        "  \"timeToLiveSeconds\": 299,\n" .
-        "  \"transactionType\": \"PAYMENT\",\n" .
-        "  \"executionMode\": \"SYNCHRONOUS\",\n" .
-        "  \"card\": {\n" .
-        "    \"cardExpiry\": {\n" .
-        "      \"month\": \"10\",\n" .
-        "      \"year\": \"2025\"\n" .
-        "    },\n" .
-        "    \"holderName\": \"Dilip\",\n" .
-        "    \"cardType\": \"VI\",\n" .
-        "    \"cardBin\": \"400000\",\n" .
-        "    \"lastDigits\": \"1026\",\n" .
-        "    \"cardCategory\": \"CREDIT\",\n" .
-        "    \"issuingCountry\": \"US\"\n" .
-        "  },\n" .
-        "  \"returnLinks\": [\n" .
-        "    {\n" .
-        "      \"method\": \"GET\",\n" .
-        "      \"rel\": \"default\",\n" .
-        "      \"href\": \"https://usgaminggamblig.com/payment/return/\"\n" .
-        "    },\n" .
-        "    {\n" .
-        "      \"method\": \"GET\",\n" .
-        "      \"rel\": \"on_completed\",\n" .
-        "      \"href\": \"https://usgaminggamblig.com/payment/return/success\"\n" .
-        "    },\n" .
-        "    {\n" .
-        "      \"method\": \"GET\",\n" .
-        "      \"rel\": \"on_failed\",\n" .
-        "      \"href\": \"https://usgaminggamblig.com/payment/return/failed\"\n" .
-        "    }\n" .
-        "  ],\n" .
-        "  \"skip3ds\": false,\n" .
-        "  \"threeDs\": {\n" .
-        "    \"merchantUrl\": \"https://api.qa.paysafe.com/checkout/v2/index.html#/desktop\",\n" .
-        "    \"deviceChannel\": \"BROWSER\",\n" .
-        "    \"requestorChallengePreference\": \"NO_PREFERENCE\",\n" .
-        "    \"messageCategory\": \"PAYMENT\",\n" .
-        "    \"transactionIntent\": \"CHECK_ACCEPTANCE\",\n" .
-        "    \"authenticationPurpose\": \"PAYMENT_TRANSACTION\",\n" .
-        "    \"orderItemDetails\": {\n" .
-        "      \"preOrderItemAvailabilityDate\": \"2014-01-26\",\n" .
-        "      \"preOrderPurchaseIndicator\": \"MERCHANDISE_AVAILABLE\",\n" .
-        "      \"reorderItemsIndicator\": \"FIRST_TIME_ORDER\",\n" .
-        "      \"shippingIndicator\": \"SHIP_TO_BILLING_ADDRESS\"\n" .
-        "    },\n" .
-        "    \"purchasedGiftCardDetails\": {\n" .
-        "      \"amount\": 1234,\n" .
-        "      \"count\": 2,\n" .
-        "      \"currency\": \"USD\"\n" .
-        "    },\n" .
-        "    \"userAccountDetails\": {\n" .
-        "      \"addCardAttemptsForLastDay\": 1,\n" .
-        "      \"changedDate\": \"2010-01-26\",\n" .
-        "      \"changedRange\": \"DURING_TRANSACTION\",\n" .
-        "      \"createdDate\": \"2010-01-26\",\n" .
-        "      \"createdRange\": \"NO_ACCOUNT\",\n" .
-        "      \"passwordChangedDate\": \"2012-01-26\",\n" .
-        "      \"passwordChangedRange\": \"NO_CHANGE\",\n" .
-        "      \"suspiciousAccountActivity\": true,\n" .
-        "      \"totalPurchasesSixMonthCount\": 1,\n" .
-        "      \"transactionCountForPreviousDay\": 1,\n" .
-        "      \"transactionCountForPreviousYear\": 3,\n" .
-        "      \"shippingDetailsUsage\": {\n" .
-        "        \"cardHolderNameMatch\": true,\n" .
-        "        \"initialUsageDate\": \"2014-01-26\",\n" .
-        "        \"initialUsageRange\": \"CURRENT_TRANSACTION\"\n" .
-        "      },\n" .
-        "      \"userLogin\": {\n" .
-        "        \"authenticationMethod\": \"NO_LOGIN\",\n" .
-        "        \"data\": \"Some up to 2048 bytes undefined data\",\n" .
-        "        \"time\": \"2014-01-26T10:32:28Z\"\n" .
-        "      },\n" .
-        "      \"paymentAccountDetails\": {\n" .
-        "        \"createdRange\": \"NO_ACCOUNT\",\n" .
-        "        \"createdDate\": \"2010-01-26\"\n" .
-        "      }\n" .
-        "    }\n" .
-        "  }\n" .
-        "}";
-    }
+        $paymentHandleRequest = new PaymentHandleRequest();
+        $paymentHandleRequest->setMerchantRefNum(self::MERCHANT_REF_NUM);
+        $paymentHandleRequest->setTransactionType("PAYMENT");
+        $paymentHandleRequest->setThreeDs($this->createThreeDsObject());
+        $cardExpiry = new CardExpiry();
+        $cardExpiry->setMonth(10);
+        $cardExpiry->setYear(10);
+        $card = new Card();
+        $card->setCardNum("4000000000001026");
+        $card->setCardExpiry($cardExpiry);
+        $card->setCvv("111");
+        $card->setIssuingCountry("US");
+        $paymentHandleRequest->setCard($card);
+        $paymentHandleRequest->setAccountId("1009688230");
+        $paymentHandleRequest->setPaymentType('CARD');
+        $paymentHandleRequest->setAmount(500);
+        $paymentHandleRequest->setCurrencyCode('USD');
+        $billingDetails = new BillingDetails();
+        $billingDetails->setNickName("Home");
+        $billingDetails->setStreet("Street name");
+        $billingDetails->setCity("City Name");
+        $billingDetails->setState("AL");
+        $billingDetails->setCountry("US");
+        $billingDetails->setZip("94404");
+        $paymentHandleRequest->setBillingDetails($billingDetails);
+        $paymentHandleRequest->setReturnLinks($this->createReturnLinksList());
 
-    /**
-     * @return string
-     */
-    private function mockGetPaymentHandleBymerchantRefNum(): string
-    {
-        return "{\n" .
-        "    \"meta\": {\n" .
-        "        \"numberOfRecords\": 1,\n" .
-        "        \"limit\": 10,\n" .
-        "        \"page\": 1\n" .
-        "    },\n" .
-        "    \"paymentHandles\": [\n" .
-        "        {\n" .
-        "            \"id\": \"e05205d9-93f3-4c20-9c2a-b6b8dc74cf17\",\n" .
-        "            \"amount\": 1054,\n" .
-        "            \"merchantRefNum\": \"rzkPbqSIHGGOmja8jf2tCKIHg\",\n" .
-        "            \"action\": \"NONE\",\n" .
-        "            \"currencyCode\": \"USD\",\n" .
-        "            \"usage\": \"SINGLE_USE\",\n" .
-        "            \"status\": \"COMPLETED\",\n" .
-        "            \"timeToLiveSeconds\": 0,\n" .
-        "            \"transactionType\": \"PAYMENT\",\n" .
-        "            \"paymentType\": \"CARD\",\n" .
-        "            \"executionMode\": \"SYNCHRONOUS\",\n" .
-        "            \"customerIp\": \"10.195.2.134\",\n" .
-        "            \"paymentHandleToken\": \"SCV2sq8UR05XVVqY\",\n" .
-        "            \"paymentHandleTokenFrom\": \"SCsDi8oYYlKeeSQm\",\n" .
-        "            \"profile\": {\n" .
-        "                \"locale\": \"en\",\n" .
-        "                \"firstName\": \"John\",\n" .
-        "                \"lastName\": \"Doe\",\n" .
-        "                \"email\": \"adrian.parvan@paysafe.com\"\n" .
-        "            },\n" .
-        "            \"billingDetails\": {\n" .
-        "                \"street\": \"Airport Terminal\",\n" .
-        "                \"city\": \"Columbus\",\n" .
-        "                \"country\": \"US\",\n" .
-        "                \"state\": \"OH\",\n" .
-        "                \"zip\": \"43219\"\n" .
-        "            },\n" .
-        "            \"card\": {\n" .
-        "                \"cardExpiry\": {\n" .
-        "                    \"month\": \"12\",\n" .
-        "                    \"year\": \"2026\"\n" .
-        "                },\n" .
-        "                \"holderName\": \"John Doe\",\n" .
-        "                \"status\": \"ACTIVE\",\n" .
-        "                \"cardType\": \"VI\",\n" .
-        "                \"cardBin\": \"400000\",\n" .
-        "                \"lastDigits\": \"2503\",\n" .
-        "                \"cardCategory\": \"CREDIT\",\n" .
-        "                \"issuingCountry\": \"US\",\n" .
-        "                \"networkToken\": {\n" .
-        "                    \"bin\": \"400000\",\n" .
-        "                    \"lastDigits\": \"2503\",\n" .
-        "                    \"status\": \"INACTIVE\",\n" .
-        "                    \"expiry\": {\n" .
-        "                        \"month\": \"12\",\n" .
-        "                        \"year\": \"2026\"\n" .
-        "                    },\n" .
-        "                    \"cardArt\": {\n" .
-        "                        \"cardArtUrl\": " .
-        "\"https://hosted.qa.ies.paysafe.cloud/networktoken/card-art/visa/22af01f2bdf445e497895d502dd1f1ae.png\",\n" .
-        "                        \"isCobranded\": false\n" .
-        "                    }\n" .
-        "                },\n" .
-        "                \"tokenType\": \"NETWORK_TOKEN\"\n" .
-        "            },\n" .
-        "            \"returnLinks\": [\n" .
-        "                {\n" .
-        "                    \"method\": \"GET\",\n" .
-        "                    \"rel\": \"on_completed\",\n" .
-        "                    \"href\": " .
-            "\"https://hosted.qa.ies.paysafe.cloud/checkout/v2/pages/redirect-success.html?shouldAutoClose=false\"\n" .
-        "                },\n" .
-        "                {\n" .
-        "                    \"method\": \"GET\",\n" .
-        "                    \"rel\": \"on_failed\",\n" .
-        "                    \"href\": ".
-            "\"https://hosted.qa.ies.paysafe.cloud/checkout/v2/pages/redirect-error.html?shouldAutoClose=false\"\n" .
-        "                },\n" .
-        "                {\n" .
-        "                    \"method\": \"GET\",\n" .
-        "                    \"rel\": \"default\",\n" .
-        "                    \"href\": ".
-            "\"https://hosted.qa.ies.paysafe.cloud/checkout/v2/pages/redirect-success.html?shouldAutoClose=false\"\n" .
-        "                }\n" .
-        "            ],\n" .
-        "            \"txnTime\": \"2024-12-04T14:25:03Z\",\n" .
-        "            \"skip3ds\": false\n" .
-        "        }\n" .
-        "    ]\n" .
-        "}";
+        return $paymentHandleRequest;
     }
-
-    /**
-     * @return string
-     */
-    private function mockGetPaymentHandleByIdResponse(): string
-    {
-        return "{\n" .
-        "    \"id\": \"e05205d9-93f3-4c20-9c2a-b6b8dc74cf17\",\n" .
-        "    \"paymentType\": \"CARD\",\n" .
-        "    \"paymentHandleToken\": \"SCV2sq8UR05XVVqY\",\n" .
-        "    \"merchantRefNum\": \"rzkPbqSIHGGOmja8jf2tCKIHg\",\n" .
-        "    \"currencyCode\": \"USD\",\n" .
-        "    \"txnTime\": \"2024-12-04T14:25:03Z\",\n" .
-        "    \"billingDetails\": {\n" .
-        "        \"street\": \"Airport Terminal\",\n" .
-        "        \"city\": \"Columbus\",\n" .
-        "        \"zip\": \"43219\",\n" .
-        "        \"state\": \"OH\",\n" .
-        "        \"country\": \"US\"\n" .
-        "    },\n" .
-        "    \"customerIp\": \"10.195.2.134\",\n" .
-        "    \"status\": \"COMPLETED\",\n" .
-        "    \"amount\": 1054,\n" .
-        "    \"action\": \"NONE\",\n" .
-        "    \"usage\": \"SINGLE_USE\",\n" .
-        "    \"timeToLiveSeconds\": 0,\n" .
-        "    \"transactionType\": \"PAYMENT\",\n" .
-        "    \"executionMode\": \"SYNCHRONOUS\",\n" .
-        "    \"paymentHandleTokenFrom\": \"SCsDi8oYYlKeeSQm\",\n" .
-        "    \"profile\": {\n" .
-        "        \"locale\": \"en\",\n" .
-        "        \"firstName\": \"John\",\n" .
-        "        \"lastName\": \"Doe\",\n" .
-        "        \"email\": \"adrian.parvan@paysafe.com\"\n" .
-        "    },\n" .
-        "    \"card\": {\n" .
-        "        \"cardExpiry\": {\n" .
-        "            \"month\": \"12\",\n" .
-        "            \"year\": \"2026\"\n" .
-        "        },\n" .
-        "        \"holderName\": \"John Doe\",\n" .
-        "        \"status\": \"ACTIVE\",\n" .
-        "        \"cardType\": \"VI\",\n" .
-        "        \"cardBin\": \"400000\",\n" .
-        "        \"lastDigits\": \"2503\",\n" .
-        "        \"cardCategory\": \"CREDIT\",\n" .
-        "        \"issuingCountry\": \"US\",\n" .
-        "        \"networkToken\": {\n" .
-        "            \"bin\": \"400000\",\n" .
-        "            \"lastDigits\": \"2503\",\n" .
-        "            \"status\": \"INACTIVE\",\n" .
-        "            \"expiry\": {\n" .
-        "                \"month\": \"12\",\n" .
-        "                \"year\": \"2026\"\n" .
-        "            },\n" .
-        "            \"cardArt\": {\n" .
-        "                \"cardArtUrl\": ".
-            "\"https://hosted.qa.ies.paysafe.cloud/networktoken/card-art/visa/22a...png\",\n" .
-        "                \"isCobranded\": false\n" .
-        "            }\n" .
-        "        },\n" .
-        "        \"tokenType\": \"NETWORK_TOKEN\"\n" .
-        "    },\n" .
-        "    \"returnLinks\": [\n" .
-        "        {\n" .
-        "            \"method\": \"GET\",\n" .
-        "            \"rel\": \"on_completed\",\n" .
-        "            \"href\": ".
-            "\"https://hosted.qa.ies.paysafe.cloud/checkout/v2/pages/redirect-success.html?shouldAutoClose=false\"\n" .
-        "        },\n" .
-        "        {\n" .
-        "            \"method\": \"GET\",\n" .
-        "            \"rel\": \"on_failed\",\n" .
-        "            \"href\": ".
-            "\"https://hosted.qa.ies.paysafe.cloud/checkout/v2/pages/redirect-error.html?shouldAutoClose=false\"\n" .
-        "        },\n" .
-        "        {\n" .
-        "            \"method\": \"GET\",\n" .
-        "            \"rel\": \"default\",\n" .
-        "            \"href\": ".
-            "\"https://hosted.qa.ies.paysafe.cloud/checkout/v2/pages/redirect-success.html?shouldAutoClose=false\"\n" .
-        "        }\n" .
-        "    ],\n" .
-        "    \"threeDs\": {\n" .
-        "        \"deviceFingerprintingId\": \"58e81317-8a3e-4ea2-9b08-e4947eba7623\"\n" .
-        "    },\n" .
-        "    \"skip3ds\": false\n" .
-        "}";
-    }
-
 }

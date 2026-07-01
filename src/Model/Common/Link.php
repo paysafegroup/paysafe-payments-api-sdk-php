@@ -1,135 +1,143 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common;
-
 use Paysafe\PhpSdk\Model\BaseModel;
 
+
+/**
+ * URL link to redirect customer during transaction flow.
+ */
 class Link extends BaseModel
 {
-	private string $rel;
-	private string $href;
-	private string $method;
+    private ?string $rel = null;
+    /**
+     * The url to be used for further actions
+     */
+    private ?string $href = null;
+    /**
+     * The corresponding HTTP request method to be invoked on url
+     */
+    private ?string $method = null;
 
-	/**
-	 * Builder function for rel
-	 * 
-	 * @param string $rel
-	 * 
-	 * @return $this
-	 */
-	public function rel(string $rel): self
-	{
-		$this->setRel($rel);
-		
-		return $this;
-	}
+    /**
+     * Builder function for rel
+     *
+     * @param string $rel
+     *
+     * @return $this
+     */
+    public function rel(?string $rel): self
+    {
+        $this->setRel($rel);
 
-	/**
-	 * Setter function for rel
-	 * 
-	 * @param string $rel
-	 * 
-	 * @return void
-	 */
-	public function setRel(string $rel): void
-	{
-		$this->rel = $rel;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for rel
-	 * 
-	 * @return string
-	 */
-	public function getRel(): string
-	{
-		return $this->rel;
-	}
+    /**
+     * Setter function for rel
+     *
+     * @param string $rel
+     *
+     * @return void
+     */
+    public function setRel(?string $rel): void
+    {
+        $this->rel = $rel;
+    }
 
-	/**
-	 * Builder function for href
-	 * 
-	 * @param string $href
-	 * 
-	 * @return $this
-	 */
-	public function href(string $href): self
-	{
-		$this->setHref($href);
-		
-		return $this;
-	}
+    /**
+     * Getter function for rel
+     *
+     * @return ?string
+     */
+    public function getRel(): ?string
+    {
+        return $this->rel;
+    }
+    /**
+     * Builder function for href
+     *
+     * @param string $href
+     *
+     * @return $this
+     */
+    public function href(?string $href): self
+    {
+        $this->setHref($href);
 
-	/**
-	 * Setter function for href
-	 * 
-	 * @param string $href
-	 * 
-	 * @return void
-	 */
-	public function setHref(string $href): void
-	{
-		$this->href = $href;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for href
-	 * 
-	 * @return string
-	 */
-	public function getHref(): string
-	{
-		return $this->href;
-	}
+    /**
+     * Setter function for href
+     *
+     * @param string $href
+     *
+     * @return void
+     */
+    public function setHref(?string $href): void
+    {
+        $this->href = $href;
+    }
 
-	/**
-	 * Builder function for method
-	 * 
-	 * @param string $method
-	 * 
-	 * @return $this
-	 */
-	public function method(string $method): self
-	{
-		$this->setMethod($method);
-		
-		return $this;
-	}
+    /**
+     * Getter function for href
+     *
+     * @return ?string
+     */
+    public function getHref(): ?string
+    {
+        return $this->href;
+    }
+    /**
+     * Builder function for method
+     *
+     * @param string $method
+     *
+     * @return $this
+     */
+    public function method(?string $method): self
+    {
+        $this->setMethod($method);
 
-	/**
-	 * Setter function for method
-	 * 
-	 * @param string $method
-	 * 
-	 * @return void
-	 */
-	public function setMethod(string $method): void
-	{
-		$this->method = $method;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for method
-	 * 
-	 * @return string
-	 */
-	public function getMethod(): string
-	{
-		return $this->method;
-	}
+    /**
+     * Setter function for method
+     *
+     * @param string $method
+     *
+     * @return void
+     */
+    public function setMethod(?string $method): void
+    {
+        $this->method = $method;
+    }
 
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class Link {" . PHP_EOL
-			. "    rel: " . $this->toIndentedString($this->rel) . PHP_EOL
-			. "    href: " . $this->toIndentedString($this->href) . PHP_EOL
-			. "    method: " . $this->toIndentedString($this->method) . PHP_EOL
-			. "}";
-	}
+    /**
+     * Getter function for method
+     *
+     * @return ?string
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class Link {" . PHP_EOL
+            . "    rel: " . $this->toIndentedString($this->rel ?? null) . PHP_EOL
+            . "    href: " . $this->toIndentedString($this->href ?? null) . PHP_EOL
+            . "    method: " . $this->toIndentedString($this->method ?? null) . PHP_EOL
+            . "}";
+    }
 }

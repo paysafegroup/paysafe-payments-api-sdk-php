@@ -1,135 +1,146 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common\Error;
-
 use Paysafe\PhpSdk\Model\BaseModel;
 
+
+/**
+ * This is an optional field that provides additional data in case of a reject.
+ */
 class AdditionalDetail extends BaseModel
 {
-	private string $type;
-	private string $code;
-	private string $message;
+    /**
+     * This is the type of the additional detail
+     */
+    private ?string $type = null;
+    /**
+     * This is the code of the additional detail
+     */
+    private ?string $code = null;
+    /**
+     * This is the message of the additional detail
+     */
+    private ?string $message = null;
 
-	/**
-	 * Builder function for type
-	 * 
-	 * @param string $type
-	 * 
-	 * @return $this
-	 */
-	public function type(string $type): self
-	{
-		$this->setType($type);
-		
-		return $this;
-	}
+    /**
+     * Builder function for type
+     *
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function type(?string $type): self
+    {
+        $this->setType($type);
 
-	/**
-	 * Setter function for type
-	 * 
-	 * @param string $type
-	 * 
-	 * @return void
-	 */
-	public function setType(string $type): void
-	{
-		$this->type = $type;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for type
-	 * 
-	 * @return string
-	 */
-	public function getType(): string
-	{
-		return $this->type;
-	}
+    /**
+     * Setter function for type
+     *
+     * @param string $type
+     *
+     * @return void
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
 
-	/**
-	 * Builder function for code
-	 * 
-	 * @param string $code
-	 * 
-	 * @return $this
-	 */
-	public function code(string $code): self
-	{
-		$this->setCode($code);
-		
-		return $this;
-	}
+    /**
+     * Getter function for type
+     *
+     * @return ?string
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+    /**
+     * Builder function for code
+     *
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function code(?string $code): self
+    {
+        $this->setCode($code);
 
-	/**
-	 * Setter function for code
-	 * 
-	 * @param string $code
-	 * 
-	 * @return void
-	 */
-	public function setCode(string $code): void
-	{
-		$this->code = $code;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for code
-	 * 
-	 * @return string
-	 */
-	public function getCode(): string
-	{
-		return $this->code;
-	}
+    /**
+     * Setter function for code
+     *
+     * @param string $code
+     *
+     * @return void
+     */
+    public function setCode(?string $code): void
+    {
+        $this->code = $code;
+    }
 
-	/**
-	 * Builder function for message
-	 * 
-	 * @param string $message
-	 * 
-	 * @return $this
-	 */
-	public function message(string $message): self
-	{
-		$this->setMessage($message);
-		
-		return $this;
-	}
+    /**
+     * Getter function for code
+     *
+     * @return ?string
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+    /**
+     * Builder function for message
+     *
+     * @param string $message
+     *
+     * @return $this
+     */
+    public function message(?string $message): self
+    {
+        $this->setMessage($message);
 
-	/**
-	 * Setter function for message
-	 * 
-	 * @param string $message
-	 * 
-	 * @return void
-	 */
-	public function setMessage(string $message): void
-	{
-		$this->message = $message;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for message
-	 * 
-	 * @return string
-	 */
-	public function getMessage(): string
-	{
-		return $this->message;
-	}
+    /**
+     * Setter function for message
+     *
+     * @param string $message
+     *
+     * @return void
+     */
+    public function setMessage(?string $message): void
+    {
+        $this->message = $message;
+    }
 
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class AdditionalDetail {" . PHP_EOL
-			. "    type: " . $this->toIndentedString($this->type) . PHP_EOL
-			. "    code: " . $this->toIndentedString($this->code) . PHP_EOL
-			. "    message: " . $this->toIndentedString($this->message) . PHP_EOL
-			. "}";
-	}
+    /**
+     * Getter function for message
+     *
+     * @return ?string
+     */
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class AdditionalDetail {" . PHP_EOL
+            . "    type: " . $this->toIndentedString($this->type ?? null) . PHP_EOL
+            . "    code: " . $this->toIndentedString($this->code ?? null) . PHP_EOL
+            . "    message: " . $this->toIndentedString($this->message ?? null) . PHP_EOL
+            . "}";
+    }
 }

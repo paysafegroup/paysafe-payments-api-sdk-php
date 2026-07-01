@@ -7,17 +7,16 @@ use GuzzleHttp\Psr7\Response;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
-use Paysafe\PhpSdk\Model\Settlement\Settlement;
 use Paysafe\PhpSdk\Model\Settlement\SettlementRequest;
 use Paysafe\PhpSdk\Service\SettlementService;
 
-class SettlementServiceTest extends BasePaysafeTest
+class SettlementServiceTest extends BasePaysafeService
 {
     const PAYMENT_SETTLEMENT_ENDPOINT = "/paymenthub/v1/payments/%s/settlements";
     const SETTLEMENT_ENDPOINT = "/paymenthub/v1/settlements";
 
     const PAYMENT_ID = "9b84dedd-2a92-47bf-a8ee-131e2d898105";
-    const SETTLEMENT_ID = "8d951743-78e5-4fa5-aa15-2c42f0c05228";
+    const SETTLEMENT_ID = "25f6dadf-176a-415f-95c9-6ff39ff697ba";
     const MERCHANT_REF_NUM = "a9318b525273ee3cda79a2f947a9";
 
     private SettlementService $settlementService;
@@ -48,7 +47,7 @@ class SettlementServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockSettlementResponse()
+                    $this->get_resource_json('settlement/process_settlement_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -65,7 +64,7 @@ class SettlementServiceTest extends BasePaysafeTest
 
         $this->assertNotNull($response);
         $this->assertEquals(self::SETTLEMENT_ID, $response->getId());
-        $this->assertEquals("COMPLETED", $response->getStatus());
+        $this->assertEquals("PENDING", $response->getStatus());
         $this->assertEquals(500, $response->getAvailableToRefund());
     }
 
@@ -89,7 +88,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -135,7 +134,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -181,7 +180,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -255,7 +254,7 @@ class SettlementServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockSettlementResponse()
+                    $this->get_resource_json('settlement/get_settlement_by_id_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -290,7 +289,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -334,7 +333,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -412,7 +411,7 @@ class SettlementServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetSettlementsUsingMerchantReferenceNumberResponse()
+                    $this->get_resource_json('settlement/get_settlement_using_merchant_ref_number_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -449,7 +448,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -495,7 +494,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -538,7 +537,7 @@ class SettlementServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCancelSettlementResponse()
+                    $this->get_resource_json('settlement/cancel_settlement_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -575,7 +574,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -617,7 +616,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -659,7 +658,7 @@ class SettlementServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -680,93 +679,4 @@ class SettlementServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
-    /**
-     * @return string
-     */
-    private function mockSettlementResponse(): string
-    {
-        return "{\n" .
-        "  \"id\": \"" . self::SETTLEMENT_ID . "\",\n" .
-        "  \"paymentType\": \"CARD\",\n" .
-        "  \"availableToRefund\": 500,\n" .
-        "  \"childAccountNum\": \"3216549877\",\n" .
-        "  \"txnTime\": " . strtotime("2023-01-27T10:14:26Z") . ",\n" .
-        "  \"status\": \"COMPLETED\",\n" .
-        "  \"merchantRefNum\": \"test-merchantRefNum\",\n" .
-        "  \"amount\": 500,\n" .
-        "  \"dupCheck\": true\n" .
-        "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockSettlementGetResponse(): string
-    {
-        return "{\n" .
-        "  \"id\": \"" . self::SETTLEMENT_ID . "\",\n" .
-        "  \"paymentType\": \"PAYSAFECARD\",\n" .
-        "  \"merchantRefNum\": \"dc48762fb7c30c2ae975754348e8\",\n" .
-        "  \"txnTime\": " . strtotime("2023-01-20T04:35:19Z") . ",\n" .
-        "  \"status\": \"COMPLETED\",\n" .
-        "  \"gatewayReconciliationId\": \"adcf19cf-39c5-4eb4-a65d-7f50cd1aebd6\",\n" .
-        "  \"amount\": 500,\n" .
-        "  \"liveMode\": false,\n" .
-        "  \"updatedTime\": \"2023-01-20T04:35:19Z\",\n" .
-        "  \"statusTime\": \"2023-01-20T04:35:19Z\",\n" .
-        "  \"availableToRefund\": 500,\n" .
-        "  \"gatewayResponse\": {\n" .
-        "    \"id\": \"adcf19cf-39c5-4eb4-a65d-7f50cd1aebd6\",\n" .
-        "    \"processor\": \"PAYSAFECARD\"\n" .
-        "  }\n" .
-        "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetSettlementsUsingMerchantReferenceNumberResponse(): string
-    {
-        return "{\n" .
-        "  \"meta\": {\n" .
-        "    \"numberOfRecords\": 1,\n" .
-        "    \"limit\": 10,\n" .
-        "    \"page\": 1\n" .
-        "  },\n" .
-        "  \"settlements\": [\n" .
-        "    {\n" .
-        "      \"id\": \"8d951743-78e5-4fa5-aa15-2c42f0c05228\",\n" .
-        "      \"paymentType\": \"PAYSAFECASH\",\n" .
-        "      \"merchantRefNum\": \"a9318b525273ee3cda79a2f947a9\",\n" .
-        "      \"currencyCode\": \"USD\",\n" .
-        "      \"txnTime\": " . strtotime("2023-01-20T04:20:31Z") . ",\n" .
-        "      \"status\": \"COMPLETED\",\n" .
-        "      \"gatewayReconciliationId\": \"6eac96d8-b42e-4bc2-b0c8-b0cf19318113\",\n" .
-        "      \"amount\": 500,\n" .
-        "      \"liveMode\": false,\n" .
-        "      \"updatedTime\": \"2023-01-20T04:20:31Z\",\n" .
-        "      \"statusTime\": \"2023-01-20T04:20:31Z\",\n" .
-        "      \"availableToRefund\": 500,\n" .
-        "      \"gatewayResponse\": {\n" .
-        "        \"id\": \"6eac96d8-b42e-4bc2-b0c8-b0cf19318113\",\n" .
-        "        \"processor\": \"PAYSAFECASH\"\n" .
-        "      }\n" .
-        "    }\n" .
-        "  ]\n" .
-        "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCancelSettlementResponse(): string
-    {
-        return "{\n" .
-        "  \"id\": \"" . self::SETTLEMENT_ID . "\",\n" .
-        "  \"txnTime\": \"2025-02-10T12:34:56Z\",\n" .
-        "  \"status\": \"CANCELLED\"\n" .
-        "}";
-    }
-
 }

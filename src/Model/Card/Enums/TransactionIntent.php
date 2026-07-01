@@ -1,97 +1,26 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Card\Enums;
+use Paysafe\PhpSdk\Model\Payment\Payment;
 
 /**
- * The transactionIntent property is used to identify the intent of the authorization requests.
- * The value of the transactionIntent shows if the transaction is crypto or quasi-cash related one. <br>
- * It is an optional enum field applicable for every MCC.  <br>
- * It is required only if the use cases explained below are applicable for the merchants
- * or the default behavior is not acceptable for them.  <br>
- * The merchant needs to add in the request transactionIntent property value as shown in the example below. <br>
- * Use cases and applicable valid enum transactionIntent options:
- * <table>
- *   <caption>Transaction intent mappings</caption>
- *   <tr>
- *     <th>Use case</th>
- *     <th>MCC</th>
- *     <th>Valid transactionIntent value</th>
- *   </tr>
- *   <tr>
- *     <td>The consumer is acquiring cryptocurrency in a transaction.</td>
- *     <td>6012, 6051</td>
- *     <td>CRYPTO_ON_RAMP</td>
- *   </tr>
- *   <tr>
- *     <td>The consumer is loading a cryptocurrency wallet or exchange account with fiat.
- *     *Applicable only in combination with valid fundingTransaction object.</td>
- *     <td>6012, 6051</td>
- *     <td>WALLET_CRYPTO_ON_RAMP</td>
- *   </tr>
- *   <tr>
- *     <td>The consumer is acquiring quasi-cash in a transaction.
- *     *Quasi cash transactions represent the purchase of foreign
- *     currencies or items (including, but not limited to, casino chips, money orders,
- *      lottery tickets and travelers cheques)
- *     which may be convertible to cash.</td>
- *     <td>4829, 6012, 6051</td>
- *     <td>QUASI_CASH</td>
- *   </tr>
- *   <tr>
- *     <td>For purchases of goods or services that leverage a live conversion of fiat into non - fiat currency.</td>
- *     <td>ANY</td>
- *     <td>BUY_WITH_CRYPTO</td>
- *   </tr>
- * </table>
- * <div>
- *   <b>Default transactionIntent definition by Paysafe:</b>
- *   <ul>
- *   <li>
- *     All authorizations processed by MCC 6051 will be classified as crypto related
- *      with transactionIntent "CRYPTO_ON_RAMP"
- *     or "WALLET_CRYPTO_ON_RAMP" (when funding a wallet), except their account is not configured
- *      by Paysafe for quasi-cash transactions.
- *   </li>
- *   <li>
- *     All authorizations processed by MCC 6051 will be classified as crypto related
- *      with transactionIntent "CRYPTO_ON_RAMP"
- *     or "WALLET_CRYPTO_ON_RAMP" (when funding a wallet), except their account is not configured
- *      by Paysafe for quasi-cash transactions.
- *     All authorizations processed by MCC 6051 or 4829 with quasi-cash configuration turned on
- *      will be classified as quasi-cash
- *     related with transactionIntent "QUASI_CASH" .
- *   </li>
- *   </ul>
- * </div>
- * <div>
- *   <b>Expected errors related to invalid transactionIntent values:</b>
- *   <ul>
- *   <li>
- *     If you send transactionIntent type in the authorization request with value not applicable for your MCC,
- *      the transaction will be
- *     declined with error 3072 - "Your request has been declined because
- *      the requested transactionIntent value is not applicable
- *     for your merchant category code (MCC)".
- *   </li>
- *   <li>
- *     If you send transactionIntent type WALLET_CRYPTO_ON_RAMP in the authorization request,
- *      but you didn't classify the transaction
- *     as "funding" one with the respective valid fundingTransaction object,
- *      the transaction will be declined with error 3071
- *     - Your request has been declined because of mismatch between the requested transactionIntent
- *      and fundingTransaction type.
- *    </li>
- *    </ul>
- * </div>
+ * <p>The <b>transactionIntent</b> property identifies the intent of the request. The value of <b>transactionIntent</b> shows if the transaction is crypto or quasi-cash related.</p> <p>- This field is mandatory for Visa card cross-border funding transactions where the recipient is from any of the following countries: India, Bangladesh, Argentina, and Egypt.<br> - It is required only if the use cases explained below are applicable for the merchants or the default behavior is not acceptable for them.<br> - The merchant needs to add in the request <b>transactionIntent</b> property value as shown in the example below.</p> <p><b>Use cases and applicable valid enum transactionIntent options:</b></p> <p><b>WALLET_CRYPTO_OFF_RAMP</b><br> - Use case: The consumer initiates a disbursement from a crypto-capable digital wallet to a card.<br> - MCC values: 4829, 6012, 6051, 6211.</p> <p><b>CRYPTO_OFF_RAMP</b><br> - Use case: The consumer initiates a disbursement from a crypto-capable brokerage/exchange to a card.<br> - MCC values: 6012, 6051, 6211.</p> <p><b>TRAVEL_AND_TOURISM</b><br> - Use case: Payment for travel (Valid only for Paysafe acquiring).<br> - MCC values: ANY.</p> <p><b>EDUCATION</b><br> - Use case: Study (Valid only for Paysafe acquiring).<br> - MCC values: ANY.</p> <p><b>MEDICAL_TREATMENT</b><br> - Use case: Hospitalization and Medical Treatment (Valid only for Paysafe acquiring).<br> - MCC values: ANY.</p> <p><b>SAVINGS</b><br> - Use case: Payment of savings/retirement account (Valid only for Paysafe acquiring).<br> - MCC values: ANY.</p> <p><b>CHARITY</b><br> - Use case: Payment for charity reasons (Valid only for Paysafe acquiring).<br> - MCC values: ANY.</p> <p><b>OTHER</b><br> - Use case: Valid only for Paysafe acquiring.<br> - MCC values: ANY.</p> <p><b>SALARY</b><br> - Use case: Valid only for Paysafe acquiring.<br> - MCC values: ANY.</p> <p><b>Default transactionIntent definition by Paysafe:</b><br> All standalone credits processed by account with MCC 6051 and configured for Visa Direct will be classified as crypto as follows:<br> - If VISA DIRECT set up is FUNDS DISBURSEMENT with transactionIntent \"CRYPTO_OFF_RAMP\".<br> - If VISA DIRECT set up is WALLET TRANSFER or FUNDS TRANSFER with transactionIntent \"WALLET_CRYPTO_OFF_RAMP\".</p> <p><b>Expected errors related to invalid transactionIntent values:</b><br> - If you send transactionIntent in the request with value not applicable for your MCC, the transaction will be declined with error 3072.<br> - If you send transactionIntent in the request with value applicable for your MCC, but not for your VISA direct configuration, the transaction will be declined with error 3069.<br> - If you send transactionIntent with value different than the options above, the transaction will be declined with error 5068.</p>
  */
 class TransactionIntent
 {
-	const GOODS_OR_SERVICE_PURCHASE = "GOODS_OR_SERVICE_PURCHASE";
-	const CHECK_ACCEPTANCE = "CHECK_ACCEPTANCE";
-	const ACCOUNT_FUNDING = "ACCOUNT_FUNDING";
-	const QUASI_CASH_TRANSACTION = "QUASI_CASH_TRANSACTION";
-	const PREPAID_ACTIVATION = "PREPAID_ACTIVATION";
-
-
+    const CRYPTO_ON_RAMP = 'CRYPTO_ON_RAMP';
+    const WALLET_CRYPTO_ON_RAMP = 'WALLET_CRYPTO_ON_RAMP';
+    const QUASI_CASH = 'QUASI_CASH';
+    const BUY_WITH_CRYPTO = 'BUY_WITH_CRYPTO';
+    const TRAVEL_AND_TOURISM = 'TRAVEL_AND_TOURISM';
+    const EDUCATION = 'EDUCATION';
+    const MEDICAL_TREATMENT = 'MEDICAL_TREATMENT';
+    const SAVINGS = 'SAVINGS';
+    const CHARITY = 'CHARITY';
+    const OTHER = 'OTHER';
+    const CROWD_LENDING = 'CROWD_LENDING';
+    const HIGH_RISK_SECURITIES = 'HIGH_RISK_SECURITIES';
 }

@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "numberOfRecords": 1,
+    "limit": 10,
+    "page": 1
+  },
+  "settlements": [
+    {
+      "id": "8d951743-78e5-4fa5-aa15-2c42f0c05228",
+      "merchantRefNum": "dynamic-merchant-ref",
+      "currencyCode": "USD",
+      "txnTime": "2023-01-20T04:20:31Z",
+      "status": "COMPLETED",
+      "gatewayReconciliationId": "6eac96d8-b42e-4bc2-b0c8-b0cf19318113",
+      "amount": 500,
+      "availableToRefund": 500
+    }
+  ]
+}

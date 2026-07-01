@@ -1,29 +1,33 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Client;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Paysafe\PhpSdk\Config\Environment;
 use Paysafe\PhpSdk\Exception\ApiConnectionException;
-use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 
 /**
- * Class PaysafeApiClient
- * Handles HTTP requests to the Paysafe Payments API.
+ * Concrete HTTP client for the Paysafe Payments API.
+ *
+ * Handles all outgoing HTTP requests (GET, POST, PUT, PATCH, DELETE) with
+ * automatic retry middleware, proxy resolution, custom SSL context, and
+ * centralized error handling.
+ *
+ * Not intended for direct use — access via {@see \Paysafe\PhpSdk\PaysafeClient}.
+ *
+ * @internal
  */
 class PaysafeApiClient extends PaysafeApiBase
 {
-    private const CONNECTION_ERROR_MESSAGE = "Error connecting to %s, reason: %s";
+    private const CONNECTION_ERROR_MESSAGE = "Error connecting to Paysafe API";
 
     /**
-     * @param RequestOptions|null $requestOptions
-     *
-     * @return Client
+     * Builds a configured Guzzle HTTP client with retry middleware, proxy, and SSL settings.
      */
     public function buildHttpClient(?RequestOptions $requestOptions = null): Client
     {
@@ -47,45 +51,25 @@ class PaysafeApiClient extends PaysafeApiBase
             $clientOptions[\GuzzleHttp\RequestOptions::PROXY] = $proxy;
         }
 
-        if ($this->customSslContext) {
-            if (isset($this->customSslContext['cert']) && isset($this->customSslContext['key'])) {
+        if ($this->customSslContext !== null) {
+            if (isset($this->customSslContext['cert'], $this->customSslContext['key'])) {
                 $clientOptions[\GuzzleHttp\RequestOptions::CERT] = $this->customSslContext['cert'];
                 $clientOptions[\GuzzleHttp\RequestOptions::SSL_KEY] = $this->customSslContext['key'];
             }
 
-            if (isset($this->customSslContext['ca'])) {
-                $clientOptions[\GuzzleHttp\RequestOptions::VERIFY] = $this->customSslContext['ca'];
-            } else {
-                $clientOptions[\GuzzleHttp\RequestOptions::VERIFY] = true; // Default to verifying SSL
-            }
+            $clientOptions[\GuzzleHttp\RequestOptions::VERIFY] = $this->customSslContext['ca'] ?? true;
         }
 
         return new Client($clientOptions);
-        
     }
 
-    /**
-     * @return string|null
-     */
     private function attemptToBuildProxy(): ?string
     {
-        if ($this->providedProxy !== null) {
-            return $this->providedProxy;
-        }
-
-        $httpProxy = $this->getProxyFromEnvOrIni('http');
-        if ($httpProxy !== null) {
-            return $httpProxy;
-        }
-
-        return $this->getProxyFromEnvOrIni('https');
+        return $this->providedProxy
+            ?? $this->getProxyFromEnvOrIni('http')
+            ?? $this->getProxyFromEnvOrIni('https');
     }
 
-    /**
-     * @param string $type
-     *
-     * @return string|null
-     */
     private function getProxyFromEnvOrIni(string $type): ?string
     {
         $hostKey = "{$type}_proxyHost";
@@ -105,252 +89,262 @@ class PaysafeApiClient extends PaysafeApiBase
     /**
      * Builds request options with default values if not provided.
      */
-    private function buildRequestOptionsToUse(RequestOptions $requestOptions = null): RequestOptions
+    private function buildRequestOptionsToUse(?RequestOptions $requestOptions = null): RequestOptions
     {
-        $optionsToUse = new RequestOptions();
-
-        if ($requestOptions !== null) {
-            $optionsToUse->setConnectTimeout(
-                $requestOptions->getConnectTimeout() ?? $this->clientConnectTimeout
+        if ($requestOptions === null) {
+            return new RequestOptions(
+                $this->clientConnectTimeout,
+                $this->clientResponseTimeout,
+                $this->clientMaxAutomaticRetries
             );
-            $optionsToUse->setResponseTimeout(
-                $requestOptions->getResponseTimeout() ?? $this->clientResponseTimeout
-            );
-            $optionsToUse->setMaxAutomaticRetries(
-                $requestOptions->getMaxAutomaticRetries() ?? $this->clientMaxAutomaticRetries
-            );
-        } else {
-            $optionsToUse->setConnectTimeout($this->clientConnectTimeout);
-            $optionsToUse->setResponseTimeout($this->clientResponseTimeout);
-            $optionsToUse->setMaxAutomaticRetries($this->clientMaxAutomaticRetries);
         }
 
-        return $optionsToUse;
+        $effectiveOptions = $requestOptions;
+        if ($requestOptions instanceof DirectRequestOptions && $requestOptions->getRequestOptions() !== null) {
+            $effectiveOptions = $requestOptions->getRequestOptions();
+        }
+
+        return new RequestOptions(
+            $effectiveOptions->getConnectTimeout() ?? $this->clientConnectTimeout,
+            $effectiveOptions->getResponseTimeout() ?? $this->clientResponseTimeout,
+            $effectiveOptions->getMaxAutomaticRetries() ?? $this->clientMaxAutomaticRetries,
+            $effectiveOptions->getSimulator()
+        );
     }
 
     /**
      * <b>Use only for testing.</b> Overrides the base url for Paysafe Payments API endpoints
      * with provided value, i.e. of your mocked server.
      */
-    public function overrideBaseUrl(string $baseUrl)
+    public function overrideBaseUrl(string $baseUrl): void
     {
         $this->baseUrl = $baseUrl;
     }
 
     /**
+     * Builds a structured log message:
+     * "{action} {METHOD} request {uri}"
+     */
+    private function buildLogMessage(string $action, string $method, string $uri): string
+    {
+        return sprintf('%s %s request %s', $action, strtoupper($method), $uri);
+    }
+
+    /**
+     * Logs a response: success via logEvent (ALL level), errors via logError (always).
+     */
+    private function logResponse(string $method, string $uri, Response $response): void
+    {
+        $body       = $response->getBody()->getContents();
+        $response->getBody()->rewind();
+        $decoded    = json_decode($body, true) ?? $body;
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode >= 200 && $statusCode < 300) {
+            $this->logEvent(
+                $this->buildLogMessage('Received response to', $method, $uri),
+                ['statusCode' => $statusCode, 'body' => $decoded]
+            );
+        } else {
+            $this->logError(
+                $this->buildLogMessage('Received error response to', $method, $uri),
+                new \RuntimeException("HTTP $statusCode"),
+                ['statusCode' => $statusCode, 'body' => $decoded]
+            );
+        }
+    }
+
+    /**
+     * Core request executor. All public execute* methods delegate here.
+     *
+     * @throws ApiConnectionException When the API is unreachable.
+     */
+    private function doRequest(
+        string $method,
+        string $endpoint,
+        ?string $requestBody,
+        ?RequestOptions $requestOptions
+    ): Response {
+        $uri = $this->buildRequestUri($endpoint);
+        $httpClient = $this->buildHttpClient($requestOptions);
+
+        $this->logEvent(
+            $this->buildLogMessage('Executing', $method, $uri),
+            ['body' => $requestBody !== null ? json_decode($requestBody, true) : null]
+        );
+
+        $options = [
+            'headers' => $this->addSimulatorToHeaders($this->setRequestHeaders(), $requestOptions),
+        ];
+
+        if ($requestBody !== null && $this->isRequestWithBody($method)) {
+            $options['json'] = json_decode($requestBody, true);
+        }
+
+        try {
+            $response = $httpClient->request(strtoupper($method), $uri, $options);
+            $this->logResponse($method, $uri, $response);
+            return $response;
+        } catch (GuzzleException $e) {
+            if (!$e->getCode()) {
+                $this->logError(
+                    sprintf("Exception while executing %s request at %s: %s", strtoupper($method), $uri, $e->getMessage()),
+                    $e
+                );
+                throw new ApiConnectionException(self::CONNECTION_ERROR_MESSAGE);
+            }
+
+            $errorResponse = $e->getResponse();
+            if ($errorResponse !== null) {
+                $this->logResponse($method, $uri, $errorResponse);
+            }
+            return $errorResponse;
+        }
+    }
+
+    /**
      * Executes a GET request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint to send the request to.
-     * @param RequestOptions|null $requestOptions
-     *
-     * @return Response The response from the API.
      * @throws ApiConnectionException
      */
     public function executeGet(string $endpoint, ?RequestOptions $requestOptions = null): Response
     {
-        $uri = $this->buildRequestUri($endpoint);
-        $httpClient = $this->buildHttpClient($requestOptions);
-
-        try {
-            return $httpClient->get($uri, ['headers' => $this->setRequestHeaders()]);
-        } catch (GuzzleException $e) {
-            if (!$e->getCode()) {
-                PaysafeLogger::getLogger()->error(
-                    sprintf("Exception while executing GET request at %s: %s", $uri, $e->getMessage()),
-                    ['exception' => $e]
-                );
-                throw new ApiConnectionException(sprintf(self::CONNECTION_ERROR_MESSAGE, $uri, $e->getMessage()));
-            }
-
-            return $e->getResponse();
-        }
+        return $this->doRequest('GET', $endpoint, null, $requestOptions);
     }
 
     /**
      * Executes a POST request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint to send the request to.
-     * @param string $requestBody The body of the request.
-     * @param ?RequestOptions $requestOptions
-     *
-     * @return Response The response from the API.
-     * @throws PaysafeSdkException If an error occurs while making the request.
-     * @throws Exception
+     * @throws ApiConnectionException
      */
     public function executePost(string $endpoint, string $requestBody, ?RequestOptions $requestOptions): Response
     {
-        $uri = $this->buildRequestUri($endpoint);
-        $jsonRequestBody = json_decode($requestBody, true);
-        $httpClient = $this->buildHttpClient($requestOptions);
-        try {
-            return $httpClient->post($uri, [
-                'headers' => $this->addSimulatorToHeaders($this->setRequestHeaders(), $requestOptions),
-                'json' => $jsonRequestBody
-            ]);
-        } catch (GuzzleException $e) {
-            if (!$e->getCode()) {
-                PaysafeLogger::getLogger()->error(
-                    sprintf("Exception while executing POST request at %s: %s", $uri, $e->getMessage()),
-                    ['exception' => $e]
-                );
-                throw new ApiConnectionException(
-                    sprintf(self::CONNECTION_ERROR_MESSAGE, $uri, $e->getMessage())
-                );
-            }
-
-            return $e->getResponse();
-        }
+        return $this->doRequest('POST', $endpoint, $requestBody, $requestOptions);
     }
 
     /**
      * Executes a PUT request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint to send the request to.
-     * @param string $requestBody The body of the request.
-     * @param RequestOptions|null $requestOptions
-     *
-     * @return Response The response from the API.
-     * @throws PaysafeSdkException If an error occurs while making the request.
-     * @throws Exception
+     * @throws ApiConnectionException
      */
     public function executePut(string $endpoint, string $requestBody, ?RequestOptions $requestOptions): Response
     {
-        $uri = $this->buildRequestUri($endpoint);
-        $jsonRequestBody = json_decode($requestBody, true);
-        $httpClient = $this->buildHttpClient($requestOptions);
-        try {
-            return $httpClient->put($uri, [
-                'headers' => $this->addSimulatorToHeaders($this->setRequestHeaders(), $requestOptions),
-                'json' => $jsonRequestBody
-            ]);
-        } catch (GuzzleException $e) {
-            if (!$e->getCode()) {
-                PaysafeLogger::getLogger()->error(
-                    sprintf("Exception while executing PUT request at %s: %s", $uri, $e->getMessage()),
-                    ['exception' => $e]
-                );
-                throw new ApiConnectionException(
-                    sprintf(self::CONNECTION_ERROR_MESSAGE, $uri, $e->getMessage())
-                );
-            }
-
-            return $e->getResponse();
-        }
+        return $this->doRequest('PUT', $endpoint, $requestBody, $requestOptions);
     }
 
     /**
      * Executes a PATCH request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint to send the request to.
-     * @param string $requestBody The body of the request.
-     * @param RequestOptions|null $requestOptions
-     *
-     * @return Response The response from the API.
-     * @throws PaysafeSdkException If an error occurs while making the request.
-     * @throws Exception
+     * @throws ApiConnectionException
      */
     public function executePatch(string $endpoint, string $requestBody, ?RequestOptions $requestOptions): Response
     {
-        $uri = $this->buildRequestUri($endpoint);
-        $jsonRequestBody = json_decode($requestBody, true);
-        $httpClient = $this->buildHttpClient($requestOptions);
-        try {
-            return $httpClient->patch($uri, [
-                'headers' => $this->addSimulatorToHeaders($this->setRequestHeaders(), $requestOptions),
-                'json' => $jsonRequestBody
-            ]);
-        } catch (GuzzleException $e) {
-            if (!$e->getCode()) {
-                PaysafeLogger::getLogger()->error(
-                    sprintf("Exception while executing PATCH request at %s: %s", $uri, $e->getMessage()),
-                    ['exception' => $e]
-                );
-                throw new ApiConnectionException(
-                    sprintf(self::CONNECTION_ERROR_MESSAGE, $uri, $e->getMessage())
-                );
-            }
-
-            return $e->getResponse();
-        }
+        return $this->doRequest('PATCH', $endpoint, $requestBody, $requestOptions);
     }
 
     /**
      * Executes a DELETE request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint to send the request to.
-     * @param RequestOptions|null $requestOptions
-     *
-     * @return Response The response from the API.
-     *
-     * @throws PaysafeSdkException If an error occurs while making the request.
-     * @throws Exception
+     * @throws ApiConnectionException
      */
     public function executeDelete(string $endpoint, ?RequestOptions $requestOptions): Response
     {
-        $uri = $this->buildRequestUri($endpoint);
-        $httpClient = $this->buildHttpClient($requestOptions);
-        try {
-            return $httpClient->delete(
-                $uri,
-                ['headers' => $this->addSimulatorToHeaders($this->setRequestHeaders(), $requestOptions)]
-            );
-        } catch (GuzzleException $e) {
-            if (!$e->getCode()) {
-                PaysafeLogger::getLogger()->error(
-                    sprintf("Exception while executing DELETE request at %s: %s", $uri, $e->getMessage()),
-                    ['exception' => $e]
-                );
-                throw new ApiConnectionException(
-                    sprintf(self::CONNECTION_ERROR_MESSAGE, $uri, $e->getMessage())
-                );
-            }
-
-            return $e->getResponse();
-        }
+        return $this->doRequest('DELETE', $endpoint, null, $requestOptions);
     }
 
-    private function addSimulatorToHeaders(array $headers, RequestOptions $requestOptions = null): array
+    /**
+     * Executes a raw HTTP request with the specified method.
+     *
+     * @throws ApiConnectionException
+     */
+    public function executeRaw(
+        string $method,
+        string $endpoint,
+        ?string $requestBody = null,
+        ?DirectRequestOptions $directRequestOptions = null
+    ): Response {
+        return $this->doRequest($method, $endpoint, $requestBody, $directRequestOptions);
+    }
+
+    /**
+     * @param array<string, string> $headers
+     * @return array<string, string>
+     */
+    private function addSimulatorToHeaders(array $headers, ?RequestOptions $requestOptions = null): array
     {
         if (
             $this->environment === Environment::TEST &&
             $requestOptions !== null
         ) {
-            $simulator = $requestOptions->getSimulator();
+            $effectiveOptions = $requestOptions;
+            if ($requestOptions instanceof DirectRequestOptions && $requestOptions->getRequestOptions() !== null) {
+                $effectiveOptions = $requestOptions->getRequestOptions();
+            }
+
+            $simulator = $effectiveOptions->getSimulator();
 
             if ($simulator !== null) {
                 $headers['Simulator'] = $simulator;
             }
         }
+
+        if ($requestOptions instanceof DirectRequestOptions && count($requestOptions->getCustomHeaders()) > 0) {
+            foreach ($requestOptions->getCustomHeaders() as $name => $value) {
+                $headers[$name] = $value;
+            }
+        }
+
         return $headers;
     }
 
-    public function setApiKey(string $apiKey)
+    public function setApiKey(string $apiKey): void
     {
         $this->apiKey = $apiKey;
     }
 
-    public function setClientMaxAutomaticRetries(string $clientMaxAutomaticRetries)
+    public function setClientMaxAutomaticRetries(int $clientMaxAutomaticRetries): void
     {
         $this->clientMaxAutomaticRetries = $clientMaxAutomaticRetries;
     }
 
-    public function setClientResponseTimeout(?int $clientResponseTimeout)
+    public function setClientResponseTimeout(int $clientResponseTimeout): void
     {
         $this->clientResponseTimeout = $clientResponseTimeout;
     }
 
-    public function setClientConnectTimeout(?int $connectTimeout)
+    public function setClientConnectTimeout(int $connectTimeout): void
     {
         $this->clientConnectTimeout = $connectTimeout;
     }
 
-    public function setProxy(string $proxy)
+    public function setProxy(string $proxy): void
     {
         $this->providedProxy = $proxy;
     }
 
-    public function setSslContext(array $sslContext)
+    public function setSslContext(array $sslContext): void
     {
         $this->customSslContext = $sslContext;
+    }
+
+    /**
+     * Whether the request method typically carries a body.
+     */
+    private function isRequestWithBody(string $method): bool
+    {
+        return in_array(strtoupper($method), ['POST', 'PUT', 'PATCH'], true);
+    }
+
+    /**
+     * Process a raw response and return a PaysafeApiResponse object.
+     */
+    public static function handleApiResponse(Response $response): PaysafeApiResponse
+    {
+        $paysafeApiResponse = new PaysafeApiResponse();
+        $paysafeApiResponse->setHttpStatusCode($response->getStatusCode());
+        $paysafeApiResponse->setHeaders($response->getHeaders());
+        $paysafeApiResponse->setResponseBody($response->getBody()->getContents());
+
+        return $paysafeApiResponse;
     }
 }

@@ -6,13 +6,13 @@ namespace Service;
 use GuzzleHttp\Psr7\Response;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
-use Paysafe\PhpSdk\Model\Card\CardBillingDetailsRequest;
 use Paysafe\PhpSdk\Model\Card\CardExpiry;
+use Paysafe\PhpSdk\Model\Common\BillingDetails;
 use Paysafe\PhpSdk\Model\Customer\CustomerPaymentHandleRequest;
 use Paysafe\PhpSdk\Model\Customer\UpdateCustomerRequestCard;
 use Paysafe\PhpSdk\Service\CustomerPaymentHandleService;
 
-class CustomerPaymentHandleServiceTest extends BasePaysafeTest
+class CustomerPaymentHandleServiceTest extends BasePaysafeService
 {
     const CUSTOMER_ID = "921cd968-6882-422c-ae4f-a10ddbae95ff";
     const PAYMENT_HANDLE_ID = "c672fd10-962e-4f57-a1f2-1c3105ffe5d3";
@@ -50,7 +50,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateCustomerPaymentHandleCardResponse()
+                    $this->get_resource_json('customer_payment_handle/create_customer_payment_handle_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -69,8 +69,8 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                     ->cardNum("4037111111000000")
                     ->cardExpiry(
                         (new CardExpiry())
-                            ->month("10")
-                            ->year("2025")
+                            ->month(10)
+                            ->year(2025)
                     )
                     ->cvv("111")
                     ->holderName("Dilip")
@@ -115,7 +115,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateMultiUsePaymentHandleResponse()
+                    $this->get_resource_json('customer_payment_handle/create_multiuse_customer_payment_handle_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -164,7 +164,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetCustomerPaymentHandleBacsResponse()
+                    $this->get_resource_json('customer_payment_handle/get_customer_payment_handle_by_id_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -218,7 +218,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockUpdateCustomerPaymentHandleCardResponse()
+                    $this->get_resource_json('customer_payment_handle/update_customer_payment_handle_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -235,7 +235,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
             ->paymentType("CARD")
             ->currencyCode("GBP")
             ->customerIp("10.10.12.64")
-            ->billingDetails((new CardBillingDetailsRequest())
+            ->billingDetails((new BillingDetails())
                 ->street("Andhra bank lane")
                 ->street2("Manikonda")
                 ->city("Hyderabad")
@@ -248,8 +248,8 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                 ->lastDigits("2222")
                 ->cardExpiry(
                     (new CardExpiry())
-                        ->month("12")
-                        ->year("2021")
+                        ->month(12)
+                        ->year(2021)
                 )
                 ->cvv("111")
                 ->issuingCountry("US")
@@ -291,7 +291,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function() use ($mockCore) {
@@ -308,7 +308,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                 ->paymentType("CARD")
                 ->currencyCode("GBP")
                 ->customerIp("10.10.12.64")
-                ->billingDetails((new CardBillingDetailsRequest())
+                ->billingDetails((new BillingDetails())
                     ->street("Andhra bank lane")
                     ->street2("Manikonda")
                     ->city("Hyderabad")
@@ -321,8 +321,8 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                     ->lastDigits("2222")
                     ->cardExpiry(
                         (new CardExpiry())
-                            ->month("12")
-                            ->year("2021")
+                            ->month(12)
+                            ->year(2021)
                     )
                     ->cvv("111")
                     ->issuingCountry("US")
@@ -401,7 +401,7 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json('error/404_entity_not_found_response.json')
                     )
                 );
             $replaceService = function() use ($mockCore) {
@@ -425,125 +425,4 @@ class CustomerPaymentHandleServiceTest extends BasePaysafeTest
             $this->assertEquals("Entity not found", $exception->getError()->getMessage());
         }
     }
-
-    /**
-     * @return string
-     */
-    private function mockCreateCustomerPaymentHandleCardResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"02858471-6083-49ef-afee-015e4cc5135a\",\n"
-            . "  \"merchantRefNum\": \"wed18012023Test\",\n"
-            . "  \"status\": \"PAYABLE\",\n"
-            . "  \"usage\": \"MULTI_USE\",\n"
-            . "  \"paymentType\": \"CARD\",\n"
-            . "  \"action\": \"NONE\",\n"
-            . "  \"paymentHandleToken\": \"CPSql8EPmo45jNB\",\n"
-            . "  \"card\": {\n"
-            . "    \"lastDigits\": \"0000\",\n"
-            . "    \"cardExpiry\": {\n"
-            . "      \"month\": \"10\",\n"
-            . "      \"year\": \"2025\"\n"
-            . "    },\n"
-            . "    \"cardBin\": \"403711\",\n"
-            . "    \"holderName\": \"Dilip\",\n"
-            . "    \"cardCategory\": \"CREDIT\",\n"
-            . "    \"issuingCountry\": \"US\"\n"
-            . "  },\n"
-            . "  \"billingDetailsId\": \"24ce6840-6d41-4cfa-b27d-cc3e26124236\",\n"
-            . "  \"customerId\": \"af363924-bd85-4996-8b77-d78fd696b32b\"\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCreateMultiUsePaymentHandleResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"8640a692-556e-4e31-b10b-d01256328421\",\n"
-            . "  \"merchantRefNum\": \"42206439877181100\",\n"
-            . "  \"status\": \"PAYABLE\",\n"
-            . "  \"usage\": \"MULTI_USE\",\n"
-            . "  \"paymentType\": \"EFT\",\n"
-            . "  \"action\": \"NONE\",\n"
-            . "  \"executionMode\": \"SYNCHRONOUS\",\n"
-            . "  \"accountId\": \"1013691440\",\n"
-            . "  \"paymentHandleToken\": \"DSR5qCCJZElTvxe\",\n"
-            . "  \"eft\": {\n"
-            . "    \"lastDigits\": \"12\",\n"
-            . "    \"accountHolderName\": \"XYZ Company\",\n"
-            . "    \"paymentDescriptor\": \"payment dtr\",\n"
-            . "    \"institutionId\": \"001\",\n"
-            . "    \"transitNumber\": \"22446\"\n"
-            . "  },\n"
-            . "  \"paymentHandleTokenFrom\": \"SAOMuI4DuXuLXulf\",\n"
-            . "  \"billingDetailsId\": \"b7be6f48-143d-4be0-95aa-8e8539f17ccc\",\n"
-            . "  \"customerId\": \"e10bd22b-056f-4997-a4f3-3c4d2032baa4\"\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetCustomerPaymentHandleBacsResponse(): string
-    {
-        return "{"
-            . "\"id\": \"c672fd10-962e-4f57-a1f2-1c3105ffe5d3\","
-            . "\"paymentType\": \"BACS\","
-            . "\"paymentHandleToken\": \"DsOYXhRmFcOCSF2\","
-            . "\"merchantRefNum\": \"167625194625055\","
-            . "\"status\": \"PAYABLE\","
-            . "\"masterMerchantId\": \"6932900\","
-            . "\"usage\": \"MULTI_USE\","
-            . "\"action\": \"NONE\","
-            . "\"executionMode\": \"ASYNCHRONOUS\","
-            . "\"creationTime\": \"2023-01-27T13:09:38Z\","
-            . "\"bacs\": {"
-            . "  \"lastDigits\": \"72\","
-            . "  \"accountHolderName\": \"Sally Barnes\","
-            . "  \"nickName\": \"Sally's Barclays Account\","
-            . "  \"sortCode\": \"086081\""
-            . "},"
-            . "\"mandates\": ["
-            . "  {"
-            . "    \"id\": \"6c44d842-5720-4155-beb2-f8704a9daf0f\","
-            . "    \"reference\": \"DOCNIG2336\","
-            . "    \"status\": \"PENDING\""
-            . "  }"
-            . "],"
-            . "\"billingDetailsId\": \"a85cb1b2-d3b5-44e0-9c1a-4760fb7deceb\","
-            . "\"customerId\": \"7ab149cc-a65c-4a28-b81a-0a271fa568a1\""
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockUpdateCustomerPaymentHandleCardResponse(): string
-    {
-        return "{"
-            . "\"id\": \"218d68c7-77c8-4d37-9d06-0a4bb5272adb\","
-            . "\"merchantRefNum\": \"ad9c23c2-509b-43ae-bf5d-64554c9fc378\","
-            . "\"status\": \"INITIATED\","
-            . "\"usage\": \"MULTI_USE\","
-            . "\"paymentType\": \"CARD\","
-            . "\"action\": \"NONE\","
-            . "\"paymentHandleToken\": \"Cy4WEGJ9IWIkcUn\","
-            . "\"billingDetailsId\": \"786cf0cd-4296-43ce-8a57-5f4675e3fafd\","
-            . "\"card\": {"
-            . "  \"lastDigits\": \"2222\","
-            . "  \"cardExpiry\": {"
-            . "    \"month\": \"12\","
-            . "    \"year\": \"2021\""
-            . "  },"
-            . "  \"issuingCountry\": \"US\""
-            . "},"
-            . "\"merchantDescriptor\": {"
-            . "  \"dynamicDescriptor\": \"Casino slots payin\","
-            . "  \"phone\": \"189134336\""
-            . "}"
-            . "}";
-    }
-
 }

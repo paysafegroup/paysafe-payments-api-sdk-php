@@ -11,7 +11,7 @@ use Paysafe\PhpSdk\Exception\RequestConflictException;
 use Paysafe\PhpSdk\Model\VoidAuthorization\VoidAuthorizationRequest;
 use Paysafe\PhpSdk\Service\VoidAuthorizationService;
 
-class VoidAuthorizationServiceTest extends BasePaysafeTest
+class VoidAuthorizationServiceTest extends BasePaysafeService
 {
     const VOID_AUTHORIZATION_ENDPOINT = "/paymenthub/v1/payments/%s/voidauths";
     const VOID_AUTHORIZATION_GET_ENDPOINT = "/paymenthub/v1/voidauths";
@@ -29,12 +29,13 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
         $this->voidAuthService = new VoidAuthorizationService($this->paysafeApiClient);
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VoidAuthorizationService::voidAuthorization
      *
      * @return void
+     *
+     * @throws PaysafeSdkException
      */
     public function testVoidAuthorization_isSuccessful(): void
     {
@@ -48,7 +49,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockVoidAuthorizationResponse()
+                    $this->get_resource_json('void_authorization/void_authorization_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -87,7 +88,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -131,7 +132,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -154,7 +155,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
 
     /**
      * @test
@@ -188,7 +188,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
         }
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VoidAuthorizationService::getVoidAuthorizationById
@@ -208,7 +207,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        $this->mockGetVoidAuthorizationByIdResponse()
+                        $this->get_resource_json('void_authorization/get_void_authorization_by_id_response.json')
                     )
                 );
             $replaceService = function() use ($mockCore) {
@@ -227,7 +226,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
 
     /**
      * @test
@@ -249,7 +247,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                             'Content-Type' => 'application/json',
                             ExceptionBuilder::HEADER_X_INTERNAL_CORRELATION_ID => 'random_correlation_id',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -274,7 +272,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
         }
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VoidAuthorizationService::getVoidAuthorizationById
@@ -295,7 +292,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                             'Content-Type' => 'application/json',
                             ExceptionBuilder::HEADER_X_INTERNAL_CORRELATION_ID => 'random_correlation_id',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -341,7 +338,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                             'Content-Type' => 'application/json',
                             ExceptionBuilder::HEADER_X_INTERNAL_CORRELATION_ID => 'random_correlation_id',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -364,7 +361,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
 
     /**
      * @test
@@ -398,7 +394,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
         }
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VoidAuthorizationService::getVoidAuthorizationUsingMerchantReferenceNumber
@@ -418,7 +413,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        $this->mockGetVoidAuthorizationUsingMerchantReferenceNumberResponse()
+                        $this->get_resource_json('void_authorization/get_void_authorization_using_merchant_ref_number_response.json')
                     )
                 );
             $replaceService = function() use ($mockCore) {
@@ -451,7 +446,6 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
         }
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VoidAuthorizationService::voidAuthorization
@@ -472,7 +466,7 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
                             'Content-Type' => 'application/json',
                             ExceptionBuilder::HEADER_X_INTERNAL_CORRELATION_ID => 'random_correlation_id',
                         ],
-                        self::REQUEST_CONFLICT_ERROR_RESPONSE
+                        $this->get_resource_json('error/409_request_conflict_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -506,56 +500,4 @@ class VoidAuthorizationServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
-    /**
-     * @return string
-     */
-    private function mockVoidAuthorizationResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"9b84f316-e120-4948-97f6-c97d5a305eb3\",\n"
-            . "  \"merchantRefNum\": \"a85c6ed15955adeed35e\",\n"
-            . "  \"txnTime\": \"2023-01-20T05:51:42Z\",\n"
-            . "  \"status\": \"COMPLETED\",\n"
-            . "  \"amount\": 500\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetVoidAuthorizationByIdResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"8b84f316-e120-4948-97f6-c97d5a305ee5\",\n"
-            . "  \"merchantRefNum\": \"a85c6ed15955adeed35e\",\n"
-            . "  \"txnTime\": \"2023-01-20T05:51:42Z\",\n"
-            . "  \"status\": \"COMPLETED\",\n"
-            . "  \"amount\": 500\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetVoidAuthorizationUsingMerchantReferenceNumberResponse(): string
-    {
-        return "{\n"
-            . "  \"meta\": {\n"
-            . "    \"numberOfRecords\": 1,\n"
-            . "    \"limit\": 10,\n"
-            . "    \"page\": 1\n"
-            . "  },\n"
-            . "  \"voidAuths\": [\n"
-            . "    {\n"
-            . "      \"id\": \"8b84f316-e120-4948-97f6-c97d5a305ee5\",\n"
-            . "      \"merchantRefNum\": \"a85c6ed15955adeed35e\",\n"
-            . "      \"amount\": 500,\n"
-            . "      \"txnTime\": \"2023-01-20T05:51:42Z\",\n"
-            . "      \"status\": \"COMPLETED\"\n"
-            . "    }\n"
-            . "  ]\n"
-            . "}";
-    }
-
 }

@@ -10,11 +10,11 @@ use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
 use Paysafe\PhpSdk\Model\Refund\RefundRequest;
 use Paysafe\PhpSdk\Service\RefundService;
 
-class RefundServiceTest extends BasePaysafeTest
+class RefundServiceTest extends BasePaysafeService
 {
     const PROCESS_REFUND_ENDPOINT = "/paymenthub/v1/settlements/%s/refunds";
     const REFUND_ENDPOINT = "/paymenthub/v1/refunds";
-    const REFUND_ID = "6cf00c1c-fb83-4cc8-a7cc-cd9118ce4f64";
+    const REFUND_ID = "6cf00c1c-fb83-4cc8-a7cc-cd9118ce4f53";
     const SETTLEMENT_ID = "3aeb9c63-6386-46a3-9f8e-f452e722228a";
     const MERCHANT_REF_NUM = "a9318b525273ee3cda79a2f947a9";
 
@@ -32,6 +32,8 @@ class RefundServiceTest extends BasePaysafeTest
      * @covers \Paysafe\PhpSdk\Service\RefundService::getRefundById
      *
      * @return void
+     *
+     * @throws PaysafeSdkException
      */
     public function testProcessRefund_isSuccessful(): void
     {
@@ -45,7 +47,7 @@ class RefundServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockProcessCardRefundResponse()
+                    $this->get_resource_json('refund/process_refund_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -69,6 +71,8 @@ class RefundServiceTest extends BasePaysafeTest
      * @covers \Paysafe\PhpSdk\Service\RefundService::getRefundById
      *
      * @return void
+     *
+     * @throws PaysafeSdkException
      */
     public function testGetRefundById_isSuccessful(): void
     {
@@ -82,7 +86,7 @@ class RefundServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetRefundByIdResponse()
+                    $this->get_resource_json('refund/get_refund_by_id_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -116,7 +120,7 @@ class RefundServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -158,7 +162,7 @@ class RefundServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetRefundByMerchantRefResponse()
+                    $this->get_resource_json('refund/get_refund_using_merchant_ref_number_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -194,7 +198,7 @@ class RefundServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -223,6 +227,8 @@ class RefundServiceTest extends BasePaysafeTest
      * @covers \Paysafe\PhpSdk\Service\PaymentService::cancelPayment
      *
      * @return void
+     *
+     * @throws PaysafeSdkException
      */
     public function testCancelRefund_isSuccessful(): void
     {
@@ -236,7 +242,7 @@ class RefundServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCancelResponse()
+                    $this->get_resource_json('refund/cancel_refund_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -272,7 +278,7 @@ class RefundServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -318,7 +324,7 @@ class RefundServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -376,79 +382,5 @@ class RefundServiceTest extends BasePaysafeTest
             $this->assertNull($exception->getInternalCorrelationId());
             $this->assertNull($exception->getError());
         }
-    }
-
-    /**
-     * @return string
-     */
-    private function mockProcessCardRefundResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"eb4a057a-dd8a-40d7-9585-25be080bfed3\",\n"
-            . "  \"merchantRefNum\": \"92cf2183-2298-44a6-99d4-5af6d727cea3\",\n"
-            . "  \"txnTime\": \"2023-02-01T16:11:45Z\",\n"
-            . "  \"status\": \"PENDING\",\n"
-            . "  \"amount\": 1116\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetRefundByIdResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"" . self::REFUND_ID . "\",\n"
-            . "  \"merchantRefNum\": \"rYSzJTDq7JoXuQpLxHQ9n5Ful\",\n"
-            . "  \"txnTime\": \"2025-02-03T12:46:09Z\",\n"
-            . "  \"status\": \"COMPLETED\",\n"
-            . "  \"amount\": 500\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetRefundByMerchantRefResponse(): string
-    {
-        return "{\n"
-            . "  \"meta\": {\n"
-            . "    \"numberOfRecords\": 1,\n"
-            . "    \"limit\": 10,\n"
-            . "    \"page\": 1\n"
-            . "  },\n"
-            . "  \"refunds\": [\n"
-            . "    {\n"
-            . "      \"id\": \"0549c2df-f995-43e9-ad1d-64cecfd2bc37\",\n"
-            . "      \"paymentType\": \"PAYSAFECASH\",\n"
-            . "      \"merchantRefNum\": \"" . self::MERCHANT_REF_NUM . "\",\n"
-            . "      \"currencyCode\": \"USD\",\n"
-            . "      \"txnTime\": \"2023-01-20T04:21:44Z\",\n"
-            . "      \"status\": \"COMPLETED\",\n"
-            . "      \"gatewayReconciliationId\": \"b222abd6-1008-4723-83f5-615751778d16\",\n"
-            . "      \"amount\": 500,\n"
-            . "      \"updatedTime\": \"2023-01-20T04:21:45Z\",\n"
-            . "      \"statusTime\": \"2023-01-20T04:21:45Z\",\n"
-            . "      \"liveMode\": false,\n"
-            . "      \"gatewayResponse\": {\n"
-            . "        \"id\": \"b222abd6-1008-4723-83f5-615751778d16\",\n"
-            . "        \"processor\": \"PAYSAFECARD\"\n"
-            . "      },\n"
-            . "      \"source\": \"SingleAPI\"\n"
-            . "    }\n"
-            . "  ]\n"
-            . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCancelResponse(): string
-    {
-        return "{\n" .
-            "  \"id\": \"6cf00c1c-fb83-4cc8-a7cc-cd9118ce4f64\",\n" .
-            "  \"txnTime\": \"2023-01-10T12:57:22Z\",\n" .
-            "  \"status\": \"CANCELLED\"\n" .
-            "}";
     }
 }

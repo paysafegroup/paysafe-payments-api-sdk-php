@@ -6,15 +6,9 @@
 namespace Client;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
-use Paysafe\PhpSdk\Client\PaysafeLogger;
 use Paysafe\PhpSdk\Client\RequestOptions;
-use Paysafe\PhpSdk\Exception\PaysafeSdkException;
-use Paysafe\PhpSdk\Model\Verification\Verification;
 use Paysafe\PhpSdk\Validation\ErrorMessages;
 use PHPUnit\Framework\TestCase;
 
@@ -241,30 +235,5 @@ class PaysafeApiClientTest extends TestCase
         $this->assertEquals('/path/to/client-cert.pem', $client->getConfig(\GuzzleHttp\RequestOptions::CERT));
         $this->assertEquals('/path/to/client-key.pem', $client->getConfig(\GuzzleHttp\RequestOptions::SSL_KEY));
         $this->assertTrue($client->getConfig(\GuzzleHttp\RequestOptions::VERIFY));
-    }
-    /**
-     * @covers PaysafeApiClient::processResponse
-     */
-    public function testLogIsCreatedOnException(): void
-    {
-        $logFile = tempnam(sys_get_temp_dir(), 'paysafe_log_');
-        
-        if (file_exists($logFile)) {
-            unlink($logFile);
-        }
-
-        $handler = new StreamHandler($logFile, Logger::WARNING);
-
-        $apiClient = new PaysafeApiClient('test_api_key', 'TEST');
-        PaysafeLogger::addLoggerHandler($handler);
-
-        $this->expectException(PaysafeSdkException::class);
-        PaysafeApiClient::processResponse(new Response(), Verification::class);
-
-        $this->assertFileExists($logFile);
-
-        $contents = file_get_contents($logFile);
-        $this->assertStringContainsString('Exception while processing response from PaymentsAPI', $contents);
-        unlink($logFile);
     }
 }

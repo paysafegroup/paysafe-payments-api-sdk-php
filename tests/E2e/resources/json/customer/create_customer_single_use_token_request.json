@@ -1,0 +1,6 @@
+{
+  "merchantRefNum": "merchantRefNum",
+  "paymentType": [
+    "CARD"
+  ]
+}

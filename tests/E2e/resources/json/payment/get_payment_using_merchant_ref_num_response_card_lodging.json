@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "numberOfRecords": 1,
+    "limit": 10,
+    "page": 1
+  },
+  "payments": [
+    {
+      "id": "05d44b4b-5def-4cce-b31d-bbdb67ce4259",
+      "amount": 500,
+      "preAuth": false,
+      "merchantRefNum": "100001219",
+      "settleWithAuth": true,
+      "paymentHandleToken": "SCF1Us0YmU2lHXBL",
+      "txnTime": "2025-01-28T13:01:28Z",
+      "customerIp": "172.0.0.1",
+      "description": "Hotel",
+      "currencyCode": "USD",
+      "status": "COMPLETED",
+      "availableToSettle": 0,
+      "gatewayResponse": {
+        "code": "OPN",
+        "responseCode": "00",
+        "responseCodeDescription": "Approved",
+        "avsCode": "M",
+        "authCode": "376319",
+        "avsResponse": "MATCH",
+        "cvvVerification": "MATCH",
+        "serializable": true
+      },
+      "merchantDescriptor": {
+        "dynamicDescriptor": "SDK-Test"
+      },
+      "billingDetails": {
+        "nickName": "Home",
+        "street": "abcd",
+        "city": "defg",
+        "country": "US",
+        "state": "AL",
+        "zip": "94404"
+      },
+      "paymentType": "CARD",
+      "card": {
+        "cardExpiry": {
+          "month": 10,
+          "year": 2028
+        },
+        "holderName": "Dilip",
+        "cardType": "VI",
+        "cardBin": "400000",
+        "lastDigits": "2719",
+        "cardCategory": "CREDIT",
+        "issuingCountry": "US"
+      }
+    }
+  ]
+}

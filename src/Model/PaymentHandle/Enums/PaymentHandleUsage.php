@@ -1,16 +1,13 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
 
-namespace Paysafe\PhpSdk\Model\PaymentHandle\Enums;
+declare(strict_types=1);
 
-use Paysafe\PhpSdk\Model\BaseModel;
+namespace Paysafe\PhpSdk\Model\Paymenthandle\Enums;
+use Paysafe\PhpSdk\Model\Payment\Payment;
 
 /**
- * This specifies how the Payment Handle will be used for Payments. Possible values are:
- * <ul>
- *   <li>SINGLE_USE – The Payment Handle can be used for one transaction only and expires if not used.</li>
- *   <li>MULTI_USE – The Payment Handle can be used multiple times.</li>
- * </ul>
+ * This specifies how the Payment Handle will be used for Payments. Possible values are: - SINGLE_USE - The Payment Handle can be used for one transaction only and expires if not used. - MULTI_USE - The Payment Handle can be used multiple times.
  */
 class PaymentHandleUsage
 {

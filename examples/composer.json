@@ -1,0 +1,16 @@
+{
+  "name": "paysafe/merchant-demo-php",
+  "description": "Paysafe PHP SDK – Merchant Demo Application",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.0",
+    "paysafe/paymentsapi-sdk-php": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Paysafe\\MerchantDemo\\": "src/"
+    }
+  }
+}
+

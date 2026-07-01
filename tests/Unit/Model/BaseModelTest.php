@@ -5,24 +5,16 @@
 
 namespace Model;
 
-use GuzzleHttp\Psr7\Request;
-use InvalidArgumentException;
-use Paysafe\PhpSdk\Client\AutomaticRetry;
+use Paysafe\PhpSdk\Config\ObjectMapperConfiguration;
 use Paysafe\PhpSdk\Model\Customer\Customer;
+use Paysafe\PhpSdk\Model\Payment\PaymentRequest;
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\RequestInterface;
 
 class BaseModelTest extends TestCase
 {
 
     /**
-     * @covers \Paysafe\PhpSdk\Model\BaseModel
+     * @covers \Paysafe\PhpSdk\Model\Customer
      */
     public function testArrayInit()
     {
@@ -35,7 +27,7 @@ class BaseModelTest extends TestCase
     }
 
     /**
-     * @covers \Paysafe\PhpSdk\Model\BaseModel
+     * @covers \Paysafe\PhpSdk\Model\Customer
      */
     public function testArrayInitNestedObject()
     {
@@ -60,7 +52,7 @@ class BaseModelTest extends TestCase
     }
 
     /**
-     * @covers \Paysafe\PhpSdk\Model\BaseModel
+     * @covers \Paysafe\PhpSdk\Model\Customer
      */
     public function testArrayInitNestedObjectFromJsonFile()
     {
@@ -77,5 +69,23 @@ class BaseModelTest extends TestCase
         $this->assertEquals('777-555-8888', $object->getCellPhone());
         $this->assertEquals('John', $object->getFirstName());
         $this->assertEquals('Smith', $object->getLastName());
+    }
+
+    /**
+     * @test
+     * @covers \Paysafe\PhpSdk\Config\BaseModelNormalizer::normalize
+     */
+    public function serializerOmitsNullFieldsFromPayload(): void
+    {
+        $request = new PaymentRequest();
+        $request->setMerchantRefNum('mref-1');
+        $request->setAmount(500);
+        $request->setCurrencyCode('USD');
+
+        $json = ObjectMapperConfiguration::serialize($request);
+
+        $this->assertStringNotContainsString('"level2level3"', $json);
+        $this->assertStringNotContainsString('"description":null', $json);
+        $this->assertStringContainsString('"merchantRefNum":"mref-1"', $json);
     }
 }

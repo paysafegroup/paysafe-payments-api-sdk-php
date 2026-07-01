@@ -1,9 +1,9 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Service;
 
-use Exception;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Client\RequestOptions;
 use Paysafe\PhpSdk\Exception\ApiConnectionException;
@@ -45,9 +45,10 @@ class PaymentHandleService extends AbstractPaysafeService implements PaymentHand
      *
      * @param PaymentHandleRequest $paymentHandleRequest The request body to create the payment handle.
      * @param RequestOptions|null $requestOptions
+     *
      * @return PaymentHandle The created payment handle.
+     *
      * @throws PaysafeSdkException If an error occurs with the Paysafe API.
-     * @throws Exception
      */
     public function createPaymentHandle(
         PaymentHandleRequest $paymentHandleRequest,

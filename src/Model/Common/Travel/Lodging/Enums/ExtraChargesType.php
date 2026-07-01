@@ -1,5 +1,7 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common\Travel\Lodging\Enums;
 
@@ -8,12 +10,10 @@ namespace Paysafe\PhpSdk\Model\Common\Travel\Lodging\Enums;
  */
 class ExtraChargesType
 {
-	const RESTAURANT = "RESTAURANT";
-	const GIFT_SHOP = "GIFT_SHOP";
-	const MINI_BAR = "MINI_BAR";
-	const TELEPHONE = "TELEPHONE";
-	const OTHER = "OTHER";
-	const LAUNDRY = "LAUNDRY";
-
-
+    const RESTAURANT = 'RESTAURANT';
+    const GIFT_SHOP = 'GIFT_SHOP';
+    const MINI_BAR = 'MINI_BAR';
+    const TELEPHONE = 'TELEPHONE';
+    const OTHER = 'OTHER';
+    const LAUNDRY = 'LAUNDRY';
 }

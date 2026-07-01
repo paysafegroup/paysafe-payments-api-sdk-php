@@ -1,0 +1,137 @@
+<?php
+{{>licenseInfo}}
+
+declare(strict_types=1);
+
+namespace {{modelPackage}};
+
+{{#models}}
+{{#model}}
+{{#isEnum}}
+{{^description}}
+/**
+ * {{classname}}
+ */
+{{/description}}
+{{#description}}
+/**
+ * {{{description}}}
+ */
+{{/description}}
+class {{classname}}
+{
+{{#allowableValues}}
+{{#enumVars}}
+    const {{name}} = {{{value}}};
+{{/enumVars}}
+{{/allowableValues}}
+}
+{{/isEnum}}
+{{^isEnum}}
+
+{{^description}}
+/**
+ * {{classname}}
+ */
+{{/description}}
+{{#description}}
+/**
+ * {{{description}}}
+ */
+{{/description}}
+class {{classname}}{{#parent}} extends {{{parent}}}{{/parent}}{{^parent}} extends BaseModel{{/parent}}
+{
+{{#vars}}
+{{#description}}
+    /**
+     * {{{description}}}
+     */
+{{/description}}
+{{#isMixed}}
+    private ${{name}} = null;
+{{/isMixed}}
+{{^isMixed}}
+    private {{#isArray}}array{{/isArray}}{{^isArray}}?{{#isDateTime}}string{{/isDateTime}}{{#isDate}}string{{/isDate}}{{#isFloat}}int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}} ${{name}}{{#isArray}} = []{{/isArray}}{{^isArray}} = null{{/isArray}};
+{{/isMixed}}
+{{/vars}}
+
+{{#vars}}
+    /**
+     * Builder function for {{name}}
+     *
+     * @param {{#isArray}}{{#items}}{{#complexType}}{{{complexType}}}[]{{/complexType}}{{^complexType}}{{{dataType}}}[]{{/complexType}}{{/items}}{{^items}}array{{/items}}{{/isArray}}{{^isArray}}{{#isDateTime}}string{{/isDateTime}}{{#isDate}}string{{/isDate}}{{#isFloat}}int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}} ${{name}}
+     *
+     * @return $this
+     */
+{{#isMixed}}
+    public function {{name}}(${{name}}): self
+    {
+        $this->{{setter}}(${{name}});
+
+        return $this;
+    }
+{{/isMixed}}
+{{^isMixed}}
+    public function {{name}}({{#isArray}}array{{/isArray}}{{^isArray}}{{#isDateTime}}?string{{/isDateTime}}{{#isDate}}?string{{/isDate}}{{#isFloat}}?int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}?{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}} ${{name}}): self
+    {
+        $this->{{setter}}(${{name}});
+
+        return $this;
+    }
+{{/isMixed}}
+
+    /**
+     * Setter function for {{name}}
+     *
+     * @param {{#isArray}}{{#items}}{{#complexType}}{{{complexType}}}[]{{/complexType}}{{^complexType}}{{{dataType}}}[]{{/complexType}}{{/items}}{{^items}}array{{/items}}{{/isArray}}{{^isArray}}{{#isDateTime}}string{{/isDateTime}}{{#isDate}}string{{/isDate}}{{#isFloat}}int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}} ${{name}}
+     *
+     * @return void
+     */
+{{#isMixed}}
+    public function {{setter}}(${{name}}): void
+    {
+        $this->{{name}} = ${{name}};
+    }
+{{/isMixed}}
+{{^isMixed}}
+    public function {{setter}}({{#isArray}}array{{/isArray}}{{^isArray}}{{#isDateTime}}?string{{/isDateTime}}{{#isDate}}?string{{/isDate}}{{#isFloat}}?int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}?{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}} ${{name}}): void
+    {
+        $this->{{name}} = {{#isFloat}}(${{name}} !== null) ? (int) ${{name}} : null{{/isFloat}}{{^isFloat}}${{name}}{{/isFloat}};
+    }
+{{/isMixed}}
+
+    /**
+     * Getter function for {{name}}
+     *
+     * @return {{#isArray}}{{#items}}{{#complexType}}{{{complexType}}}[]{{/complexType}}{{^complexType}}{{{dataType}}}[]{{/complexType}}{{/items}}{{^items}}array{{/items}}{{/isArray}}{{^isArray}}?{{#isDateTime}}string{{/isDateTime}}{{#isDate}}string{{/isDate}}{{#isFloat}}int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}}
+     */
+{{#isMixed}}
+    public function {{getter}}()
+    {
+        return $this->{{name}};
+    }
+{{/isMixed}}
+{{^isMixed}}
+    public function {{getter}}(): {{#isArray}}array{{/isArray}}{{^isArray}}?{{#isDateTime}}string{{/isDateTime}}{{#isDate}}string{{/isDate}}{{#isFloat}}int{{/isFloat}}{{^isDateTime}}{{^isDate}}{{^isFloat}}{{#isEnum}}string{{/isEnum}}{{#isEnumRef}}string{{/isEnumRef}}{{^isEnum}}{{^isEnumRef}}{{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{dataType}}}{{/complexType}}{{/isEnumRef}}{{/isEnum}}{{/isFloat}}{{/isDate}}{{/isDateTime}}{{/isArray}}
+    {
+        return $this->{{name}}{{#isArray}} ?? []{{/isArray}};
+    }
+{{/isMixed}}
+{{/vars}}
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class {{classname}} {" . PHP_EOL
+{{#vars}}
+            . "    {{name}}: " . $this->toIndentedString($this->{{name}} ?? null) . PHP_EOL
+{{/vars}}
+            . "}";
+    }
+}
+{{/isEnum}}
+{{/model}}
+{{/models}}

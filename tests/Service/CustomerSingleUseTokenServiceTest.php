@@ -9,13 +9,13 @@ use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Model\Customer\SingleUseCustomerToken\SingleUseCustomerTokenRequest;
 use Paysafe\PhpSdk\Service\CustomerSingleUseTokenService;
 
-class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
+class CustomerSingleUseTokenServiceTest extends BasePaysafeService
 {
     const CREATE_CUSTOMER_SINGLE_USE_TOKEN_ENDPOINT = "/paymenthub/v1/customers/%s/singleusecustomertokens";
     const GET_CUSTOMER_SINGLE_USE_TOKEN_ENDPOINT = "/paymenthub/v1/singleusecustomertokens/%s";
-    const CUSTOMER_ID = "73ed165d-de44-4c5f-990c-392a84708cc1";
+    const CUSTOMER_ID = "28511b97-6473-4110-92f7-69bbd3412bd0";
     const NON_EXISTING_CUSTOMER_ID = "non-existing-customer-id";
-    const SINGLE_USE_TOKEN_ID = "86211e38-c467-4a3f-bbc6-7c739f67b01f";
+    const SINGLE_USE_TOKEN_ID = "46776add-2e89-4ec1-96ac-845d017b4ad8";
     const NON_EXISTING_TOKEN_ID = "non-existing-token-id";
 
 
@@ -48,7 +48,7 @@ class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateSingleUseCustomerTokenResponse()
+                    $this->get_resource_json('customer_single_use_token/create_single_use_customer_token_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -92,7 +92,7 @@ class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function() use ($mockCore) {
@@ -137,7 +137,7 @@ class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateSingleUseCustomerTokenResponse()
+                    $this->get_resource_json('customer_single_use_token/get_single_use_customer_token_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -151,7 +151,7 @@ class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
         $this->assertNotNull($response);
         $this->assertNotNull($response->getTimeToLiveSeconds());
         $this->assertEquals(self::SINGLE_USE_TOKEN_ID, $response->getId());
-        $this->assertEquals("SPt2i5lriNH9owTA", $response->getSingleUseCustomerToken());
+        $this->assertEquals("SPfslSE3qEuSCdYF", $response->getSingleUseCustomerToken());
         $this->assertEquals("ACTIVE", $response->getStatus());
         $this->assertEquals(self::CUSTOMER_ID, $response->getCustomerId());
     }
@@ -175,7 +175,7 @@ class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function() use ($mockCore) {
@@ -195,20 +195,5 @@ class CustomerSingleUseTokenServiceTest extends BasePaysafeTest
             $this->assertEquals("5269", $exception->getError()->getCode());
             $this->assertEquals("Entity not found", $exception->getError()->getMessage());
         }
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCreateSingleUseCustomerTokenResponse(): string
-    {
-        return "{\n"
-            . "  \"id\": \"86211e38-c467-4a3f-bbc6-7c739f67b01f\",\n"
-            . "  \"timeToLiveSeconds\": 899,\n"
-            . "  \"status\": \"ACTIVE\",\n"
-            . "  \"singleUseCustomerToken\": \"SPt2i5lriNH9owTA\",\n"
-            . "  \"locale\": \"en_US\",\n"
-            . "  \"customerId\": \"73ed165d-de44-4c5f-990c-392a84708cc1\"\n"
-            . "}";
     }
 }

@@ -1,6 +1,7 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Service;
 
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
@@ -8,7 +9,6 @@ use Paysafe\PhpSdk\Client\RequestOptions;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
 use Paysafe\PhpSdk\Model\Common\Cancel\CancelResponse;
-use Paysafe\PhpSdk\Model\Payment\PaymentList;
 use Paysafe\PhpSdk\Model\Refund\Refund;
 use Paysafe\PhpSdk\Model\Refund\RefundList;
 use Paysafe\PhpSdk\Model\Refund\RefundRequest;

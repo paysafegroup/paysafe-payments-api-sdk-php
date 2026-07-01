@@ -12,7 +12,7 @@ use Paysafe\PhpSdk\Model\Common\PaymentFacilitator\SubMerchantAddress;
 use Paysafe\PhpSdk\Model\Verification\VerificationRequest;
 use Paysafe\PhpSdk\Service\VerificationService;
 
-class VerificationServiceTest extends BasePaysafeTest
+class VerificationServiceTest extends BasePaysafeService
 {
     const VERIFICATION_ENDPOINT = "/paymenthub/v1/verifications";
 
@@ -28,12 +28,13 @@ class VerificationServiceTest extends BasePaysafeTest
         $this->verificationService = new VerificationService($this->paysafeApiClient);
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VerificationService::getVerificationById
      *
      * @return void
+     *
+     * @throws PaysafeSdkException
      */
     public function testGetVerificationById_isSuccessful(): void
     {
@@ -47,7 +48,7 @@ class VerificationServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetResponse()
+                    $this->get_resource_json('verification/get_verification_by_id_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -81,7 +82,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -127,7 +128,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -173,7 +174,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -251,7 +252,7 @@ class VerificationServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetVerificationUsingMerchantReferenceNumber()
+                    $this->get_resource_json('verification/get_verification_using_merchant_ref_num_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -288,7 +289,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -334,7 +335,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -380,7 +381,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -405,7 +406,6 @@ class VerificationServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
 
     /**
      * @test
@@ -458,7 +458,7 @@ class VerificationServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateVerification()
+                    $this->get_resource_json('verification/create_verification_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -492,7 +492,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::INVALID_CREDENTIALS_ERROR_RESPONSE
+                        $this->get_resource_json('error/401_invalid_credentials_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -518,7 +518,6 @@ class VerificationServiceTest extends BasePaysafeTest
         }
     }
 
-
     /**
      * @test
      * @covers \Paysafe\PhpSdk\Service\VerificationService::createVerification
@@ -538,7 +537,7 @@ class VerificationServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::UNAUTHORIZED_ACCESS_ERROR_RESPONSE
+                        $this->get_resource_json('error/403_unauthorized_response.json')
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -563,7 +562,6 @@ class VerificationServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
 
     /**
      * @test
@@ -625,210 +623,4 @@ class VerificationServiceTest extends BasePaysafeTest
                 )
             );
     }
-
-    /**
-     * @return string
-     */
-    private function mockGetResponse(): string
-    {
-        return "{\n" .
-            "  \"id\": \"71aea8ae-e801-4df3-9436-c5a61c88d3ad\",\n" .
-            "  \"paymentHandleToken\": \"SCUgzJL5jlRIKCiX\",\n" .
-            "  \"merchantRefNum\": \"20095817730019123\",\n" .
-            "  \"customerIp\": \"10.10.12.64\",\n" .
-            "  \"currencyCode\": \"USD\",\n" .
-            "  \"paymentType\": \"CARD\",\n" .
-            "  \"description\": \"Verify card for payment request\",\n" .
-            "  \"txnTime\": \"2018-12-11T16:33:49Z\",\n" .
-            "  \"gatewayResponse\": {\n" .
-            "    \"authCode\": \"XXXXXX\",\n" .
-            "    \"avsResponse\": \"MATCH\",\n" .
-            "    \"cvvVerification\": \"NOT_PROCESSED\",\n" .
-            "    \"nameVerification\": \"MATCH\",\n" .
-            "    \"firstNameVerification\": \"MATCH\",\n" .
-            "    \"lastNameVerification\": \"MATCH\"\n" .
-            "  },\n" .
-            "  \"status\": \"COMPLETED\",\n" .
-            "  \"profile\": {\n" .
-            "    \"locale\": \"en_US\",\n" .
-            "    \"firstName\": \"John\",\n" .
-            "    \"lastName\": \"Smith\",\n" .
-            "    \"email\": \"john.smith@somedomain.com\",\n" .
-            "    \"phone\": \"713-444-5555\",\n" .
-            "    \"dateOfBirth\": {\n" .
-            "      \"day\": 6,\n" .
-            "      \"month\": 5,\n" .
-            "      \"year\": 1998\n" .
-            "    }\n" .
-            "  },\n" .
-            "  \"authentication\": {\n" .
-            "    \"id\": \"5d4db3bc-34c9-417f-a051-0d992ad9284e\",\n" .
-            "    \"eci\": 5,\n" .
-            "    \"cavv\": \"AAABBhkXYgAAAAACBxdiENhf7A.\",\n" .
-            "    \"xid\": \"aWg4N1ZZOE53TkFrazJuMmkyRDA=\",\n" .
-            "    \"status\": \"COMPLETED \",\n" .
-            "    \"merchantRefNum\": \"merchantABC-123-authentications\",\n" .
-            "    \"threeDEnrollment\": \"Y\",\n" .
-            "    \"threeDResult\": \"Y\",\n" .
-            "    \"signatureStatus\": \"Y\",\n" .
-            "    \"exemptionIndicator\": \"LOW_VALUE_EXEMPTION\"\n" .
-            "  },\n" .
-            "  \"paymentFacilitator\": {\n" .
-            "    \"subMerchant\": {\n" .
-            "      \"id\": \"123456789\",\n" .
-            "      \"name\": \"PayFacSubMerchant\",\n" .
-            "      \"phone\": \"478234562331\",\n" .
-            "      \"email\": \"payfac@mail.com\",\n" .
-            "      \"url\": \"www.payfac.com\",\n" .
-            "      \"address\": {\n" .
-            "        \"street\": \"100 Queen Street West\",\n" .
-            "        \"city\": \"Toronto\",\n" .
-            "        \"state\": \"ON\",\n" .
-            "        \"country\": \"CA\",\n" .
-            "        \"zip\": \"M5H 2N2\"\n" .
-            "      }\n" .
-            "    }\n" .
-            "  }\n" .
-        "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetVerificationUsingMerchantReferenceNumber(): string
-    {
-        return "{\n" .
-            "  \"meta\": {\n" .
-            "    \"numberOfRecords\": 1,\n" .
-            "    \"limit\": 10,\n" .
-            "    \"page\": 1\n" .
-            "  },\n" .
-            "  \"verifications\": [\n" .
-            "    {\n" .
-            "      \"id\": \"71aea8ae-e801-4df3-9436-c5a61c88d3ad\",\n" .
-            "      \"paymentHandleToken\": \"SCUgzJL5jlRIKCiX\",\n" .
-            "      \"merchantRefNum\": \"2009581773001912343\",\n" .
-            "      \"customerIp\": \"10.10.12.64\",\n" .
-            "      \"currencyCode\": \"USD\",\n" .
-            "      \"paymentType\": \"CARD\",\n" .
-            "      \"description\": \"Verify card for payment request\",\n" .
-            "      \"txnTime\": \"2018-12-11T16:33:49Z\",\n" .
-            "      \"gatewayResponse\": {\n" .
-            "        \"authCode\": \"XXXXXX\",\n" .
-            "        \"avsResponse\": \"MATCH\",\n" .
-            "        \"cvvVerification\": \"NOT_PROCESSED\",\n" .
-            "        \"nameVerification\": \"MATCH\",\n" .
-            "        \"firstNameVerification\": \"MATCH\",\n" .
-            "        \"lastNameVerification\": \"MATCH\"\n" .
-            "      },\n" .
-            "      \"status\": \"COMPLETED\",\n" .
-            "      \"profile\": {\n" .
-            "        \"firstName\": \"John\",\n" .
-            "        \"lastName\": \"Smith\",\n" .
-            "        \"email\": \"john.smith@somedomain.com\",\n" .
-            "        \"phone\": \"713-444-5555\",\n" .
-            "        \"dateOfBirth\": {\n" .
-            "          \"day\": 6,\n" .
-            "          \"month\": 5,\n" .
-            "          \"year\": 1998\n" .
-            "        }\n" .
-            "      },\n" .
-            "      \"authentication\": {\n" .
-            "        \"id\": \"5d4db3bc-34c9-417f-a051-0d992ad9284e\",\n" .
-            "        \"eci\": 5,\n" .
-            "        \"cavv\": \"AAABBhkXYgAAAAACBxdiENhf7A.=\",\n" .
-            "        \"xid\": \"aWg4N1ZZOE53TkFrazJuMmkyRDA=\",\n" .
-            "        \"status\": \"COMPLETED \",\n" .
-            "        \"merchantRefNum\": \"merchantABC-123-authentications\",\n" .
-            "        \"threeDEnrollment\": \"Y\",\n" .
-            "        \"threeDResult\": \"Y\",\n" .
-            "        \"signatureStatus\": \"Y\",\n" .
-            "        \"exemptionIndicator\": \"LOW_VALUE_EXEMPTION\"\n" .
-            "      },\n" .
-            "      \"paymentFacilitator\": {\n" .
-            "        \"subMerchant\": {\n" .
-            "          \"id\": \"123456789\",\n" .
-            "          \"name\": \"PayFacSubMerchant\",\n" .
-            "          \"phone\": \"478234562331\",\n" .
-            "          \"email\": \"payfac@mail.com\",\n" .
-            "          \"url\": \"www.payfac.com\",\n" .
-            "          \"address\": {\n" .
-            "            \"street\": \"100 Queen Street West\",\n" .
-            "            \"city\": \"Toronto\",\n" .
-            "            \"state\": \"ON\",\n" .
-            "            \"country\": \"CA\",\n" .
-            "            \"zip\": \"M5H 2N2\"\n" .
-            "          }\n" .
-            "        }\n" .
-            "      }\n" .
-            "    }\n" .
-            "  ]\n" .
-        "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCreateVerification(): string
-    {
-        return "{\n" .
-            "  \"id\": \"1871638c-0be8-42b8-b5c3-224f8d52ef20\",\n" .
-            "  \"paymentType\": \"CARD\",\n" .
-            "  \"paymentHandleToken\": \"SCTGXiTclLWRk5Pt\",\n" .
-            "  \"merchantRefNum\": \"2ca14f87ff6f60976d18\",\n" .
-            "  \"currencyCode\": \"USD\",\n" .
-            "  \"txnTime\": \"2023-01-20T06:03:14Z\",\n" .
-            "  \"customerIp\": \"172.10.12.64\",\n" .
-            "  \"status\": \"COMPLETED\",\n" .
-            "  \"description\": \"Winning payment from Loto 649\",\n" .
-            "  \"gatewayResponse\": {\n" .
-            "    \"authCode\": \"XXXXXX\",\n" .
-            "    \"cvvVerification\": \"NOT_PROCESSED\",\n" .
-            "    \"nameVerification\": \"MATCH\",\n" .
-            "    \"firstNameVerification\": \"MATCH\",\n" .
-            "    \"lastNameVerification\": \"MATCH\"\n" .
-            "  },\n" .
-            "  \"profile\": {\n" .
-            "    \"locale\": \"en_US\",\n" .
-            "    \"firstName\": \"John\",\n" .
-            "    \"lastName\": \"Smith\",\n" .
-            "    \"email\": \"john.smith@somedomain.com\",\n" .
-            "    \"phone\": \"713-444-5555\",\n" .
-            "    \"dateOfBirth\": {\n" .
-            "      \"day\": 6,\n" .
-            "      \"month\": 5,\n" .
-            "      \"year\": 1998\n" .
-            "    }\n" .
-            "  },\n" .
-            "  \"authentication\": {\n" .
-            "    \"id\": \"5d4db3bc-34c9-417f-a051-0d992ad9284e\",\n" .
-            "    \"eci\": 5,\n" .
-            "    \"cavv\": \"AAABBhkXYgAAAAACBxdiENhf7A.=\",\n" .
-            "    \"xid\": \"aWg4N1ZZOE53TkFrazJuMmkyRDA=\",\n" .
-            "    \"status\": \"COMPLETED \",\n" .
-            "    \"merchantRefNum\": \"merchantABC-123-authentications\",\n" .
-            "    \"threeDEnrollment\": \"Y\",\n" .
-            "    \"threeDResult\": \"Y\",\n" .
-            "    \"signatureStatus\": \"Y\",\n" .
-            "    \"exemptionIndicator\": \"LOW_VALUE_EXEMPTION\"\n" .
-            "  },\n" .
-            "  \"paymentFacilitator\": {\n" .
-            "    \"subMerchant\": {\n" .
-            "      \"id\": \"123456789\",\n" .
-            "      \"name\": \"PayFacSubMerchant\",\n" .
-            "      \"phone\": \"478234562331\",\n" .
-            "      \"email\": \"payfac@mail.com\",\n" .
-            "      \"url\": \"www.payfac.com\",\n" .
-            "      \"address\": {\n" .
-            "        \"street\": \"100 Queen Street West\",\n" .
-            "        \"city\": \"Toronto\",\n" .
-            "        \"state\": \"ON\",\n" .
-            "        \"country\": \"CA\",\n" .
-            "        \"zip\": \"M5H 2N2\"\n" .
-            "      }\n" .
-            "    }\n" .
-            "  }\n" .
-        "}";
-    }
-
 }

@@ -1,1241 +1,1694 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common;
-
 use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Customer\Customer;
+use Paysafe\PhpSdk\Model\Lpm\Skrill;
+use Paysafe\PhpSdk\Model\Payment\Payment;
+
 
 /**
- * This is the read-only raw response returned by an acquirer or PSP.
+ * Read only raw response from the acquirer or PSP.
  */
 class GatewayResponse extends BaseModel
 {
-
-	private string $id;
-	private string $processor;
-	private string $code;
-	private string $responseCode;
-	private string $responseCodeDescription;
-	private string $avsCode;
-	private string $avsResponse;
-	private string $nameVerification;
-	private string $firstNameVerification;
-	private string $lastNameVerification;
-	private string $balanceResponse;
-	private string $mid;
-	private string $terminalId;
-	private string $batchNumber;
-	private string $seqNumber;
-	private string $effectiveDate;
-	private string $financingType;
-	private string $plan;
-	private string $gracePeriod;
-	private string $term;
-	private string $responseId;
-	private string $requestId;
-	private string $description;
-	private string $authCode;
-	private string $txnDateTime;
-	private string $referenceNbr;
-	private string $responseReasonCode;
-	private string $cvvVerification;
-	private string $cvv2Result;
-	private string $status;
-	private string $orderId;
-	private string $operationId;
-
-	/**
-	 * Builder function for id
-	 * 
-	 * @param string $id
-	 * 
-	 * @return $this
-	 */
-	public function id(string $id): self
-	{
-		$this->setId($id);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for id
-	 * 
-	 * @param string $id
-	 * 
-	 * @return void
-	 */
-	public function setId(string $id): void
-	{
-		$this->id = $id;
-	}
-
-	/**
-	 * This is the response id returned by the processor
-	 * 
-	 * @return string
-	 */
-	public function getId(): string
-	{
-		return $this->id;
-	}
-
-	/**
-	 * Builder function for processor
-	 * 
-	 * @param string $processor
-	 * 
-	 * @return $this
-	 */
-	public function processor(string $processor): self
-	{
-		$this->setProcessor($processor);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for processor
-	 * 
-	 * @param string $processor
-	 * 
-	 * @return void
-	 */
-	public function setProcessor(string $processor): void
-	{
-		$this->processor = $processor;
-	}
-
-	/**
-	 * This is the processor code of the transaction at Paysafe side
-	 * 
-	 * @return string
-	 */
-	public function getProcessor(): string
-	{
-		return $this->processor;
-	}
-
-	/**
-	 * Builder function for code
-	 * 
-	 * @param string $code
-	 * 
-	 * @return $this
-	 */
-	public function code(string $code): self
-	{
-		$this->setCode($code);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for code
-	 * 
-	 * @param string $code
-	 * 
-	 * @return void
-	 */
-	public function setCode(string $code): void
-	{
-		$this->code = $code;
-	}
-
-	/**
-	 * This is acquirer identification code, such as VPS, GPS, etc.
-	 * 
-	 * @return string
-	 */
-	public function getCode(): string
-	{
-		return $this->code;
-	}
-
-	/**
-	 * Builder function for responseCode
-	 * 
-	 * @param string $responseCode
-	 * 
-	 * @return $this
-	 */
-	public function responseCode(string $responseCode): self
-	{
-		$this->setResponseCode($responseCode);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for responseCode
-	 * 
-	 * @param string $responseCode
-	 * 
-	 * @return void
-	 */
-	public function setResponseCode(string $responseCode): void
-	{
-		$this->responseCode = $responseCode;
-	}
-
-	/**
-	 * This is the raw response returned by the acquirer.
-	 * 
-	 * @return string
-	 */
-	public function getResponseCode(): string
-	{
-		return $this->responseCode;
-	}
-
-	/**
-	 * Builder function for responseCodeDescription
-	 * 
-	 * @param string $responseCodeDescription
-	 * 
-	 * @return $this
-	 */
-	public function responseCodeDescription(string $responseCodeDescription): self
-	{
-		$this->setResponseCodeDescription($responseCodeDescription);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for responseCodeDescription
-	 * 
-	 * @param string $responseCodeDescription
-	 * 
-	 * @return void
-	 */
-	public function setResponseCodeDescription(string $responseCodeDescription): void
-	{
-		$this->responseCodeDescription = $responseCodeDescription;
-	}
-
-	/**
-	 * This is the raw response code description returned by the acquirer.
-	 * 
-	 * @return string
-	 */
-	public function getResponseCodeDescription(): string
-	{
-		return $this->responseCodeDescription;
-	}
-
-	/**
-	 * Builder function for avsCode
-	 * 
-	 * @param string $avsCode
-	 * 
-	 * @return $this
-	 */
-	public function avsCode(string $avsCode): self
-	{
-		$this->setAvsCode($avsCode);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for avsCode
-	 * 
-	 * @param string $avsCode
-	 * 
-	 * @return void
-	 */
-	public function setAvsCode(string $avsCode): void
-	{
-		$this->avsCode = $avsCode;
-	}
-
-	/**
-	 * This is the raw AVS code returned by the acquirer.
-	 * 
-	 * @return string
-	 */
-	public function getAvsCode(): string
-	{
-		return $this->avsCode;
-	}
-
-	/**
-	 * Builder function for avsResponse
-	 * 
-	 * @param string $avsResponse
-	 * 
-	 * @return $this
-	 */
-	public function avsResponse(string $avsResponse): self
-	{
-		$this->setAvsResponse($avsResponse);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for avsResponse
-	 * 
-	 * @param string $avsResponse
-	 * 
-	 * @return void
-	 */
-	public function setAvsResponse(string $avsResponse): void
-	{
-		$this->avsResponse = $avsResponse;
-	}
-
-	/**
-	 * This is the AVS response returned from the card issuer.
-	 * 
-	 * @return string
-	 */
-	public function getAvsResponse(): string
-	{
-		return $this->avsResponse;
-	}
-
-	/**
-	 * Builder function for nameVerification
-	 * 
-	 * @param string $nameVerification
-	 * 
-	 * @return $this
-	 */
-	public function nameVerification(string $nameVerification): self
-	{
-		$this->setNameVerification($nameVerification);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for nameVerification
-	 * 
-	 * @param string $nameVerification
-	 * 
-	 * @return void
-	 */
-	public function setNameVerification(string $nameVerification): void
-	{
-		$this->nameVerification = $nameVerification;
-	}
-
-	/**
-	 * This is the account name inquiry full name set result returned by the acquirer.
-	 * 
-	 * @return string
-	 */
-	public function getNameVerification(): string
-	{
-		return $this->nameVerification;
-	}
-
-	/**
-	 * Builder function for firstNameVerification
-	 * 
-	 * @param string $firstNameVerification
-	 * 
-	 * @return $this
-	 */
-	public function firstNameVerification(string $firstNameVerification): self
-	{
-		$this->setFirstNameVerification($firstNameVerification);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for firstNameVerification
-	 * 
-	 * @param string $firstNameVerification
-	 * 
-	 * @return void
-	 */
-	public function setFirstNameVerification(string $firstNameVerification): void
-	{
-		$this->firstNameVerification = $firstNameVerification;
-	}
-
-	/**
-	 * This is the account name inquiry first name result returned by the acquirer.
-	 * 
-	 * @return string
-	 */
-	public function getFirstNameVerification(): string
-	{
-		return $this->firstNameVerification;
-	}
-
-	/**
-	 * Builder function for lastNameVerification
-	 * 
-	 * @param string $lastNameVerification
-	 * 
-	 * @return $this
-	 */
-	public function lastNameVerification(string $lastNameVerification): self
-	{
-		$this->setLastNameVerification($lastNameVerification);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for lastNameVerification
-	 * 
-	 * @param string $lastNameVerification
-	 * 
-	 * @return void
-	 */
-	public function setLastNameVerification(string $lastNameVerification): void
-	{
-		$this->lastNameVerification = $lastNameVerification;
-	}
-
-	/**
-	 * This is the account name inquiry for the last name returned by the acquirer.
-	 * 
-	 * @return string
-	 */
-	public function getLastNameVerification(): string
-	{
-		return $this->lastNameVerification;
-	}
-
-	/**
-	 * Builder function for balanceResponse
-	 * 
-	 * @param string $balanceResponse
-	 * 
-	 * @return $this
-	 */
-	public function balanceResponse(string $balanceResponse): self
-	{
-		$this->setBalanceResponse($balanceResponse);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for balanceResponse
-	 * 
-	 * @param string $balanceResponse
-	 * 
-	 * @return void
-	 */
-	public function setBalanceResponse(string $balanceResponse): void
-	{
-		$this->balanceResponse = $balanceResponse;
-	}
-
-	/**
-	 * This is the balance remaining on a gift card, if a gift card was used for the original transaction.
-	 * 
-	 * @return string
-	 */
-	public function getBalanceResponse(): string
-	{
-		return $this->balanceResponse;
-	}
-
-	/**
-	 * Builder function for mid
-	 * 
-	 * @param string $mid
-	 * 
-	 * @return $this
-	 */
-	public function mid(string $mid): self
-	{
-		$this->setMid($mid);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for mid
-	 * 
-	 * @param string $mid
-	 * 
-	 * @return void
-	 */
-	public function setMid(string $mid): void
-	{
-		$this->mid = $mid;
-	}
-
-	/**
-	 * This is the acquirer MID that was sent to the clearing house.
-	 * 
-	 * @return string
-	 */
-	public function getMid(): string
-	{
-		return $this->mid;
-	}
-
-	/**
-	 * Builder function for terminalId
-	 * 
-	 * @param string $terminalId
-	 * 
-	 * @return $this
-	 */
-	public function terminalId(string $terminalId): self
-	{
-		$this->setTerminalId($terminalId);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for terminalId
-	 * 
-	 * @param string $terminalId
-	 * 
-	 * @return void
-	 */
-	public function setTerminalId(string $terminalId): void
-	{
-		$this->terminalId = $terminalId;
-	}
-
-	/**
-	 * This is the merchant's terminal ID.
-	 * 
-	 * @return string
-	 */
-	public function getTerminalId(): string
-	{
-		return $this->terminalId;
-	}
-
-	/**
-	 * Builder function for batchNumber
-	 * 
-	 * @param string $batchNumber
-	 * 
-	 * @return $this
-	 */
-	public function batchNumber(string $batchNumber): self
-	{
-		$this->setBatchNumber($batchNumber);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for batchNumber
-	 * 
-	 * @param string $batchNumber
-	 * 
-	 * @return void
-	 */
-	public function setBatchNumber(string $batchNumber): void
-	{
-		$this->batchNumber = $batchNumber;
-	}
-
-	/**
-	 * This is the batch number.
-	 * 
-	 * @return string
-	 */
-	public function getBatchNumber(): string
-	{
-		return $this->batchNumber;
-	}
-
-	/**
-	 * Builder function for seqNumber
-	 * 
-	 * @param string $seqNumber
-	 * 
-	 * @return $this
-	 */
-	public function seqNumber(string $seqNumber): self
-	{
-		$this->setSeqNumber($seqNumber);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for seqNumber
-	 * 
-	 * @param string $seqNumber
-	 * 
-	 * @return void
-	 */
-	public function setSeqNumber(string $seqNumber): void
-	{
-		$this->seqNumber = $seqNumber;
-	}
-
-	/**
-	 * This is the merchant's sequence number.
-	 * 
-	 * @return string
-	 */
-	public function getSeqNumber(): string
-	{
-		return $this->seqNumber;
-	}
-
-	/**
-	 * Builder function for effectiveDate
-	 * 
-	 * @param string $effectiveDate
-	 * 
-	 * @return $this
-	 */
-	public function effectiveDate(string $effectiveDate): self
-	{
-		$this->setEffectiveDate($effectiveDate);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for effectiveDate
-	 * 
-	 * @param string $effectiveDate
-	 * 
-	 * @return void
-	 */
-	public function setEffectiveDate(string $effectiveDate): void
-	{
-		$this->effectiveDate = $effectiveDate;
-	}
-
-	/**
-	 * This is the date of the bank deposit associated  with the transaction.
-	 * 
-	 * @return string
-	 */
-	public function getEffectiveDate(): string
-	{
-		return $this->effectiveDate;
-	}
-
-	/**
-	 * Builder function for financingType
-	 * 
-	 * @param string $financingType
-	 * 
-	 * @return $this
-	 */
-	public function financingType(string $financingType): self
-	{
-		$this->setFinancingType($financingType);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for financingType
-	 * 
-	 * @param string $financingType
-	 * 
-	 * @return void
-	 */
-	public function setFinancingType(string $financingType): void
-	{
-		$this->financingType = $financingType;
-	}
-
-	/**
-	 * This is the type of financing offered.
-	 * 
-	 * @return string
-	 */
-	public function getFinancingType(): string
-	{
-		return $this->financingType;
-	}
-
-	/**
-	 * Builder function for plan
-	 * 
-	 * @param string $plan
-	 * 
-	 * @return $this
-	 */
-	public function plan(string $plan): self
-	{
-		$this->setPlan($plan);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for plan
-	 * 
-	 * @param string $plan
-	 * 
-	 * @return void
-	 */
-	public function setPlan(string $plan): void
-	{
-		$this->plan = $plan;
-	}
-
-	/**
-	 * This is the plan number for this financing  transaction.
-	 * 
-	 * @return string
-	 */
-	public function getPlan(): string
-	{
-		return $this->plan;
-	}
-
-	/**
-	 * Builder function for gracePeriod
-	 * 
-	 * @param string $gracePeriod
-	 * 
-	 * @return $this
-	 */
-	public function gracePeriod(string $gracePeriod): self
-	{
-		$this->setGracePeriod($gracePeriod);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for gracePeriod
-	 * 
-	 * @param string $gracePeriod
-	 * 
-	 * @return void
-	 */
-	public function setGracePeriod(string $gracePeriod): void
-	{
-		$this->gracePeriod = $gracePeriod;
-	}
-
-	/**
-	 * This is the grace period, in months, associated  with deferred payment transactions.
-	 * 
-	 * @return string
-	 */
-	public function getGracePeriod(): string
-	{
-		return $this->gracePeriod;
-	}
-
-	/**
-	 * Builder function for term
-	 * 
-	 * @param string $term
-	 * 
-	 * @return $this
-	 */
-	public function term(string $term): self
-	{
-		$this->setTerm($term);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for term
-	 * 
-	 * @param string $term
-	 * 
-	 * @return void
-	 */
-	public function setTerm(string $term): void
-	{
-		$this->term = $term;
-	}
-
-	/**
-	 * This is the number of payments, in months, for  equal payment transactions.
-	 * 
-	 * @return string
-	 */
-	public function getTerm(): string
-	{
-		return $this->term;
-	}
-
-	/**
-	 * Builder function for responseId
-	 * 
-	 * @param string $responseId
-	 * 
-	 * @return $this
-	 */
-	public function responseId(string $responseId): self
-	{
-		$this->setResponseId($responseId);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for responseId
-	 * 
-	 * @param string $responseId
-	 * 
-	 * @return void
-	 */
-	public function setResponseId(string $responseId): void
-	{
-		$this->responseId = $responseId;
-	}
-
-	/**
-	 * This is the response ID assigned by Credorax.
-	 * 
-	 * @return string
-	 */
-	public function getResponseId(): string
-	{
-		return $this->responseId;
-	}
-
-	/**
-	 * Builder function for requestId
-	 * 
-	 * @param string $requestId
-	 * 
-	 * @return $this
-	 */
-	public function requestId(string $requestId): self
-	{
-		$this->setRequestId($requestId);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for requestId
-	 * 
-	 * @param string $requestId
-	 * 
-	 * @return void
-	 */
-	public function setRequestId(string $requestId): void
-	{
-		$this->requestId = $requestId;
-	}
-
-	/**
-	 * This is the request ID assigned by Paysafe.
-	 * 
-	 * @return string
-	 */
-	public function getRequestId(): string
-	{
-		return $this->requestId;
-	}
-
-	/**
-	 * Builder function for description
-	 * 
-	 * @param string $description
-	 * 
-	 * @return $this
-	 */
-	public function description(string $description): self
-	{
-		$this->setDescription($description);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for description
-	 * 
-	 * @param string $description
-	 * 
-	 * @return void
-	 */
-	public function setDescription(string $description): void
-	{
-		$this->description = $description;
-	}
-
-	/**
-	 * This is a description of the response.
-	 * 
-	 * @return string
-	 */
-	public function getDescription(): string
-	{
-		return $this->description;
-	}
-
-	/**
-	 * Builder function for authCode
-	 * 
-	 * @param string $authCode
-	 * 
-	 * @return $this
-	 */
-	public function authCode(string $authCode): self
-	{
-		$this->setAuthCode($authCode);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for authCode
-	 * 
-	 * @param string $authCode
-	 * 
-	 * @return void
-	 */
-	public function setAuthCode(string $authCode): void
-	{
-		$this->authCode = $authCode;
-	}
-
-	/**
-	 * This is the authorization code.
-	 * 
-	 * @return string
-	 */
-	public function getAuthCode(): string
-	{
-		return $this->authCode;
-	}
-
-	/**
-	 * Builder function for txnDateTime
-	 * 
-	 * @param string $txnDateTime
-	 * 
-	 * @return $this
-	 */
-	public function txnDateTime(string $txnDateTime): self
-	{
-		$this->setTxnDateTime($txnDateTime);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for txnDateTime
-	 * 
-	 * @param string $txnDateTime
-	 * 
-	 * @return void
-	 */
-	public function setTxnDateTime(string $txnDateTime): void
-	{
-		$this->txnDateTime = $txnDateTime;
-	}
-
-	/**
-	 * This is the transaction date and time.
-	 * 
-	 * @return string
-	 */
-	public function getTxnDateTime(): string
-	{
-		return $this->txnDateTime;
-	}
-
-	/**
-	 * Builder function for referenceNbr
-	 * 
-	 * @param string $referenceNbr
-	 * 
-	 * @return $this
-	 */
-	public function referenceNbr(string $referenceNbr): self
-	{
-		$this->setReferenceNbr($referenceNbr);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for referenceNbr
-	 * 
-	 * @param string $referenceNbr
-	 * 
-	 * @return void
-	 */
-	public function setReferenceNbr(string $referenceNbr): void
-	{
-		$this->referenceNbr = $referenceNbr;
-	}
-
-	/**
-	 * This is the Bank net transaction ID/Merch Tran Ref
-	 * 
-	 * @return string
-	 */
-	public function getReferenceNbr(): string
-	{
-		return $this->referenceNbr;
-	}
-
-	/**
-	 * Builder function for responseReasonCode
-	 * 
-	 * @param string $responseReasonCode
-	 * 
-	 * @return $this
-	 */
-	public function responseReasonCode(string $responseReasonCode): self
-	{
-		$this->setResponseReasonCode($responseReasonCode);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for responseReasonCode
-	 * 
-	 * @param string $responseReasonCode
-	 * 
-	 * @return void
-	 */
-	public function setResponseReasonCode(string $responseReasonCode): void
-	{
-		$this->responseReasonCode = $responseReasonCode;
-	}
-
-	/**
-	 * This is the raw response reason code returned by  Credorax.
-	 * 
-	 * @return string
-	 */
-	public function getResponseReasonCode(): string
-	{
-		return $this->responseReasonCode;
-	}
-
-	/**
-	 * Builder function for cvvVerification
-	 * 
-	 * @param string $cvvVerification
-	 * 
-	 * @return $this
-	 */
-	public function cvvVerification(string $cvvVerification): self
-	{
-		$this->setCvvVerification($cvvVerification);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for cvvVerification
-	 * 
-	 * @param string $cvvVerification
-	 * 
-	 * @return void
-	 */
-	public function setCvvVerification(string $cvvVerification): void
-	{
-		$this->cvvVerification = $cvvVerification;
-	}
-
-	/**
-	 * This is the response to the cvv submitted with the transaction request.
-	 * 
-	 * @return string
-	 */
-	public function getCvvVerification(): string
-	{
-		return $this->cvvVerification;
-	}
-
-	/**
-	 * Builder function for cvv2Result
-	 * 
-	 * @param string $cvv2Result
-	 * 
-	 * @return $this
-	 */
-	public function cvv2Result(string $cvv2Result): self
-	{
-		$this->setCvv2Result($cvv2Result);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for cvv2Result
-	 * 
-	 * @param string $cvv2Result
-	 * 
-	 * @return void
-	 */
-	public function setCvv2Result(string $cvv2Result): void
-	{
-		$this->cvv2Result = $cvv2Result;
-	}
-
-	/**
-	 * This is the raw cvv2 result code.
-	 * 
-	 * @return string
-	 */
-	public function getCvv2Result(): string
-	{
-		return $this->cvv2Result;
-	}
-
-	/**
-	 * Builder function for status
-	 * 
-	 * @param string $status
-	 * 
-	 * @return $this
-	 */
-	public function status(string $status): self
-	{
-		$this->setStatus($status);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for status
-	 * 
-	 * @param string $status
-	 * 
-	 * @return void
-	 */
-	public function setStatus(string $status): void
-	{
-		$this->status = $status;
-	}
-
-	/**
-	 * This is the status of the transaction at the processor side.
-	 * 
-	 * @return string
-	 */
-	public function getStatus(): string
-	{
-		return $this->status;
-	}
-
-	/**
-	 * Builder function for orderId
-	 * 
-	 * @param string $orderId
-	 * 
-	 * @return $this
-	 */
-	public function orderId(string $orderId): self
-	{
-		$this->setOrderId($orderId);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for orderId
-	 * 
-	 * @param string $orderId
-	 * 
-	 * @return void
-	 */
-	public function setOrderId(string $orderId): void
-	{
-		$this->orderId = $orderId;
-	}
-
-	/**
-	 * Unique NETELLER reference for the order.
-	 * 
-	 * @return string
-	 */
-	public function getOrderId(): string
-	{
-		return $this->orderId;
-	}
-
-	/**
-	 * Builder function for operationId
-	 * 
-	 * @param string $operationId
-	 * 
-	 * @return $this
-	 */
-	public function operationId(string $operationId): self
-	{
-		$this->setOperationId($operationId);
-		
-		return $this;
-	}
-
-	/**
-	 * Setter function for operationId
-	 * 
-	 * @param string $operationId
-	 * 
-	 * @return void
-	 */
-	public function setOperationId(string $operationId): void
-	{
-		$this->operationId = $operationId;
-	}
-
-	/**
-	 * It is a transaction identifier at Safetypay.
-	 * 
-	 * @return string
-	 */
-	public function getOperationId(): string
-	{
-		return $this->operationId;
-	}
-
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class GatewayResponse {" . PHP_EOL
-			. "    id: " . $this->toIndentedString($this->id) . PHP_EOL
-			. "    processor: " . $this->toIndentedString($this->processor) . PHP_EOL
-			. "    code: " . $this->toIndentedString($this->code) . PHP_EOL
-			. "    responseCode: " . $this->toIndentedString($this->responseCode) . PHP_EOL
-			. "    responseCodeDescription: " . $this->toIndentedString($this->responseCodeDescription) . PHP_EOL
-			. "    avsCode: " . $this->toIndentedString($this->avsCode) . PHP_EOL
-			. "    avsResponse: " . $this->toIndentedString($this->avsResponse) . PHP_EOL
-			. "    nameVerification: " . $this->toIndentedString($this->nameVerification) . PHP_EOL
-			. "    firstNameVerification: " . $this->toIndentedString($this->firstNameVerification) . PHP_EOL
-			. "    lastNameVerification: " . $this->toIndentedString($this->lastNameVerification) . PHP_EOL
-			. "    balanceResponse: " . $this->toIndentedString($this->balanceResponse) . PHP_EOL
-			. "    mid: " . $this->toIndentedString($this->mid) . PHP_EOL
-			. "    terminalId: " . $this->toIndentedString($this->terminalId) . PHP_EOL
-			. "    batchNumber: " . $this->toIndentedString($this->batchNumber) . PHP_EOL
-			. "    seqNumber: " . $this->toIndentedString($this->seqNumber) . PHP_EOL
-			. "    effectiveDate: " . $this->toIndentedString($this->effectiveDate) . PHP_EOL
-			. "    financingType: " . $this->toIndentedString($this->financingType) . PHP_EOL
-			. "    plan: " . $this->toIndentedString($this->plan) . PHP_EOL
-			. "    gracePeriod: " . $this->toIndentedString($this->gracePeriod) . PHP_EOL
-			. "    term: " . $this->toIndentedString($this->term) . PHP_EOL
-			. "    responseId: " . $this->toIndentedString($this->responseId) . PHP_EOL
-			. "    requestId: " . $this->toIndentedString($this->requestId) . PHP_EOL
-			. "    description: " . $this->toIndentedString($this->description) . PHP_EOL
-			. "    authCode: " . $this->toIndentedString($this->authCode) . PHP_EOL
-			. "    txnDateTime: " . $this->toIndentedString($this->txnDateTime) . PHP_EOL
-			. "    referenceNbr: " . $this->toIndentedString($this->referenceNbr) . PHP_EOL
-			. "    responseReasonCode: " . $this->toIndentedString($this->responseReasonCode) . PHP_EOL
-			. "    cvvVerification: " . $this->toIndentedString($this->cvvVerification) . PHP_EOL
-			. "    cvv2Result: " . $this->toIndentedString($this->cvv2Result) . PHP_EOL
-			. "    status: " . $this->toIndentedString($this->status) . PHP_EOL
-			. "    orderId: " . $this->toIndentedString($this->orderId) . PHP_EOL
-			. "    operationId: " . $this->toIndentedString($this->operationId) . PHP_EOL
-			. "}";
-	}
+    /**
+     * The response id returned by the processor
+     */
+    private ?string $id = null;
+    /**
+     * The processor code of the transaction at Paysafe side
+     */
+    private ?string $processor = null;
+    /**
+     * Acquirer identification code, such as VPS, GPS, etc.
+     */
+    private ?string $code = null;
+    /**
+     * The raw response returned by the acquirer
+     */
+    private ?string $responseCode = null;
+    /**
+     * The raw response code description returned by the acquirer
+     */
+    private ?string $responseCodeDescription = null;
+    /**
+     * The raw AVS code returned by the acquirer
+     */
+    private ?string $avsCode = null;
+    private ?string $avsResponse = null;
+    private ?string $nameVerification = null;
+    private ?string $firstNameVerification = null;
+    private ?string $lastNameVerification = null;
+    /**
+     * The balance response from the acquirer
+     */
+    private ?string $balanceResponse = null;
+    /**
+     * Acquirer MID that was sent to the clearing house.
+     */
+    private ?string $mid = null;
+    /**
+     * Merchant's Terminal identification number
+     */
+    private ?string $terminalId = null;
+    /**
+     * Batch number for the transaction
+     */
+    private ?string $batchNumber = null;
+    /**
+     * Merchant's Sequence number for the transaction
+     */
+    private ?string $seqNumber = null;
+    /**
+     * Date of the bank deposit associated with the transaction.
+     */
+    private ?string $effectiveDate = null;
+    /**
+     * Type of financing offered
+     */
+    private ?string $financingType = null;
+    /**
+     * Plan number for this financing transaction
+     */
+    private ?string $plan = null;
+    /**
+     * Grace period, in months, associated with deferred payment transactions
+     */
+    private ?string $gracePeriod = null;
+    /**
+     * Number of payments, in months, for equal payment transactions
+     */
+    private ?string $term = null;
+    /**
+     * Response ID assigned by Credorax.
+     */
+    private ?string $responseId = null;
+    /**
+     * Request ID assigned by Paysafe.
+     */
+    private ?string $requestId = null;
+    /**
+     * Description of the response
+     */
+    private ?string $description = null;
+    /**
+     * Authorization code assigned by the acquirer
+     */
+    private ?string $authCode = null;
+    /**
+     * Date and time of the transaction
+     */
+    private ?string $txnDateTime = null;
+    /**
+     * Bank net transaction ID/Merch Tran Ref
+     */
+    private ?string $referenceNbr = null;
+    /**
+     * raw response reason code returned by Acquirer
+     */
+    private ?string $responseReasonCode = null;
+    private ?string $cvvVerification = null;
+    /**
+     * Raw CVV2 result code
+     */
+    private ?string $cvv2Result = null;
+    /**
+     * Status of the transaction at the processor side
+     */
+    private ?string $status = null;
+    /**
+     * Unique NETELLER reference for the order
+     */
+    private ?string $orderId = null;
+    /**
+     * Transaction identifier at Safetypay
+     */
+    private ?string $operationId = null;
+    /**
+     * This transaction id is generated by Paysafe Gateway
+     */
+    private ?string $transactionId = null;
+    /**
+     * Transaction amount
+     */
+    private ?string $amount = null;
+    /**
+     * Unique transaction id at Skrill end
+     */
+    private ?string $mbTransactionId = null;
+    /**
+     * Customer email using which Payment has been completed. This is same as \"skrill.consumerId\" sent in the paymentHandle request.
+     */
+    private ?string $payFromEmail = null;
+    /**
+     * Merchant's email
+     */
+    private ?string $payToEmail = null;
+    /**
+     * Transaction currency
+     */
+    private ?string $currency = null;
+    /**
+     * Skrill Merchant ID
+     */
+    private ?string $merchantId = null;
+    /**
+     * The customer's account name after successful payment. **Note:** Supported Payment Method: EPS
+     */
+    private ?string $payerName = null;
+    /**
+     * The customer's IBAN after successful payment. **Note:** Supported Payment Method: EPS
+     */
+    private ?string $payerIban = null;
+    /**
+     * Skrll session id during which transaction is completed
+     */
+    private ?string $sid = null;
+
+    /**
+     * Builder function for id
+     *
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function id(?string $id): self
+    {
+        $this->setId($id);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for id
+     *
+     * @param string $id
+     *
+     * @return void
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Getter function for id
+     *
+     * @return ?string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+    /**
+     * Builder function for processor
+     *
+     * @param string $processor
+     *
+     * @return $this
+     */
+    public function processor(?string $processor): self
+    {
+        $this->setProcessor($processor);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for processor
+     *
+     * @param string $processor
+     *
+     * @return void
+     */
+    public function setProcessor(?string $processor): void
+    {
+        $this->processor = $processor;
+    }
+
+    /**
+     * Getter function for processor
+     *
+     * @return ?string
+     */
+    public function getProcessor(): ?string
+    {
+        return $this->processor;
+    }
+    /**
+     * Builder function for code
+     *
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function code(?string $code): self
+    {
+        $this->setCode($code);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for code
+     *
+     * @param string $code
+     *
+     * @return void
+     */
+    public function setCode(?string $code): void
+    {
+        $this->code = $code;
+    }
+
+    /**
+     * Getter function for code
+     *
+     * @return ?string
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+    /**
+     * Builder function for responseCode
+     *
+     * @param string $responseCode
+     *
+     * @return $this
+     */
+    public function responseCode(?string $responseCode): self
+    {
+        $this->setResponseCode($responseCode);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for responseCode
+     *
+     * @param string $responseCode
+     *
+     * @return void
+     */
+    public function setResponseCode(?string $responseCode): void
+    {
+        $this->responseCode = $responseCode;
+    }
+
+    /**
+     * Getter function for responseCode
+     *
+     * @return ?string
+     */
+    public function getResponseCode(): ?string
+    {
+        return $this->responseCode;
+    }
+    /**
+     * Builder function for responseCodeDescription
+     *
+     * @param string $responseCodeDescription
+     *
+     * @return $this
+     */
+    public function responseCodeDescription(?string $responseCodeDescription): self
+    {
+        $this->setResponseCodeDescription($responseCodeDescription);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for responseCodeDescription
+     *
+     * @param string $responseCodeDescription
+     *
+     * @return void
+     */
+    public function setResponseCodeDescription(?string $responseCodeDescription): void
+    {
+        $this->responseCodeDescription = $responseCodeDescription;
+    }
+
+    /**
+     * Getter function for responseCodeDescription
+     *
+     * @return ?string
+     */
+    public function getResponseCodeDescription(): ?string
+    {
+        return $this->responseCodeDescription;
+    }
+    /**
+     * Builder function for avsCode
+     *
+     * @param string $avsCode
+     *
+     * @return $this
+     */
+    public function avsCode(?string $avsCode): self
+    {
+        $this->setAvsCode($avsCode);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for avsCode
+     *
+     * @param string $avsCode
+     *
+     * @return void
+     */
+    public function setAvsCode(?string $avsCode): void
+    {
+        $this->avsCode = $avsCode;
+    }
+
+    /**
+     * Getter function for avsCode
+     *
+     * @return ?string
+     */
+    public function getAvsCode(): ?string
+    {
+        return $this->avsCode;
+    }
+    /**
+     * Builder function for avsResponse
+     *
+     * @param string $avsResponse
+     *
+     * @return $this
+     */
+    public function avsResponse(?string $avsResponse): self
+    {
+        $this->setAvsResponse($avsResponse);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for avsResponse
+     *
+     * @param string $avsResponse
+     *
+     * @return void
+     */
+    public function setAvsResponse(?string $avsResponse): void
+    {
+        $this->avsResponse = $avsResponse;
+    }
+
+    /**
+     * Getter function for avsResponse
+     *
+     * @return ?string
+     */
+    public function getAvsResponse(): ?string
+    {
+        return $this->avsResponse;
+    }
+    /**
+     * Builder function for nameVerification
+     *
+     * @param string $nameVerification
+     *
+     * @return $this
+     */
+    public function nameVerification(?string $nameVerification): self
+    {
+        $this->setNameVerification($nameVerification);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for nameVerification
+     *
+     * @param string $nameVerification
+     *
+     * @return void
+     */
+    public function setNameVerification(?string $nameVerification): void
+    {
+        $this->nameVerification = $nameVerification;
+    }
+
+    /**
+     * Getter function for nameVerification
+     *
+     * @return ?string
+     */
+    public function getNameVerification(): ?string
+    {
+        return $this->nameVerification;
+    }
+    /**
+     * Builder function for firstNameVerification
+     *
+     * @param string $firstNameVerification
+     *
+     * @return $this
+     */
+    public function firstNameVerification(?string $firstNameVerification): self
+    {
+        $this->setFirstNameVerification($firstNameVerification);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for firstNameVerification
+     *
+     * @param string $firstNameVerification
+     *
+     * @return void
+     */
+    public function setFirstNameVerification(?string $firstNameVerification): void
+    {
+        $this->firstNameVerification = $firstNameVerification;
+    }
+
+    /**
+     * Getter function for firstNameVerification
+     *
+     * @return ?string
+     */
+    public function getFirstNameVerification(): ?string
+    {
+        return $this->firstNameVerification;
+    }
+    /**
+     * Builder function for lastNameVerification
+     *
+     * @param string $lastNameVerification
+     *
+     * @return $this
+     */
+    public function lastNameVerification(?string $lastNameVerification): self
+    {
+        $this->setLastNameVerification($lastNameVerification);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for lastNameVerification
+     *
+     * @param string $lastNameVerification
+     *
+     * @return void
+     */
+    public function setLastNameVerification(?string $lastNameVerification): void
+    {
+        $this->lastNameVerification = $lastNameVerification;
+    }
+
+    /**
+     * Getter function for lastNameVerification
+     *
+     * @return ?string
+     */
+    public function getLastNameVerification(): ?string
+    {
+        return $this->lastNameVerification;
+    }
+    /**
+     * Builder function for balanceResponse
+     *
+     * @param string $balanceResponse
+     *
+     * @return $this
+     */
+    public function balanceResponse(?string $balanceResponse): self
+    {
+        $this->setBalanceResponse($balanceResponse);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for balanceResponse
+     *
+     * @param string $balanceResponse
+     *
+     * @return void
+     */
+    public function setBalanceResponse(?string $balanceResponse): void
+    {
+        $this->balanceResponse = $balanceResponse;
+    }
+
+    /**
+     * Getter function for balanceResponse
+     *
+     * @return ?string
+     */
+    public function getBalanceResponse(): ?string
+    {
+        return $this->balanceResponse;
+    }
+    /**
+     * Builder function for mid
+     *
+     * @param string $mid
+     *
+     * @return $this
+     */
+    public function mid(?string $mid): self
+    {
+        $this->setMid($mid);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for mid
+     *
+     * @param string $mid
+     *
+     * @return void
+     */
+    public function setMid(?string $mid): void
+    {
+        $this->mid = $mid;
+    }
+
+    /**
+     * Getter function for mid
+     *
+     * @return ?string
+     */
+    public function getMid(): ?string
+    {
+        return $this->mid;
+    }
+    /**
+     * Builder function for terminalId
+     *
+     * @param string $terminalId
+     *
+     * @return $this
+     */
+    public function terminalId(?string $terminalId): self
+    {
+        $this->setTerminalId($terminalId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for terminalId
+     *
+     * @param string $terminalId
+     *
+     * @return void
+     */
+    public function setTerminalId(?string $terminalId): void
+    {
+        $this->terminalId = $terminalId;
+    }
+
+    /**
+     * Getter function for terminalId
+     *
+     * @return ?string
+     */
+    public function getTerminalId(): ?string
+    {
+        return $this->terminalId;
+    }
+    /**
+     * Builder function for batchNumber
+     *
+     * @param string $batchNumber
+     *
+     * @return $this
+     */
+    public function batchNumber(?string $batchNumber): self
+    {
+        $this->setBatchNumber($batchNumber);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for batchNumber
+     *
+     * @param string $batchNumber
+     *
+     * @return void
+     */
+    public function setBatchNumber(?string $batchNumber): void
+    {
+        $this->batchNumber = $batchNumber;
+    }
+
+    /**
+     * Getter function for batchNumber
+     *
+     * @return ?string
+     */
+    public function getBatchNumber(): ?string
+    {
+        return $this->batchNumber;
+    }
+    /**
+     * Builder function for seqNumber
+     *
+     * @param string $seqNumber
+     *
+     * @return $this
+     */
+    public function seqNumber(?string $seqNumber): self
+    {
+        $this->setSeqNumber($seqNumber);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for seqNumber
+     *
+     * @param string $seqNumber
+     *
+     * @return void
+     */
+    public function setSeqNumber(?string $seqNumber): void
+    {
+        $this->seqNumber = $seqNumber;
+    }
+
+    /**
+     * Getter function for seqNumber
+     *
+     * @return ?string
+     */
+    public function getSeqNumber(): ?string
+    {
+        return $this->seqNumber;
+    }
+    /**
+     * Builder function for effectiveDate
+     *
+     * @param string $effectiveDate
+     *
+     * @return $this
+     */
+    public function effectiveDate(?string $effectiveDate): self
+    {
+        $this->setEffectiveDate($effectiveDate);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for effectiveDate
+     *
+     * @param string $effectiveDate
+     *
+     * @return void
+     */
+    public function setEffectiveDate(?string $effectiveDate): void
+    {
+        $this->effectiveDate = $effectiveDate;
+    }
+
+    /**
+     * Getter function for effectiveDate
+     *
+     * @return ?string
+     */
+    public function getEffectiveDate(): ?string
+    {
+        return $this->effectiveDate;
+    }
+    /**
+     * Builder function for financingType
+     *
+     * @param string $financingType
+     *
+     * @return $this
+     */
+    public function financingType(?string $financingType): self
+    {
+        $this->setFinancingType($financingType);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for financingType
+     *
+     * @param string $financingType
+     *
+     * @return void
+     */
+    public function setFinancingType(?string $financingType): void
+    {
+        $this->financingType = $financingType;
+    }
+
+    /**
+     * Getter function for financingType
+     *
+     * @return ?string
+     */
+    public function getFinancingType(): ?string
+    {
+        return $this->financingType;
+    }
+    /**
+     * Builder function for plan
+     *
+     * @param string $plan
+     *
+     * @return $this
+     */
+    public function plan(?string $plan): self
+    {
+        $this->setPlan($plan);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for plan
+     *
+     * @param string $plan
+     *
+     * @return void
+     */
+    public function setPlan(?string $plan): void
+    {
+        $this->plan = $plan;
+    }
+
+    /**
+     * Getter function for plan
+     *
+     * @return ?string
+     */
+    public function getPlan(): ?string
+    {
+        return $this->plan;
+    }
+    /**
+     * Builder function for gracePeriod
+     *
+     * @param string $gracePeriod
+     *
+     * @return $this
+     */
+    public function gracePeriod(?string $gracePeriod): self
+    {
+        $this->setGracePeriod($gracePeriod);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for gracePeriod
+     *
+     * @param string $gracePeriod
+     *
+     * @return void
+     */
+    public function setGracePeriod(?string $gracePeriod): void
+    {
+        $this->gracePeriod = $gracePeriod;
+    }
+
+    /**
+     * Getter function for gracePeriod
+     *
+     * @return ?string
+     */
+    public function getGracePeriod(): ?string
+    {
+        return $this->gracePeriod;
+    }
+    /**
+     * Builder function for term
+     *
+     * @param string $term
+     *
+     * @return $this
+     */
+    public function term(?string $term): self
+    {
+        $this->setTerm($term);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for term
+     *
+     * @param string $term
+     *
+     * @return void
+     */
+    public function setTerm(?string $term): void
+    {
+        $this->term = $term;
+    }
+
+    /**
+     * Getter function for term
+     *
+     * @return ?string
+     */
+    public function getTerm(): ?string
+    {
+        return $this->term;
+    }
+    /**
+     * Builder function for responseId
+     *
+     * @param string $responseId
+     *
+     * @return $this
+     */
+    public function responseId(?string $responseId): self
+    {
+        $this->setResponseId($responseId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for responseId
+     *
+     * @param string $responseId
+     *
+     * @return void
+     */
+    public function setResponseId(?string $responseId): void
+    {
+        $this->responseId = $responseId;
+    }
+
+    /**
+     * Getter function for responseId
+     *
+     * @return ?string
+     */
+    public function getResponseId(): ?string
+    {
+        return $this->responseId;
+    }
+    /**
+     * Builder function for requestId
+     *
+     * @param string $requestId
+     *
+     * @return $this
+     */
+    public function requestId(?string $requestId): self
+    {
+        $this->setRequestId($requestId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for requestId
+     *
+     * @param string $requestId
+     *
+     * @return void
+     */
+    public function setRequestId(?string $requestId): void
+    {
+        $this->requestId = $requestId;
+    }
+
+    /**
+     * Getter function for requestId
+     *
+     * @return ?string
+     */
+    public function getRequestId(): ?string
+    {
+        return $this->requestId;
+    }
+    /**
+     * Builder function for description
+     *
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function description(?string $description): self
+    {
+        $this->setDescription($description);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for description
+     *
+     * @param string $description
+     *
+     * @return void
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * Getter function for description
+     *
+     * @return ?string
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+    /**
+     * Builder function for authCode
+     *
+     * @param string $authCode
+     *
+     * @return $this
+     */
+    public function authCode(?string $authCode): self
+    {
+        $this->setAuthCode($authCode);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for authCode
+     *
+     * @param string $authCode
+     *
+     * @return void
+     */
+    public function setAuthCode(?string $authCode): void
+    {
+        $this->authCode = $authCode;
+    }
+
+    /**
+     * Getter function for authCode
+     *
+     * @return ?string
+     */
+    public function getAuthCode(): ?string
+    {
+        return $this->authCode;
+    }
+    /**
+     * Builder function for txnDateTime
+     *
+     * @param string $txnDateTime
+     *
+     * @return $this
+     */
+    public function txnDateTime(?string $txnDateTime): self
+    {
+        $this->setTxnDateTime($txnDateTime);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for txnDateTime
+     *
+     * @param string $txnDateTime
+     *
+     * @return void
+     */
+    public function setTxnDateTime(?string $txnDateTime): void
+    {
+        $this->txnDateTime = $txnDateTime;
+    }
+
+    /**
+     * Getter function for txnDateTime
+     *
+     * @return ?string
+     */
+    public function getTxnDateTime(): ?string
+    {
+        return $this->txnDateTime;
+    }
+    /**
+     * Builder function for referenceNbr
+     *
+     * @param string $referenceNbr
+     *
+     * @return $this
+     */
+    public function referenceNbr(?string $referenceNbr): self
+    {
+        $this->setReferenceNbr($referenceNbr);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for referenceNbr
+     *
+     * @param string $referenceNbr
+     *
+     * @return void
+     */
+    public function setReferenceNbr(?string $referenceNbr): void
+    {
+        $this->referenceNbr = $referenceNbr;
+    }
+
+    /**
+     * Getter function for referenceNbr
+     *
+     * @return ?string
+     */
+    public function getReferenceNbr(): ?string
+    {
+        return $this->referenceNbr;
+    }
+    /**
+     * Builder function for responseReasonCode
+     *
+     * @param string $responseReasonCode
+     *
+     * @return $this
+     */
+    public function responseReasonCode(?string $responseReasonCode): self
+    {
+        $this->setResponseReasonCode($responseReasonCode);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for responseReasonCode
+     *
+     * @param string $responseReasonCode
+     *
+     * @return void
+     */
+    public function setResponseReasonCode(?string $responseReasonCode): void
+    {
+        $this->responseReasonCode = $responseReasonCode;
+    }
+
+    /**
+     * Getter function for responseReasonCode
+     *
+     * @return ?string
+     */
+    public function getResponseReasonCode(): ?string
+    {
+        return $this->responseReasonCode;
+    }
+    /**
+     * Builder function for cvvVerification
+     *
+     * @param string $cvvVerification
+     *
+     * @return $this
+     */
+    public function cvvVerification(?string $cvvVerification): self
+    {
+        $this->setCvvVerification($cvvVerification);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for cvvVerification
+     *
+     * @param string $cvvVerification
+     *
+     * @return void
+     */
+    public function setCvvVerification(?string $cvvVerification): void
+    {
+        $this->cvvVerification = $cvvVerification;
+    }
+
+    /**
+     * Getter function for cvvVerification
+     *
+     * @return ?string
+     */
+    public function getCvvVerification(): ?string
+    {
+        return $this->cvvVerification;
+    }
+    /**
+     * Builder function for cvv2Result
+     *
+     * @param string $cvv2Result
+     *
+     * @return $this
+     */
+    public function cvv2Result(?string $cvv2Result): self
+    {
+        $this->setCvv2Result($cvv2Result);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for cvv2Result
+     *
+     * @param string $cvv2Result
+     *
+     * @return void
+     */
+    public function setCvv2Result(?string $cvv2Result): void
+    {
+        $this->cvv2Result = $cvv2Result;
+    }
+
+    /**
+     * Getter function for cvv2Result
+     *
+     * @return ?string
+     */
+    public function getCvv2Result(): ?string
+    {
+        return $this->cvv2Result;
+    }
+    /**
+     * Builder function for status
+     *
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function status(?string $status): self
+    {
+        $this->setStatus($status);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for status
+     *
+     * @param string $status
+     *
+     * @return void
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Getter function for status
+     *
+     * @return ?string
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+    /**
+     * Builder function for orderId
+     *
+     * @param string $orderId
+     *
+     * @return $this
+     */
+    public function orderId(?string $orderId): self
+    {
+        $this->setOrderId($orderId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for orderId
+     *
+     * @param string $orderId
+     *
+     * @return void
+     */
+    public function setOrderId(?string $orderId): void
+    {
+        $this->orderId = $orderId;
+    }
+
+    /**
+     * Getter function for orderId
+     *
+     * @return ?string
+     */
+    public function getOrderId(): ?string
+    {
+        return $this->orderId;
+    }
+    /**
+     * Builder function for operationId
+     *
+     * @param string $operationId
+     *
+     * @return $this
+     */
+    public function operationId(?string $operationId): self
+    {
+        $this->setOperationId($operationId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for operationId
+     *
+     * @param string $operationId
+     *
+     * @return void
+     */
+    public function setOperationId(?string $operationId): void
+    {
+        $this->operationId = $operationId;
+    }
+
+    /**
+     * Getter function for operationId
+     *
+     * @return ?string
+     */
+    public function getOperationId(): ?string
+    {
+        return $this->operationId;
+    }
+    /**
+     * Builder function for transactionId
+     *
+     * @param string $transactionId
+     *
+     * @return $this
+     */
+    public function transactionId(?string $transactionId): self
+    {
+        $this->setTransactionId($transactionId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for transactionId
+     *
+     * @param string $transactionId
+     *
+     * @return void
+     */
+    public function setTransactionId(?string $transactionId): void
+    {
+        $this->transactionId = $transactionId;
+    }
+
+    /**
+     * Getter function for transactionId
+     *
+     * @return ?string
+     */
+    public function getTransactionId(): ?string
+    {
+        return $this->transactionId;
+    }
+    /**
+     * Builder function for amount
+     *
+     * @param string $amount
+     *
+     * @return $this
+     */
+    public function amount(?string $amount): self
+    {
+        $this->setAmount($amount);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for amount
+     *
+     * @param string $amount
+     *
+     * @return void
+     */
+    public function setAmount(?string $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * Getter function for amount
+     *
+     * @return ?string
+     */
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+    /**
+     * Builder function for mbTransactionId
+     *
+     * @param string $mbTransactionId
+     *
+     * @return $this
+     */
+    public function mbTransactionId(?string $mbTransactionId): self
+    {
+        $this->setMbTransactionId($mbTransactionId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for mbTransactionId
+     *
+     * @param string $mbTransactionId
+     *
+     * @return void
+     */
+    public function setMbTransactionId(?string $mbTransactionId): void
+    {
+        $this->mbTransactionId = $mbTransactionId;
+    }
+
+    /**
+     * Getter function for mbTransactionId
+     *
+     * @return ?string
+     */
+    public function getMbTransactionId(): ?string
+    {
+        return $this->mbTransactionId;
+    }
+    /**
+     * Builder function for payFromEmail
+     *
+     * @param string $payFromEmail
+     *
+     * @return $this
+     */
+    public function payFromEmail(?string $payFromEmail): self
+    {
+        $this->setPayFromEmail($payFromEmail);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for payFromEmail
+     *
+     * @param string $payFromEmail
+     *
+     * @return void
+     */
+    public function setPayFromEmail(?string $payFromEmail): void
+    {
+        $this->payFromEmail = $payFromEmail;
+    }
+
+    /**
+     * Getter function for payFromEmail
+     *
+     * @return ?string
+     */
+    public function getPayFromEmail(): ?string
+    {
+        return $this->payFromEmail;
+    }
+    /**
+     * Builder function for payToEmail
+     *
+     * @param string $payToEmail
+     *
+     * @return $this
+     */
+    public function payToEmail(?string $payToEmail): self
+    {
+        $this->setPayToEmail($payToEmail);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for payToEmail
+     *
+     * @param string $payToEmail
+     *
+     * @return void
+     */
+    public function setPayToEmail(?string $payToEmail): void
+    {
+        $this->payToEmail = $payToEmail;
+    }
+
+    /**
+     * Getter function for payToEmail
+     *
+     * @return ?string
+     */
+    public function getPayToEmail(): ?string
+    {
+        return $this->payToEmail;
+    }
+    /**
+     * Builder function for currency
+     *
+     * @param string $currency
+     *
+     * @return $this
+     */
+    public function currency(?string $currency): self
+    {
+        $this->setCurrency($currency);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for currency
+     *
+     * @param string $currency
+     *
+     * @return void
+     */
+    public function setCurrency(?string $currency): void
+    {
+        $this->currency = $currency;
+    }
+
+    /**
+     * Getter function for currency
+     *
+     * @return ?string
+     */
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+    /**
+     * Builder function for merchantId
+     *
+     * @param string $merchantId
+     *
+     * @return $this
+     */
+    public function merchantId(?string $merchantId): self
+    {
+        $this->setMerchantId($merchantId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for merchantId
+     *
+     * @param string $merchantId
+     *
+     * @return void
+     */
+    public function setMerchantId(?string $merchantId): void
+    {
+        $this->merchantId = $merchantId;
+    }
+
+    /**
+     * Getter function for merchantId
+     *
+     * @return ?string
+     */
+    public function getMerchantId(): ?string
+    {
+        return $this->merchantId;
+    }
+    /**
+     * Builder function for payerName
+     *
+     * @param string $payerName
+     *
+     * @return $this
+     */
+    public function payerName(?string $payerName): self
+    {
+        $this->setPayerName($payerName);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for payerName
+     *
+     * @param string $payerName
+     *
+     * @return void
+     */
+    public function setPayerName(?string $payerName): void
+    {
+        $this->payerName = $payerName;
+    }
+
+    /**
+     * Getter function for payerName
+     *
+     * @return ?string
+     */
+    public function getPayerName(): ?string
+    {
+        return $this->payerName;
+    }
+    /**
+     * Builder function for payerIban
+     *
+     * @param string $payerIban
+     *
+     * @return $this
+     */
+    public function payerIban(?string $payerIban): self
+    {
+        $this->setPayerIban($payerIban);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for payerIban
+     *
+     * @param string $payerIban
+     *
+     * @return void
+     */
+    public function setPayerIban(?string $payerIban): void
+    {
+        $this->payerIban = $payerIban;
+    }
+
+    /**
+     * Getter function for payerIban
+     *
+     * @return ?string
+     */
+    public function getPayerIban(): ?string
+    {
+        return $this->payerIban;
+    }
+    /**
+     * Builder function for sid
+     *
+     * @param string $sid
+     *
+     * @return $this
+     */
+    public function sid(?string $sid): self
+    {
+        $this->setSid($sid);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for sid
+     *
+     * @param string $sid
+     *
+     * @return void
+     */
+    public function setSid(?string $sid): void
+    {
+        $this->sid = $sid;
+    }
+
+    /**
+     * Getter function for sid
+     *
+     * @return ?string
+     */
+    public function getSid(): ?string
+    {
+        return $this->sid;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class GatewayResponse {" . PHP_EOL
+            . "    id: " . $this->toIndentedString($this->id ?? null) . PHP_EOL
+            . "    processor: " . $this->toIndentedString($this->processor ?? null) . PHP_EOL
+            . "    code: " . $this->toIndentedString($this->code ?? null) . PHP_EOL
+            . "    responseCode: " . $this->toIndentedString($this->responseCode ?? null) . PHP_EOL
+            . "    responseCodeDescription: " . $this->toIndentedString($this->responseCodeDescription ?? null) . PHP_EOL
+            . "    avsCode: " . $this->toIndentedString($this->avsCode ?? null) . PHP_EOL
+            . "    avsResponse: " . $this->toIndentedString($this->avsResponse ?? null) . PHP_EOL
+            . "    nameVerification: " . $this->toIndentedString($this->nameVerification ?? null) . PHP_EOL
+            . "    firstNameVerification: " . $this->toIndentedString($this->firstNameVerification ?? null) . PHP_EOL
+            . "    lastNameVerification: " . $this->toIndentedString($this->lastNameVerification ?? null) . PHP_EOL
+            . "    balanceResponse: " . $this->toIndentedString($this->balanceResponse ?? null) . PHP_EOL
+            . "    mid: " . $this->toIndentedString($this->mid ?? null) . PHP_EOL
+            . "    terminalId: " . $this->toIndentedString($this->terminalId ?? null) . PHP_EOL
+            . "    batchNumber: " . $this->toIndentedString($this->batchNumber ?? null) . PHP_EOL
+            . "    seqNumber: " . $this->toIndentedString($this->seqNumber ?? null) . PHP_EOL
+            . "    effectiveDate: " . $this->toIndentedString($this->effectiveDate ?? null) . PHP_EOL
+            . "    financingType: " . $this->toIndentedString($this->financingType ?? null) . PHP_EOL
+            . "    plan: " . $this->toIndentedString($this->plan ?? null) . PHP_EOL
+            . "    gracePeriod: " . $this->toIndentedString($this->gracePeriod ?? null) . PHP_EOL
+            . "    term: " . $this->toIndentedString($this->term ?? null) . PHP_EOL
+            . "    responseId: " . $this->toIndentedString($this->responseId ?? null) . PHP_EOL
+            . "    requestId: " . $this->toIndentedString($this->requestId ?? null) . PHP_EOL
+            . "    description: " . $this->toIndentedString($this->description ?? null) . PHP_EOL
+            . "    authCode: " . $this->toIndentedString($this->authCode ?? null) . PHP_EOL
+            . "    txnDateTime: " . $this->toIndentedString($this->txnDateTime ?? null) . PHP_EOL
+            . "    referenceNbr: " . $this->toIndentedString($this->referenceNbr ?? null) . PHP_EOL
+            . "    responseReasonCode: " . $this->toIndentedString($this->responseReasonCode ?? null) . PHP_EOL
+            . "    cvvVerification: " . $this->toIndentedString($this->cvvVerification ?? null) . PHP_EOL
+            . "    cvv2Result: " . $this->toIndentedString($this->cvv2Result ?? null) . PHP_EOL
+            . "    status: " . $this->toIndentedString($this->status ?? null) . PHP_EOL
+            . "    orderId: " . $this->toIndentedString($this->orderId ?? null) . PHP_EOL
+            . "    operationId: " . $this->toIndentedString($this->operationId ?? null) . PHP_EOL
+            . "    transactionId: " . $this->toIndentedString($this->transactionId ?? null) . PHP_EOL
+            . "    amount: " . $this->toIndentedString($this->amount ?? null) . PHP_EOL
+            . "    mbTransactionId: " . $this->toIndentedString($this->mbTransactionId ?? null) . PHP_EOL
+            . "    payFromEmail: " . $this->toIndentedString($this->payFromEmail ?? null) . PHP_EOL
+            . "    payToEmail: " . $this->toIndentedString($this->payToEmail ?? null) . PHP_EOL
+            . "    currency: " . $this->toIndentedString($this->currency ?? null) . PHP_EOL
+            . "    merchantId: " . $this->toIndentedString($this->merchantId ?? null) . PHP_EOL
+            . "    payerName: " . $this->toIndentedString($this->payerName ?? null) . PHP_EOL
+            . "    payerIban: " . $this->toIndentedString($this->payerIban ?? null) . PHP_EOL
+            . "    sid: " . $this->toIndentedString($this->sid ?? null) . PHP_EOL
+            . "}";
+    }
 }

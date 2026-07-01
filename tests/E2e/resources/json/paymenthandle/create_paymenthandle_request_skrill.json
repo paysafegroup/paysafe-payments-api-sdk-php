@@ -1,0 +1,42 @@
+{
+  "merchantRefNum": "78cbda06-f62e-4997-87ec-52a3acacb617",
+  "transactionType": "PAYMENT",
+  "paymentType": "SKRILL",
+  "amount": 100,
+  "currencyCode": "EUR",
+  "skrill": {
+    "consumerId": "john.doe@gmail.com",
+    "language": "EN",
+    "logoUrl": "http://www.paysafe.com/icon.jpg",
+    "detail1Text": "Detail 1 text",
+    "detail1Description": "Detail 1 description",
+    "countryCode": "DE"
+  },
+  "billingDetails": {
+    "zip": "M5H 2N2",
+    "country": "CA"
+  },
+  "profile": {
+    "firstName": "pawan",
+    "lastName": "Kalyan",
+    "dateOfBirth": {
+      "day": 2,
+      "month": 1,
+      "year": 1977
+    }
+  },
+  "returnLinks": [
+    {
+      "rel": "default",
+      "href": "https://usgaminggamblig.com/payment/return/success"
+    },
+    {
+      "rel": "on_failed",
+      "href": "https://usgaminggamblig.com/payment/return/failed"
+    },
+    {
+      "rel": "on_cancelled",
+      "href": "https://usgaminggamblig.com/payment/return/cancelled"
+    }
+  ]
+}

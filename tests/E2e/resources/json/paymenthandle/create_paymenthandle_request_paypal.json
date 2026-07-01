@@ -1,0 +1,56 @@
+{
+  "merchantRefNum": "a1fbaadf-d93c-4d71-ab5a-75a78dee2996",
+  "transactionType": "PAYMENT",
+  "paymentType": "PAYPAL",
+  "amount": 500,
+  "currencyCode": "USD",
+  "customerIp": "172.0.0.1",
+  "paypal": {
+    "consumerId": "sb-cpfxo1472281@personal.example.com",
+    "recipientDescription": "Paysafe store description for payment",
+    "language": "US",
+    "shippingPreference": "SET_PROVIDED_ADDRESS",
+    "consumerMessage": "Paysafe note to payer for payment",
+    "orderDescription": "Paysafe Order description for payment",
+    "recipientType": "PAYPAL_ID"
+  },
+  "billingDetails": {
+    "nickName": "Home",
+    "street": "100 Queen",
+    "street2": "Unit 201",
+    "city": "Toronto",
+    "zip": "M5H 2N2",
+    "country": "CA"
+  },
+  "shippingDetails": {
+    "recipientName": "John Doe",
+    "street": "1 Main St",
+    "city": "San Jose",
+    "state": "CA",
+    "country": "US",
+    "zip": "95131"
+  },
+  "profile": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@paysafe.com"
+  },
+  "merchantDescriptor": {
+    "dynamicDescriptor": "OnlineStore",
+    "phone": "12345678"
+  },
+  "returnLinks": [
+    {
+      "rel": "default",
+      "href": "https://usgaminggamblig.com/payment/return/success"
+    },
+    {
+      "rel": "on_failed",
+      "href": "https://usgaminggamblig.com/payment/return/failed"
+    },
+    {
+      "rel": "on_cancelled",
+      "href": "https://usgaminggamblig.com/payment/return/cancelled"
+    }
+  ]
+}

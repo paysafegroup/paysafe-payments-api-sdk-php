@@ -1,13 +1,12 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Service;
 
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Client\RequestOptions;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
-use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
-use Paysafe\PhpSdk\Model\Common\Cancel\CancelResponse;
 use Paysafe\PhpSdk\Model\VoidAuthorization\VoidAuthorization;
 use Paysafe\PhpSdk\Model\VoidAuthorization\VoidAuthorizationRequest;
 use Paysafe\PhpSdk\Model\VoidAuthorization\VoidAuthorizationsList;
@@ -63,7 +62,7 @@ class VoidAuthorizationService extends AbstractPaysafeService implements VoidAut
      *
      * @return VoidAuthorization object containing the result of the void authorization request.
      *
-     * @throws PaysafeSdkException|\Exception if an error occurs
+     * @throws PaysafeSdkException if an error occurs
      */
     public function voidAuthorization(
         string $paymentId,

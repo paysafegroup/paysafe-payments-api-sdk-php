@@ -1,10 +1,9 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
-namespace Paysafe\PhpSdk\Model;
+declare(strict_types=1);
 
-use Paysafe\PhpSdk\Config\ObjectMapperConfiguration;
-use ReflectionClass;
+namespace Paysafe\PhpSdk\Model;
 
 abstract class BaseModel
 {
@@ -14,9 +13,9 @@ abstract class BaseModel
             return;
         }
 
-        $objectFromArray = ObjectMapperConfiguration::initObjectFromArray($__data, static::class);
+        $objectFromArray = \Paysafe\PhpSdk\Config\ObjectMapperConfiguration::initObjectFromArray($__data, static::class);
 
-        $ref = new ReflectionClass(static::class);
+        $ref = new \ReflectionClass(static::class);
         foreach ($ref->getProperties() as $property) {
             $property->setAccessible(true);
             $propName = $property->getName();
@@ -43,7 +42,8 @@ abstract class BaseModel
         if ($o === null) {
             return "null";
         }
+
         return str_replace("\n", "\n    ", (string)$o);
     }
-
 }
+

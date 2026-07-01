@@ -1,250 +1,417 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Card;
-
 use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Card\Threeds\Authentication;
+use Paysafe\PhpSdk\Model\Common\Error\Error;
+use Paysafe\PhpSdk\Model\Verification\Verification;
 
+
+/**
+ * 3D Secure authentication details for card transactions when using your own 3D Secure service provider
+ */
 class CardAuthentication extends BaseModel
 {
-	private ?string $eci = null;
-	private ?string $cavv = null;
-	private ?string $threeDResult = null;
-	private ?string $directoryServerTransactionId = null;
-	private ?string $threeDSecureVersion = null;
-	private ?string $exemptionIndicator = null;
+    /**
+     * This is the ID of authentication, returned in the response.
+     */
+    private ?string $id = null;
+    /**
+     * This is the Electronic Commerce Indicator code, which gets returned by the card issuer indicating whether the cardholder was successfully authenticated. Note that in some cases the eci value includes a leading zero, e.g., 01 or 02. **Visa** - 5 - Identifies a successfully authenticated transaction. - 6 - Identifies an attempts authenticated transaction. - 7 - Identifies a non-authenticated transaction. **Mastercard** - 2 - Identifies a successfully authenticated transaction. - 1 - Identifies an attempts authenticated transaction. - 0 - Identifies a non-authenticated transaction.
+     */
+    private ?string $eci = null;
+    /**
+     * Cardholder Authentication Verification Value
+     */
+    private ?string $cavv = null;
+    /**
+     * This is the transaction identifier returned by the card issuer.
+     */
+    private ?string $xid = null;
+    private ?string $status = null;
+    private ?string $threeDResult = null;
+    /**
+     * This is the unique directory server transaction ID required for Mastercard. <br> **Note:** This is field is required when the card brand is Mastercard. This exists only for 3D Secure 2. <br>
+     */
+    private ?string $directoryServerTransactionId = null;
+    /**
+     * This is the 3D secure protocol version.
+     */
+    private ?string $threeDSecureVersion = null;
+    private ?string $exemptionIndicator = null;
+    private ?Error $error = null;
 
-	/**
-	 * Builder function for eci
-	 * 
-	 * @param string $eci
-	 * 
-	 * @return $this
-	 */
-	public function eci(string $eci): self
-	{
-		$this->setEci($eci);
-		
-		return $this;
-	}
+    /**
+     * Builder function for id
+     *
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function id(?string $id): self
+    {
+        $this->setId($id);
 
-	/**
-	 * Setter function for eci
-	 * 
-	 * @param string $eci
-	 * 
-	 * @return void
-	 */
-	public function setEci(string $eci): void
-	{
-		$this->eci = $eci;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for eci
-	 * 
-	 * @return string|null
-	 */
-	public function getEci(): string
-	{
-		return $this->eci;
-	}
+    /**
+     * Setter function for id
+     *
+     * @param string $id
+     *
+     * @return void
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
 
-	/**
-	 * Builder function for cavv
-	 * 
-	 * @param string $cavv
-	 * 
-	 * @return $this
-	 */
-	public function cavv(string $cavv): self
-	{
-		$this->setCavv($cavv);
-		
-		return $this;
-	}
+    /**
+     * Getter function for id
+     *
+     * @return ?string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+    /**
+     * Builder function for eci
+     *
+     * @param string $eci
+     *
+     * @return $this
+     */
+    public function eci(?string $eci): self
+    {
+        $this->setEci($eci);
 
-	/**
-	 * Setter function for cavv
-	 * 
-	 * @param string $cavv
-	 * 
-	 * @return void
-	 */
-	public function setCavv(string $cavv): void
-	{
-		$this->cavv = $cavv;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for cavv
-	 * 
-	 * @return string|null
-	 */
-	public function getCavv(): string
-	{
-		return $this->cavv;
-	}
+    /**
+     * Setter function for eci
+     *
+     * @param string $eci
+     *
+     * @return void
+     */
+    public function setEci(?string $eci): void
+    {
+        $this->eci = $eci;
+    }
 
-	/**
-	 * Builder function for threeDResult
-	 * 
-	 * @param string $threeDResult
-	 * 
-	 * @return $this
-	 */
-	public function threeDResult(string $threeDResult): self
-	{
-		$this->setThreeDResult($threeDResult);
-		
-		return $this;
-	}
+    /**
+     * Getter function for eci
+     *
+     * @return ?string
+     */
+    public function getEci(): ?string
+    {
+        return $this->eci;
+    }
+    /**
+     * Builder function for cavv
+     *
+     * @param string $cavv
+     *
+     * @return $this
+     */
+    public function cavv(?string $cavv): self
+    {
+        $this->setCavv($cavv);
 
-	/**
-	 * Setter function for threeDResult
-	 * 
-	 * @param string $threeDResult
-	 * 
-	 * @return void
-	 */
-	public function setThreeDResult(string $threeDResult): void
-	{
-		$this->threeDResult = $threeDResult;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for threeDResult
-	 * 
-	 * @return string|null
-	 */
-	public function getThreeDResult(): string
-	{
-		return $this->threeDResult;
-	}
+    /**
+     * Setter function for cavv
+     *
+     * @param string $cavv
+     *
+     * @return void
+     */
+    public function setCavv(?string $cavv): void
+    {
+        $this->cavv = $cavv;
+    }
 
-	/**
-	 * Builder function for directoryServerTransactionId
-	 * 
-	 * @param string $directoryServerTransactionId
-	 * 
-	 * @return $this
-	 */
-	public function directoryServerTransactionId(string $directoryServerTransactionId): self
-	{
-		$this->setDirectoryServerTransactionId($directoryServerTransactionId);
-		
-		return $this;
-	}
+    /**
+     * Getter function for cavv
+     *
+     * @return ?string
+     */
+    public function getCavv(): ?string
+    {
+        return $this->cavv;
+    }
+    /**
+     * Builder function for xid
+     *
+     * @param string $xid
+     *
+     * @return $this
+     */
+    public function xid(?string $xid): self
+    {
+        $this->setXid($xid);
 
-	/**
-	 * Setter function for directoryServerTransactionId
-	 * 
-	 * @param string $directoryServerTransactionId
-	 * 
-	 * @return void
-	 */
-	public function setDirectoryServerTransactionId(string $directoryServerTransactionId): void
-	{
-		$this->directoryServerTransactionId = $directoryServerTransactionId;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for directoryServerTransactionId
-	 * 
-	 * @return string|null
-	 */
-	public function getDirectoryServerTransactionId(): string
-	{
-		return $this->directoryServerTransactionId;
-	}
+    /**
+     * Setter function for xid
+     *
+     * @param string $xid
+     *
+     * @return void
+     */
+    public function setXid(?string $xid): void
+    {
+        $this->xid = $xid;
+    }
 
-	/**
-	 * Builder function for threeDSecureVersion
-	 * 
-	 * @param string $threeDSecureVersion
-	 * 
-	 * @return $this
-	 */
-	public function threeDSecureVersion(string $threeDSecureVersion): self
-	{
-		$this->setThreeDSecureVersion($threeDSecureVersion);
-		
-		return $this;
-	}
+    /**
+     * Getter function for xid
+     *
+     * @return ?string
+     */
+    public function getXid(): ?string
+    {
+        return $this->xid;
+    }
+    /**
+     * Builder function for status
+     *
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function status(?string $status): self
+    {
+        $this->setStatus($status);
 
-	/**
-	 * Setter function for threeDSecureVersion
-	 * 
-	 * @param string $threeDSecureVersion
-	 * 
-	 * @return void
-	 */
-	public function setThreeDSecureVersion(string $threeDSecureVersion): void
-	{
-		$this->threeDSecureVersion = $threeDSecureVersion;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for threeDSecureVersion
-	 * 
-	 * @return string|null
-	 */
-	public function getThreeDSecureVersion(): string
-	{
-		return $this->threeDSecureVersion;
-	}
+    /**
+     * Setter function for status
+     *
+     * @param string $status
+     *
+     * @return void
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
 
-	/**
-	 * Builder function for exemptionIndicator
-	 * 
-	 * @param string $exemptionIndicator
-	 * 
-	 * @return $this
-	 */
-	public function exemptionIndicator(string $exemptionIndicator): self
-	{
-		$this->setExemptionIndicator($exemptionIndicator);
-		
-		return $this;
-	}
+    /**
+     * Getter function for status
+     *
+     * @return ?string
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+    /**
+     * Builder function for threeDResult
+     *
+     * @param string $threeDResult
+     *
+     * @return $this
+     */
+    public function threeDResult(?string $threeDResult): self
+    {
+        $this->setThreeDResult($threeDResult);
 
-	/**
-	 * Setter function for exemptionIndicator
-	 * 
-	 * @param string $exemptionIndicator
-	 * 
-	 * @return void
-	 */
-	public function setExemptionIndicator(string $exemptionIndicator): void
-	{
-		$this->exemptionIndicator = $exemptionIndicator;
-	}
+        return $this;
+    }
 
-	/**
-	 * Getter function for exemptionIndicator
-	 * 
-	 * @return string|null
-	 */
-	public function getExemptionIndicator(): string
-	{
-		return $this->exemptionIndicator;
-	}
+    /**
+     * Setter function for threeDResult
+     *
+     * @param string $threeDResult
+     *
+     * @return void
+     */
+    public function setThreeDResult(?string $threeDResult): void
+    {
+        $this->threeDResult = $threeDResult;
+    }
 
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class CardAuthentication {" . PHP_EOL
-			. "    eci: " . $this->toIndentedString($this->eci) . PHP_EOL
-			. "    cavv: " . $this->toIndentedString($this->cavv) . PHP_EOL
-			. "    threeDResult: " . $this->toIndentedString($this->threeDResult) . PHP_EOL
-			. "    directoryServerTransactionId: "
-            . $this->toIndentedString($this->directoryServerTransactionId) . PHP_EOL
-			. "    threeDSecureVersion: " . $this->toIndentedString($this->threeDSecureVersion) . PHP_EOL
-			. "    exemptionIndicator: " . $this->toIndentedString($this->exemptionIndicator) . PHP_EOL
-			. "}";
-	}
+    /**
+     * Getter function for threeDResult
+     *
+     * @return ?string
+     */
+    public function getThreeDResult(): ?string
+    {
+        return $this->threeDResult;
+    }
+    /**
+     * Builder function for directoryServerTransactionId
+     *
+     * @param string $directoryServerTransactionId
+     *
+     * @return $this
+     */
+    public function directoryServerTransactionId(?string $directoryServerTransactionId): self
+    {
+        $this->setDirectoryServerTransactionId($directoryServerTransactionId);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for directoryServerTransactionId
+     *
+     * @param string $directoryServerTransactionId
+     *
+     * @return void
+     */
+    public function setDirectoryServerTransactionId(?string $directoryServerTransactionId): void
+    {
+        $this->directoryServerTransactionId = $directoryServerTransactionId;
+    }
+
+    /**
+     * Getter function for directoryServerTransactionId
+     *
+     * @return ?string
+     */
+    public function getDirectoryServerTransactionId(): ?string
+    {
+        return $this->directoryServerTransactionId;
+    }
+    /**
+     * Builder function for threeDSecureVersion
+     *
+     * @param string $threeDSecureVersion
+     *
+     * @return $this
+     */
+    public function threeDSecureVersion(?string $threeDSecureVersion): self
+    {
+        $this->setThreeDSecureVersion($threeDSecureVersion);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for threeDSecureVersion
+     *
+     * @param string $threeDSecureVersion
+     *
+     * @return void
+     */
+    public function setThreeDSecureVersion(?string $threeDSecureVersion): void
+    {
+        $this->threeDSecureVersion = $threeDSecureVersion;
+    }
+
+    /**
+     * Getter function for threeDSecureVersion
+     *
+     * @return ?string
+     */
+    public function getThreeDSecureVersion(): ?string
+    {
+        return $this->threeDSecureVersion;
+    }
+    /**
+     * Builder function for exemptionIndicator
+     *
+     * @param string $exemptionIndicator
+     *
+     * @return $this
+     */
+    public function exemptionIndicator(?string $exemptionIndicator): self
+    {
+        $this->setExemptionIndicator($exemptionIndicator);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for exemptionIndicator
+     *
+     * @param string $exemptionIndicator
+     *
+     * @return void
+     */
+    public function setExemptionIndicator(?string $exemptionIndicator): void
+    {
+        $this->exemptionIndicator = $exemptionIndicator;
+    }
+
+    /**
+     * Getter function for exemptionIndicator
+     *
+     * @return ?string
+     */
+    public function getExemptionIndicator(): ?string
+    {
+        return $this->exemptionIndicator;
+    }
+    /**
+     * Builder function for error
+     *
+     * @param Error $error
+     *
+     * @return $this
+     */
+    public function error(?Error $error): self
+    {
+        $this->setError($error);
+
+        return $this;
+    }
+
+    /**
+     * Setter function for error
+     *
+     * @param Error $error
+     *
+     * @return void
+     */
+    public function setError(?Error $error): void
+    {
+        $this->error = $error;
+    }
+
+    /**
+     * Getter function for error
+     *
+     * @return ?Error
+     */
+    public function getError(): ?Error
+    {
+        return $this->error;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class CardAuthentication {" . PHP_EOL
+            . "    id: " . $this->toIndentedString($this->id ?? null) . PHP_EOL
+            . "    eci: " . $this->toIndentedString($this->eci ?? null) . PHP_EOL
+            . "    cavv: " . $this->toIndentedString($this->cavv ?? null) . PHP_EOL
+            . "    xid: " . $this->toIndentedString($this->xid ?? null) . PHP_EOL
+            . "    status: " . $this->toIndentedString($this->status ?? null) . PHP_EOL
+            . "    threeDResult: " . $this->toIndentedString($this->threeDResult ?? null) . PHP_EOL
+            . "    directoryServerTransactionId: " . $this->toIndentedString($this->directoryServerTransactionId ?? null) . PHP_EOL
+            . "    threeDSecureVersion: " . $this->toIndentedString($this->threeDSecureVersion ?? null) . PHP_EOL
+            . "    exemptionIndicator: " . $this->toIndentedString($this->exemptionIndicator ?? null) . PHP_EOL
+            . "    error: " . $this->toIndentedString($this->error ?? null) . PHP_EOL
+            . "}";
+    }
 }

@@ -1,0 +1,8 @@
+{
+  "id": "id",
+  "timeToLiveSeconds": 899,
+  "status": "ACTIVE",
+  "singleUseCustomerToken": "singleUseToken",
+  "locale": "en_US",
+  "customerId": "customerId"
+}

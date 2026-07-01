@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.0.0] - 2026-06-20
+
+### Added
+
+- Support for Local Payment Methods (LPM): Skrill, PaysafeCash, PaysafeCard, Neteller, PayPal payment handles.
+- Webhook handler utility for secure webhook event validation and parsing.
+- Pluggable logging: use default JSON SLF4J logger or provide custom implementation via SdkLogger interface.
+- New /examples module with runnable Spring Boot applications for all payment flows, including LPMs and webhooks.
+
+### Changed
+
+- **Breaking change:** Some model classes might have a different package structure starting with v2.0.0. Please update your imports accordingly.
+- Improved error handling for unsupported HTTP requests.
+
 ## [1.2.0] - 2026-04-15
 
 _Updated package dependencies._

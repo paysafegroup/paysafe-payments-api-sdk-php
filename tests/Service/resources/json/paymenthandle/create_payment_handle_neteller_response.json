@@ -1,0 +1,66 @@
+{
+  "id": "43693f8a-f3d8-4669-9b92-a04c2208afb5",
+  "paymentType": "NETELLER",
+  "paymentHandleToken": "PHvKAbawZ24c8Atc",
+  "merchantRefNum": "merchant-ref-neteller-001",
+  "currencyCode": "USD",
+  "txnTime": "2023-01-20T03:38:46Z",
+  "billingDetails": {
+    "street": "100 Queen",
+    "street2": "Unit 201",
+    "city": "Toronto",
+    "zip": "M5H 2N2",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "INITIATED",
+  "links": [
+    {
+      "rel": "redirect_payment",
+      "href": "https://api.dev.paysafe.com/alternatepayments/v1/redirect?accountId=1230987645&paymentHandleId=43693f8a-f3d8-4669-9b92-a04c2208afb5&token=eyJhbGciOiJIUzI1NiJ9"
+    }
+  ],
+  "liveMode": false,
+  "usage": "SINGLE_USE",
+  "action": "REDIRECT",
+  "executionMode": "SYNCHRONOUS",
+  "amount": 500,
+  "merchantDescriptor": {
+    "dynamicDescriptor": "OnlineStore",
+    "phone": "12345678"
+  },
+  "timeToLiveSeconds": 899,
+  "gatewayResponse": {
+    "orderId": "ORD_0f560bfd-286e-430c-b236-49cbc1e13a5e",
+    "processor": "PAYSAFE_DIGITALWALLET",
+    "sid": "c4a1548163e447a7acada4298c65e9d9",
+    "totalAmount": "500",
+    "currency": "USD",
+    "lang": "en",
+    "status": "pending"
+  },
+  "returnLinks": [
+    {
+      "rel": "on_cancelled",
+      "href": "https://usgaminggamblig.com/payment/return/cancel"
+    },
+    {
+      "rel": "on_failed",
+      "href": "https://usgaminggamblig.com/payment/return/failed"
+    },
+    {
+      "rel": "default",
+      "href": "https://usgaminggamblig.com/payment/return/success"
+    }
+  ],
+  "transactionType": "PAYMENT",
+  "gatewayReconciliationId": "1ebe7b20-8d72-49a4-8f32-759d05022d66",
+  "updatedTime": "2023-01-20T03:38:46Z",
+  "statusTime": "2023-01-20T03:38:46Z",
+  "neteller": {
+    "consumerId": "neteller.account@example.org",
+    "recipientDescription": "logo_url_alt_text",
+    "consumerIdLocked": true,
+    "logoUrl": "http://www.paysafe.com/icon.jpg"
+  }
+}

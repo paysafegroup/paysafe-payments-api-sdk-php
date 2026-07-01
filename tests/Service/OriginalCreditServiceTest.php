@@ -6,14 +6,15 @@ namespace Service;
 use GuzzleHttp\Psr7\Response;
 use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
-use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
 use Paysafe\PhpSdk\Model\OriginalCredit\OriginalCreditRequest;
+use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
+use Paysafe\PhpSdk\Model\Common\Cancel\CancelResponse;
 use Paysafe\PhpSdk\Service\OriginalCreditService;
 
-class OriginalCreditServiceTest extends BasePaysafeTest
+class OriginalCreditServiceTest extends BasePaysafeService
 {
     const ORIGINAL_CREDIT_ENDPOINT = "/paymenthub/v1/originalcredits";
-    const ORIGINAL_CREDIT_ID = "eddbec36-6fc7-48fb-a694-dfc5b314ec0d";
+    const ORIGINAL_CREDIT_ID = "e075f2ae-dfc4-4f6d-8d89-61158367b6a6";
 
     private OriginalCreditService $originalCreditService;
 
@@ -45,7 +46,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockProcessOriginalCreditResponse()
+                    $this->get_resource_json('original_credit/process_original_credit_card_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -56,7 +57,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
 
         $ocRequest = (new OriginalCreditRequest())
             ->amount(100)
-            ->merchantRefNum("05e19427-a3d1-46f7-8b2e-bdf8ced0341e")
+            ->merchantRefNum("ee9010926e3edd01a799")
             ->currencyCode("USD")
             ->customerIp("204.91.0.12")
             ->description("Winning payment from Loto 649");
@@ -64,7 +65,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
         $response = $originalCreditService->processOriginalCredit($ocRequest);
 
         $this->assertNotNull($response);
-        $this->assertEquals("05e19427-a3d1-46f7-8b2e-bdf8ced0341e", $response->getMerchantRefNum());
+        $this->assertEquals("ee9010926e3edd01a799", $response->getMerchantRefNum());
     }
 
     /**
@@ -86,7 +87,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -130,7 +131,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetOriginalCreditByIdResponse()
+                    $this->get_resource_json('original_credit/get_original_credit_by_id_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -144,7 +145,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
         $this->assertNotNull($response);
         $this->assertEquals(self::ORIGINAL_CREDIT_ID, $response->getId());
         $this->assertEquals('CARD', $response->getPaymentType());
-        $this->assertEquals("32be35aac78dbfe252a2", $response->getMerchantRefNum());
+        $this->assertEquals("merchantRefNum-151", $response->getMerchantRefNum());
     }
 
     /**
@@ -166,7 +167,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -205,7 +206,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetOriginalCreditByMerchantRefResponse()
+                    $this->get_resource_json('original_credit/get_original_credit_using_merchant_ref_number_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -242,7 +243,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -284,7 +285,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCancelOriginalCreditResponse()
+                    $this->get_resource_json('original_credit/cancel_original_credit_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -321,7 +322,7 @@ class OriginalCreditServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -339,83 +340,5 @@ class OriginalCreditServiceTest extends BasePaysafeTest
             $this->assertEquals("5269", $exception->getError()->getCode());
             $this->assertEquals("Entity not found", $exception->getError()->getMessage());
         }
-    }
-
-    private function mockCancelOriginalCreditResponse(): string
-    {
-        return "{\n" .
-        "  \"id\": \"" . self::ORIGINAL_CREDIT_ID . "\",\n" .
-        "  \"txnTime\": \"2025-02-10T12:34:56Z\",\n" .
-        "  \"status\": \"CANCELLED\"\n" .
-        "}";
-    }
-
-    private function mockGetOriginalCreditByIdResponse(): string
-    {
-        return "{\n"
-        . "  \"id\": \"eddbec36-6fc7-48fb-a694-dfc5b314ec0d\",\n"
-        . "  \"paymentType\": \"CARD\",\n"
-        . "  \"merchantRefNum\": \"32be35aac78dbfe252a2\",\n"
-        . "  \"currencyCode\": \"USD\",\n"
-        . "  \"txnTime\": \"2023-01-20T05:59:13Z\",\n"
-        . "  \"status\": \"PENDING\",\n"
-        . "  \"amount\": 500\n"
-        . "}";
-    }
-
-    private function mockProcessOriginalCreditResponse(): string
-    {
-        return "{\n" .
-        "  \"id\": \"a2afe762-2421-4d57-9c5e-17b06bfb2af6\",\n" .
-        "  \"merchantRefNum\": \"05e19427-a3d1-46f7-8b2e-bdf8ced0341e\",\n" .
-        "  \"currencyCode\": \"USD\",\n" .
-        "  \"amount\": 100,\n" .
-        "  \"status\": \"COMPLETED\"\n" .
-        "}";
-    }
-
-    private function mockGetOriginalCreditByMerchantRefResponse(): string
-    {
-        return "{\n" .
-        "  \"meta\": {\n" .
-        "    \"numberOfRecords\": 1,\n" .
-        "    \"limit\": 10,\n" .
-        "    \"page\": 1\n" .
-        "  },\n" .
-        "  \"originalCredits\": [\n" .
-        "    {\n" .
-        "      \"id\": \"e075f2ae-dfc4-4f6d-8d89-61158367b6a6\",\n" .
-        "      \"amount\": 40,\n" .
-        "      \"merchantRefNum\": \"merchantRefNum-151\",\n" .
-        "      \"txnTime\": \"2018-12-11T16:33:49Z\",\n" .
-        "      \"paymentHandleToken\": \"SC9mbfZSITB5OwDJ\",\n" .
-        "      \"customerIp\": \"204.91.0.12\",\n" .
-        "      \"currencyCode\": \"GBP\",\n" .
-        "      \"paymentType\": \"CARD\",\n" .
-        "      \"status\": \"INITIATED\",\n" .
-        "      \"description\": \"Winning payment from Loto 649\",\n" .
-        "      \"paymentFacilitator\": {\n" .
-        "        \"subMerchant\": {\n" .
-        "          \"id\": \"123456789\",\n" .
-        "          \"name\": \"PayFacSubMerchant\",\n" .
-        "          \"phone\": \"478234562331\",\n" .
-        "          \"email\": \"payfac@mail.com\",\n" .
-        "          \"url\": \"www.payfac.com\",\n" .
-        "          \"address\": {\n" .
-        "            \"street\": \"100 Queen Street West\",\n" .
-        "            \"city\": \"Toronto\",\n" .
-        "            \"state\": \"ON\",\n" .
-        "            \"country\": \"CA\",\n" .
-        "            \"zip\": \"M5H 2N2\"\n" .
-        "          }\n" .
-        "        }\n" .
-        "      },\n" .
-        "      \"merchantDescriptor\": {\n" .
-        "        \"dynamicDescriptor\": \"OnlineStore\"\n" .
-        "      },\n" .
-        "      \"cardSchemeTransactionId\": \"SIM1UZ3YM7IS1\"\n" .
-        "    }\n" .
-        "  ]\n" .
-        "}";
     }
 }

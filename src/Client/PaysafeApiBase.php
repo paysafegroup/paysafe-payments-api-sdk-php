@@ -1,16 +1,34 @@
 <?php
 /** All Rights Reserved, Copyright (c) Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Client;
 
 use Exception;
 use GuzzleHttp\Psr7\Response;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
 use Paysafe\PhpSdk\Config\Environment;
 use Paysafe\PhpSdk\Config\ObjectMapperConfiguration;
 use Paysafe\PhpSdk\Exception\ExceptionBuilder;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
+use Paysafe\PhpSdk\Logging\LoggingLevel;
+use Psr\Log\LoggerInterface;
 use Paysafe\PhpSdk\Validation\PropertyValidator;
+use Throwable;
 
+/**
+ * Abstract base for Paysafe API HTTP clients.
+ *
+ * Provides shared infrastructure: request/response processing, authentication header
+ * generation, query parameter building, user-agent construction, and SDK versioning.
+ *
+ * Not intended for direct instantiation — use {@see PaysafeApiClient} via {@see \Paysafe\PhpSdk\PaysafeClient}.
+ *
+ * @internal
+ *
+ * @phpstan-type SslContext array{cert?: string, key?: string, ca?: string}
+ */
 abstract class PaysafeApiBase
 {
     private const MERCHANT_REF_NUMBER_PARAM = "merchantRefNum";
@@ -38,16 +56,22 @@ abstract class PaysafeApiBase
     protected int $clientMaxAutomaticRetries;
     protected ?array $customSslContext;
     protected ?string $providedProxy;
+    protected LoggerInterface $logger;
+    protected string $loggingLevel;
 
     /**
      * Instantiates a new PaysafeApiClient object, using the provided API key and environment.
      *
      * @param string $apiKey Merchant's credentials in form clientId:clientPassword.
      * @param string $environment Environment to which PaysafeClient connects ("LIVE" or "TEST").
+     * @param LoggerInterface|null $logger PSR-3 logger; defaults to Monolog logger.
+     * @param string $loggingLevel Logging level; defaults to ERROR.
      */
     public function __construct(
         string $apiKey,
-        string $environment = Environment::TEST
+        string $environment = Environment::TEST,
+        ?LoggerInterface $logger = null,
+        string $loggingLevel = LoggingLevel::ERROR
     ) {
         $this->apiKey = $apiKey;
         $this->environment = $environment;
@@ -58,6 +82,50 @@ abstract class PaysafeApiBase
         $this->clientMaxAutomaticRetries = self::DEFAULT_MAXIMUM_AUTOMATIC_RETRIES;
         $this->customSslContext = null;
         $this->providedProxy = null;
+        $this->logger = $logger ?? self::createDefaultLogger();
+        LoggingLevel::validate($loggingLevel);
+        $this->loggingLevel = $loggingLevel;
+    }
+
+    /**
+     * Replaces the logger for this client instance.
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Sets SDK logging level.
+     */
+    public function setLoggingLevel(string $loggingLevel): void
+    {
+        LoggingLevel::validate($loggingLevel);
+        $this->loggingLevel = $loggingLevel;
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    protected function logEvent(string $event, array $context = []): void
+    {
+        if ($this->loggingLevel === LoggingLevel::ALL) {
+            $this->logger->info($event, $context);
+        }
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    protected function logError(string $event, Throwable $error, array $context = []): void
+    {
+        $context['exception'] = $error;
+        $this->logger->error($event, $context);
+    }
+
+    public static function createDefaultLogger(): LoggerInterface
+    {
+        return new Logger('PaysafeSdk', [new ErrorLogHandler()]);
     }
 
     /**
@@ -67,19 +135,19 @@ abstract class PaysafeApiBase
      *
      * @return string JSON string representing requestBody
      *
-     * @throws Exception If serialization fails
+     * @throws PaysafeSdkException If serialization fails
      */
     public function buildJsonRequestBody($requestBody): string
     {
         try {
             return ObjectMapperConfiguration::serialize($requestBody);
         } catch (Exception $e) {
-            PaysafeLogger::getLogger()->error(
+            $this->logError(
                 sprintf("Exception while creating JSON request body: %s", $e->getMessage()),
-                ['exception' => $e]
+                $e
             );
 
-            throw new \JsonException("Error creating JSON request body: " . $e->getMessage());
+            throw new PaysafeSdkException("Error creating JSON request body");
         }
     }
 
@@ -91,21 +159,18 @@ abstract class PaysafeApiBase
      * @param int|null $limit The maximum number of records to return.
      * @param int|null $offset The starting position for the results.
      * @param string|null $startDate The start date for the query.
-     *
-     * customer ID that the merchant provided for their own internal customer identification
-     * @param string|null $merchantCustomerId
-     *
-     * @param string|array|null $fields The start date for the query.
+     * @param string|null $merchantCustomerId Customer ID that the merchant provided for their own internal customer identification.
+     * @param string|array|null $fields Fields to include in the response.
      *
      * @return string The query string.
      */
     public function buildQueryParameters(
-        string $merchantRefNum = null,
-        string $endDate = null,
-        int $limit = null,
-        int $offset = null,
-        string $startDate = null,
-        string $merchantCustomerId = null,
+        ?string $merchantRefNum = null,
+        ?string $endDate = null,
+        ?int $limit = null,
+        ?int $offset = null,
+        ?string $startDate = null,
+        ?string $merchantCustomerId = null,
         $fields = null
     ): string {
         $queryParams = [];
@@ -134,13 +199,7 @@ abstract class PaysafeApiBase
 
         if ($fields !== null) {
             if (is_array($fields)) {
-                $fieldsArray = [];
-                foreach ($fields as $field) {
-                    if (!empty($field)) {
-                        $fieldsArray[] = $field;
-                    }
-                }
-                $fields = implode(',', $fieldsArray);
+                $fields = implode(',', array_filter($fields, static fn(string $f): bool => $f !== ''));
             }
             $queryParams[self::FIELDS_PARAM] = $fields;
         }
@@ -161,13 +220,10 @@ abstract class PaysafeApiBase
     }
 
     /**
-     * Creates and returns the user agent for cUrl operations
-     *
-     * @return string
+     * Creates and returns the user agent for cUrl operations.
      */
     public function getSdkUserAgent(): string
     {
-        // fix the php version string
         $phpVersion = phpversion();
         if (strpos($phpVersion, '-') !== false) {
             $phpVersion = substr($phpVersion, 0, strpos($phpVersion, '-'));
@@ -179,19 +235,17 @@ abstract class PaysafeApiBase
     }
 
     /**
-     * Get the current SDK version
-     *
-     * @return string
+     * Get the current SDK version.
      */
     public static function getSdkVersion(): string
     {
         $versionFile = realpath(__DIR__ . "/../VERSION");
 
-        if (!file_exists($versionFile)) {
+        if ($versionFile === false || !file_exists($versionFile)) {
             return 'unknown';
         }
 
-        return trim(file_get_contents($versionFile));
+        return trim((string) file_get_contents($versionFile));
     }
 
     /**
@@ -206,34 +260,28 @@ abstract class PaysafeApiBase
     {
         if (self::requestSuccessful($response)) {
             try {
-                return ObjectMapperConfiguration::deserialize($response->getBody(), $returnType);
+                return ObjectMapperConfiguration::deserialize($response->getBody()->getContents(), $returnType);
             } catch (Exception $e) {
-                PaysafeLogger::getLogger()->error(
-                    sprintf("Exception while processing response from PaymentsAPI: %s", $e->getMessage()),
-                    ['exception' => $e]
-                );
 
                 throw ExceptionBuilder::buildPaysafeSdkException(
-                    "Error while processing response: " . $e->getMessage(),
+                    sprintf("Error while processing response: %s", $e->getMessage()),
                     $response,
                     $returnType
                 );
             }
-        } else {
-            throw ExceptionBuilder::buildPaysafeSdkException(
-                'Paysafe Payments API request unsuccessful',
-                $response,
-                $returnType
-            );
         }
+
+        throw ExceptionBuilder::buildPaysafeSdkException(
+            'Paysafe Payments API request unsuccessful',
+            $response,
+            $returnType
+        );
     }
 
     /**
-     * Process HTTP response and map it to the given PHP object.
+     * Process HTTP response for DELETE requests.
      *
      * @param Response $response The HTTP response from the Paysafe API.
-     *
-     * @return void The mapped object.
      *
      * @throws PaysafeSdkException If an error occurs while processing the response.
      */
@@ -250,18 +298,17 @@ abstract class PaysafeApiBase
 
     /**
      * Check if the HTTP status code is 2xx (success).
-     *
-     * @param Response $response The HTTP response.
-     * @return bool True if the status code is 2xx, false otherwise.
      */
     protected static function requestSuccessful(Response $response): bool
     {
         $statusCode = $response->getStatusCode();
-        return $statusCode === 200 || $statusCode === 201;
+        return $statusCode >= 200 && $statusCode < 300;
     }
 
     /**
      * Sets request headers for the API request.
+     *
+     * @return array<string, string>
      */
     protected function setRequestHeaders(): array
     {
@@ -275,8 +322,6 @@ abstract class PaysafeApiBase
 
     /**
      * Generates a Basic Authentication header value.
-     *
-     * @return string The Basic Authentication header value.
      */
     public function getBasicAuthenticationHeader(): string
     {

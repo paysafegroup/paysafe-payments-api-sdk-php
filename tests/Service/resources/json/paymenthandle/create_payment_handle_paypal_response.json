@@ -1,0 +1,78 @@
+{
+  "id": "e85f125b-a20b-455e-9657-f4a4c2beae3c",
+  "paymentType": "PAYPAL",
+  "paymentHandleToken": "PHdQkDhZBMbWtPYM",
+  "merchantRefNum": "merchant-ref-paypal-001",
+  "currencyCode": "USD",
+  "txnTime": "2023-01-20T04:44:08Z",
+  "billingDetails": {
+    "street": "100 Queen",
+    "street2": "Unit 201",
+    "city": "Toronto",
+    "zip": "M5H 2N2",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "INITIATED",
+  "links": [
+    {
+      "rel": "redirect_payment",
+      "href": "https://api.dev.paysafe.com/alternatepayments/v1/redirect?accountId=1002809650&paymentHandleId=e85f125b-a20b-455e-9657-f4a4c2beae3c&token=eyJhbGciOiJIUzI1NiJ9"
+    }
+  ],
+  "liveMode": false,
+  "simulator": "EXTERNAL",
+  "usage": "SINGLE_USE",
+  "action": "REDIRECT",
+  "executionMode": "SYNCHRONOUS",
+  "amount": 500,
+  "merchantDescriptor": {
+    "dynamicDescriptor": "OnlineStore",
+    "phone": "12345678"
+  },
+  "timeToLiveSeconds": 898,
+  "gatewayResponse": {
+    "payPalInvoiceId": "ef536397-552a-4d84-9c11-cb62140b9fee",
+    "processor": "PAYPAL",
+    "id": "PAYID-MPFBYGQ10P06468N3869351E"
+  },
+  "returnLinks": [
+    {
+      "rel": "on_failed",
+      "href": "https://usgaminggamblig.com/payment/return/failed"
+    },
+    {
+      "rel": "default",
+      "href": "https://usgaminggamblig.com/payment/return/success"
+    },
+    {
+      "rel": "on_cancelled",
+      "href": "https://usgaminggamblig.com/payment/return/cancelled"
+    }
+  ],
+  "transactionType": "PAYMENT",
+  "gatewayReconciliationId": "ef536397-552a-4d84-9c11-cb62140b9fee",
+  "updatedTime": "2023-01-20T04:44:10Z",
+  "statusTime": "2023-01-20T04:44:10Z",
+  "shippingDetails": {
+    "recipientName": "John Doe",
+    "street": "1 Main St",
+    "city": "San Jose",
+    "state": "CA",
+    "country": "US",
+    "zip": "95131"
+  },
+  "payPal": {
+    "consumerId": "sb-cpfxo1472281@personal.example.com",
+    "consumerMessage": "Paysafe note to payer for payment",
+    "recipientDescription": "Paysafe store description for payment",
+    "language": "US",
+    "shippingPreference": "SET_PROVIDED_ADDRESS",
+    "orderDescription": "Paysafe Order description for payment"
+  },
+  "profile": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@paysafe.com"
+  }
+}

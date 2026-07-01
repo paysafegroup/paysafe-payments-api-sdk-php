@@ -1,0 +1,24 @@
+{
+  "id": "f2b3c4d5-e6f7-8901-bcde-f23456789012",
+  "paymentType": "NETELLER",
+  "paymentHandleToken": "PHToken_Neteller_001",
+  "merchantRefNum": "merchant-ref-neteller-payment-001",
+  "currencyCode": "USD",
+  "settleWithAuth": true,
+  "txnTime": "2025-01-15T10:05:00Z",
+  "billingDetails": {
+    "street": "100 Queen Street",
+    "city": "Toronto",
+    "zip": "M5H 2N2",
+    "state": "ON",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "COMPLETED",
+  "amount": 1000,
+  "neteller": {
+    "consumerId": "consumer@example.com",
+    "recipientDescription": "Payment to merchant"
+  },
+  "liveMode": false
+}

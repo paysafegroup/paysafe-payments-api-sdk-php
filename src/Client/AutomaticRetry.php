@@ -1,6 +1,8 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
+
 namespace Paysafe\PhpSdk\Client;
 
 use GuzzleHttp\Middleware;
@@ -64,7 +66,12 @@ class AutomaticRetry
         }
 
         if ($this->applyJitter) {
-            $jitter = mt_rand(750, 1000) / 1000; // 0.75 to 1.00 inclusive
+            try {
+                $jitter = random_int(750, 1000) / 1000; // 0.75 to 1.00 inclusive
+            } catch (\Exception $e) {
+                // In the unlikely event that random_int fails, we will proceed without jitter.
+                $jitter = 0.97;
+            }
             $delay = (int) round($delay * $jitter); // result in milliseconds
         }
 

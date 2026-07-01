@@ -1,0 +1,53 @@
+{
+  "id": "cdd1e763-352f-4905-a93f-1838ea467a1e",
+  "paymentHandleToken": "PHZUY7WtMfbdsx45",
+  "merchantRefNum": "merchant-ref-skrill-001",
+  "currencyCode": "USD",
+  "txnTime": "2023-01-20T03:21:49Z",
+  "billingDetails": {
+    "zip": "M5H 2N2",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "INITIATED",
+  "liveMode": false,
+  "usage": "SINGLE_USE",
+  "action": "NONE",
+  "executionMode": "SYNCHRONOUS",
+  "amount": 500,
+  "timeToLiveSeconds": 899,
+  "gatewayResponse": {
+    "processor": "SKRILL_QCO",
+    "id": "d7fa0a5701050d1bb85151c0baf66302"
+  },
+  "returnLinks": [
+    {
+      "rel": "on_failed",
+      "href": "https://usgaminggamblig.com/payment/return/failed"
+    },
+    {
+      "rel": "on_cancelled",
+      "href": "https://usgaminggamblig.com/payment/return/cancel"
+    },
+    {
+      "rel": "default",
+      "href": "https://usgaminggamblig.com/payment/return/success"
+    }
+  ],
+  "transactionType": "PAYMENT",
+  "gatewayReconciliationId": "c64e6899-0913-447b-891c-ba50179167f2",
+  "updatedTime": "2023-01-20T03:21:49Z",
+  "statusTime": "2023-01-20T03:21:49Z",
+  "skrill": {
+    "consumerId": "john.doe@gmail.com",
+    "emailSubject": "Payout for XYZ",
+    "emailMessage": "Note for email here"
+  },
+  "paymentType": "SKRILL",
+  "profile": {
+    "firstName": "pawan",
+    "lastName": "Kalyan",
+    "email": "test@paysafe.com",
+    "phone": "1234567890"
+  }
+}

@@ -1,202 +1,181 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common;
-
 use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Customer\Customer;
+
 
 /**
- * Contains customer bank's mandate details 
+ * Customer bank's mandate details for recurring payments
  */
 class Mandate extends BaseModel
 {
-	const STATUS_PENDING = 'PENDING';
-	const STATUS_ACTIVE = 'ACTIVE';
-	const STATUS_CANCELLED = 'CANCELLED';
-	const STATUS_INACTIVE = 'INACTIVE';
+    /**
+     * The id of the mandate that got created
+     */
+    private ?string $id = null;
+    /**
+     * The identifier of the mandate in the banking system
+     */
+    private ?string $reference = null;
+    private ?string $status = null;
+    private ?string $statusReason = null;
 
-	const STATUS_REASON_MERCHANT_CANCELLED = 'MERCHANT_CANCELLED';
-	const STATUS_REASON_BANK_CANCELLED = 'BANK_CANCELLED';
-	const STATUS_REASON_DECLINED = 'DECLINED';
-	const STATUS_REASON_REJECTED = 'REJECTED';
-	const STATUS_REASON_DISPUTED = 'DISPUTED';
-	const STATUS_REASON_UNAUTHORIZED = 'UNAUTHORIZED';
-	const STATUS_REASON_TRANSFERRED = 'TRANSFERRED';
+    /**
+     * Builder function for id
+     *
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function id(?string $id): self
+    {
+        $this->setId($id);
 
-	/**
-	 * This is the id of the mandate that got created.
-	 * Example: abcdc28d-486e-4b0a-bbf9-314033863542
-	 */
-	private string $id;
+        return $this;
+    }
 
+    /**
+     * Setter function for id
+     *
+     * @param string $id
+     *
+     * @return void
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
 
-	/**
-	 * This is the identifier of the mandate in the 
-	 * banking system.
-	 * Example: ABCDEF0796
-	 */
-	private string $reference;
+    /**
+     * Getter function for id
+     *
+     * @return ?string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+    /**
+     * Builder function for reference
+     *
+     * @param string $reference
+     *
+     * @return $this
+     */
+    public function reference(?string $reference): self
+    {
+        $this->setReference($reference);
 
-	/**
-	 * This is the status of the mandate request response.
-	 */
-	private string $status;
+        return $this;
+    }
 
-	/**
-	 * This is the status reason of the mandate request response.
-	 * Example: MERCHANT_CANCELLED
-	 */
-	private string $statusReason;
+    /**
+     * Setter function for reference
+     *
+     * @param string $reference
+     *
+     * @return void
+     */
+    public function setReference(?string $reference): void
+    {
+        $this->reference = $reference;
+    }
 
+    /**
+     * Getter function for reference
+     *
+     * @return ?string
+     */
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+    /**
+     * Builder function for status
+     *
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function status(?string $status): self
+    {
+        $this->setStatus($status);
 
-	/**
-	 * Builder function for id
-	 * 
-	 * @param string $id
-	 * 
-	 * @return Mandate
-	 */
-	public function id(string $id): self
-	{
-		$this->setId($id);
-		
-		return $this;
-	}
-	/**
-	 * Setter function for id
-	 * 
-	 * @param string $id
-	 * 
-	 * @return void
-	 */
-	public function setId(string $id): void
-	{
-		$this->id = $id;
-	}
-	/**
-	 * Getter function for id
-	 * 
-	 * @return string
-	 */
-	public function getId(): string
-	{
-		return $this->id;
-	}
+        return $this;
+    }
 
-	/**
-	 * Builder function for reference
-	 * 
-	 * @param string $reference
-	 * 
-	 * @return Mandate
-	 */
-	public function reference(string $reference): self
-	{
-		$this->setReference($reference);
-		
-		return $this;
-	}
-	/**
-	 * Setter function for reference
-	 * 
-	 * @param string $reference
-	 * 
-	 * @return void
-	 */
-	public function setReference(string $reference): void
-	{
-		$this->reference = $reference;
-	}
-	/**
-	 * Getter function for reference
-	 * 
-	 * @return string
-	 */
-	public function getReference(): string
-	{
-		return $this->reference;
-	}
+    /**
+     * Setter function for status
+     *
+     * @param string $status
+     *
+     * @return void
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
 
-	/**
-	 * Builder function for status
-	 * 
-	 * @param string $status
-	 * 
-	 * @return Mandate
-	 */
-	public function status(string $status): self
-	{
-		$this->setStatus($status);
-		
-		return $this;
-	}
-	/**
-	 * Setter function for status
-	 * 
-	 * @param string $status
-	 * 
-	 * @return void
-	 */
-	public function setStatus(string $status): void
-	{
-		$this->status = $status;
-	}
-	/**
-	 * Getter function for status
-	 * 
-	 * @return string
-	 */
-	public function getStatus(): string
-	{
-		return $this->status;
-	}
+    /**
+     * Getter function for status
+     *
+     * @return ?string
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+    /**
+     * Builder function for statusReason
+     *
+     * @param string $statusReason
+     *
+     * @return $this
+     */
+    public function statusReason(?string $statusReason): self
+    {
+        $this->setStatusReason($statusReason);
 
-	/**
-	 * Builder function for statusReason
-	 * 
-	 * @param string $statusReason
-	 * 
-	 * @return Mandate
-	 */
-	public function statusReason(string $statusReason): self
-	{
-		$this->setStatusReason($statusReason);
-		
-		return $this;
-	}
-	/**
-	 * Setter function for statusReason
-	 * 
-	 * @param string $statusReason
-	 * 
-	 * @return void
-	 */
-	public function setStatusReason(string $statusReason): void
-	{
-		$this->statusReason = $statusReason;
-	}
-	/**
-	 * Getter function for statusReason
-	 * 
-	 * @return string
-	 */
-	public function getStatusReason(): string
-	{
-		return $this->statusReason;
-	}
+        return $this;
+    }
 
-	/**
-	 * Convert the object to a string representation.
-	 * 
-	 * @return string
-	 */
-	public function __toString(): string
-	{
-		return "class Mandate {" . PHP_EOL .
-			"	id: " . $this->toIndentedString($this->id) . PHP_EOL .
-			"	reference: " . $this->toIndentedString($this->reference) . PHP_EOL .
-			"	status: " . $this->toIndentedString($this->status) . PHP_EOL .
-			"	statusReason: " . $this->toIndentedString($this->statusReason) . PHP_EOL .
-		"}";
-	}
+    /**
+     * Setter function for statusReason
+     *
+     * @param string $statusReason
+     *
+     * @return void
+     */
+    public function setStatusReason(?string $statusReason): void
+    {
+        $this->statusReason = $statusReason;
+    }
+
+    /**
+     * Getter function for statusReason
+     *
+     * @return ?string
+     */
+    public function getStatusReason(): ?string
+    {
+        return $this->statusReason;
+    }
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "class Mandate {" . PHP_EOL
+            . "    id: " . $this->toIndentedString($this->id ?? null) . PHP_EOL
+            . "    reference: " . $this->toIndentedString($this->reference ?? null) . PHP_EOL
+            . "    status: " . $this->toIndentedString($this->status ?? null) . PHP_EOL
+            . "    statusReason: " . $this->toIndentedString($this->statusReason ?? null) . PHP_EOL
+            . "}";
+    }
 }

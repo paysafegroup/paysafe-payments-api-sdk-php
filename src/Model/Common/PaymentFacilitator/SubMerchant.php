@@ -1,59 +1,54 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Common\PaymentFacilitator;
-
 use Paysafe\PhpSdk\Model\BaseModel;
+use Paysafe\PhpSdk\Model\Payment\Payment;
 
 
 /**
  * Contains information for Payment facilitator sub-merchant.
-
- **Note** This object is only for Payment facilitator merchants.
  */
 class SubMerchant extends BaseModel
 {
-
     /**
-     *  This field contains an identifier of the actual merchant. Example: 123456789
+     * Field contains an identifier of the actual merchant
      */
-    private string $id;
-
+    private ?string $id = null;
     /**
-     *  This field must contain the name of the actual merchant. Example: Submerchant Name
+     * Field contains the name of the actual merchant
      */
-    private string $name;
-
+    private ?string $name = null;
     /**
-     *  This field must contain the phone number of the actual merchant. Example: 5555555555
+     * Field contains the phone number of the actual merchant
      */
-    private string $phone;
-
+    private ?string $phone = null;
     /**
-     *  This field must contain the email address of the actual merchant. Example: submerchant@mail.com
+     * Field contains the email address of the actual merchant
      */
-    private string $email;
-
+    private ?string $email = null;
     /**
-     *  This field must contain the url address of the actual merchant. Example: www.paysafe.com
+     * Field contains the url address of the actual merchant
      */
-    private string $url;
-
-    private SubMerchantAddress $address;
+    private ?string $url = null;
+    private ?SubMerchantAddress $address = null;
 
     /**
      * Builder function for id
      *
      * @param string $id
      *
-     * @return SubMerchant
+     * @return $this
      */
-    public function id(string $id): self
+    public function id(?string $id): self
     {
         $this->setId($id);
 
         return $this;
     }
+
     /**
      * Setter function for id
      *
@@ -61,33 +56,34 @@ class SubMerchant extends BaseModel
      *
      * @return void
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
+
     /**
      * Getter function for id
      *
-     * @return string
+     * @return ?string
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
-
     /**
      * Builder function for name
      *
      * @param string $name
      *
-     * @return SubMerchant
+     * @return $this
      */
-    public function name(string $name): self
+    public function name(?string $name): self
     {
         $this->setName($name);
 
         return $this;
     }
+
     /**
      * Setter function for name
      *
@@ -95,33 +91,34 @@ class SubMerchant extends BaseModel
      *
      * @return void
      */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
+
     /**
      * Getter function for name
      *
-     * @return string
+     * @return ?string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
-
     /**
      * Builder function for phone
      *
      * @param string $phone
      *
-     * @return SubMerchant
+     * @return $this
      */
-    public function phone(string $phone): self
+    public function phone(?string $phone): self
     {
         $this->setPhone($phone);
 
         return $this;
     }
+
     /**
      * Setter function for phone
      *
@@ -129,33 +126,34 @@ class SubMerchant extends BaseModel
      *
      * @return void
      */
-    public function setPhone(string $phone): void
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
     }
+
     /**
      * Getter function for phone
      *
-     * @return string
+     * @return ?string
      */
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
-
     /**
      * Builder function for email
      *
      * @param string $email
      *
-     * @return SubMerchant
+     * @return $this
      */
-    public function email(string $email): self
+    public function email(?string $email): self
     {
         $this->setEmail($email);
 
         return $this;
     }
+
     /**
      * Setter function for email
      *
@@ -163,33 +161,34 @@ class SubMerchant extends BaseModel
      *
      * @return void
      */
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
+
     /**
      * Getter function for email
      *
-     * @return string
+     * @return ?string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
-
     /**
      * Builder function for url
      *
      * @param string $url
      *
-     * @return SubMerchant
+     * @return $this
      */
-    public function url(string $url): self
+    public function url(?string $url): self
     {
         $this->setUrl($url);
 
         return $this;
     }
+
     /**
      * Setter function for url
      *
@@ -197,33 +196,34 @@ class SubMerchant extends BaseModel
      *
      * @return void
      */
-    public function setUrl(string $url): void
+    public function setUrl(?string $url): void
     {
         $this->url = $url;
     }
+
     /**
      * Getter function for url
      *
-     * @return string
+     * @return ?string
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
-
     /**
      * Builder function for address
      *
      * @param SubMerchantAddress $address
      *
-     * @return SubMerchant
+     * @return $this
      */
-    public function address(SubMerchantAddress $address): self
+    public function address(?SubMerchantAddress $address): self
     {
         $this->setAddress($address);
 
         return $this;
     }
+
     /**
      * Setter function for address
      *
@@ -231,20 +231,20 @@ class SubMerchant extends BaseModel
      *
      * @return void
      */
-    public function setAddress(SubMerchantAddress $address): void
+    public function setAddress(?SubMerchantAddress $address): void
     {
         $this->address = $address;
     }
+
     /**
      * Getter function for address
      *
-     * @return SubMerchantAddress
+     * @return ?SubMerchantAddress
      */
-    public function getAddress(): SubMerchantAddress
+    public function getAddress(): ?SubMerchantAddress
     {
         return $this->address;
     }
-
     /**
      * Convert the object to a string representation.
      *
@@ -252,13 +252,13 @@ class SubMerchant extends BaseModel
      */
     public function __toString(): string
     {
-        return "class SubMerchant {" . PHP_EOL .
-            "	id: " . $this->toIndentedString($this->id) . PHP_EOL .
-            "	name: " . $this->toIndentedString($this->name) . PHP_EOL .
-            "	phone: " . $this->toIndentedString($this->phone) . PHP_EOL .
-            "	email: " . $this->toIndentedString($this->email) . PHP_EOL .
-            "	url: " . $this->toIndentedString($this->url) . PHP_EOL .
-            "	address: " . $this->toIndentedString($this->address) . PHP_EOL .
-            "}";
+        return "class SubMerchant {" . PHP_EOL
+            . "    id: " . $this->toIndentedString($this->id ?? null) . PHP_EOL
+            . "    name: " . $this->toIndentedString($this->name ?? null) . PHP_EOL
+            . "    phone: " . $this->toIndentedString($this->phone ?? null) . PHP_EOL
+            . "    email: " . $this->toIndentedString($this->email ?? null) . PHP_EOL
+            . "    url: " . $this->toIndentedString($this->url ?? null) . PHP_EOL
+            . "    address: " . $this->toIndentedString($this->address ?? null) . PHP_EOL
+            . "}";
     }
 }

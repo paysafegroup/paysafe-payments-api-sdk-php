@@ -1,13 +1,15 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
+
 namespace Paysafe\PhpSdk\Service\Interfaces;
 
 use Paysafe\PhpSdk\Client\RequestOptions;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
-use Paysafe\PhpSdk\Model\Verification\VerificationRequest;
 use Paysafe\PhpSdk\Model\Verification\Verification;
 use Paysafe\PhpSdk\Model\Verification\VerificationList;
+use Paysafe\PhpSdk\Model\Verification\VerificationRequest;
 
 /**
  * Interface for interacting with the Verification Service in the Paysafe API.

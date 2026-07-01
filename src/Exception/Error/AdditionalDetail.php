@@ -1,16 +1,15 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Exception\Error;
 
-
-use Paysafe\PhpSdk\Model\BaseModel;
 
 /**
  * Class AdditionalDetail
  * Additional details about the error returned from Paysafe PaymentsAPI.
  */
-class AdditionalDetail extends BaseModel
+class AdditionalDetail
 {
 
     private ?string $type;
@@ -19,8 +18,6 @@ class AdditionalDetail extends BaseModel
 
     public function __construct(string $type, string $code, string $message = null)
     {
-        parent::__construct();
-
         $this->type = $type;
         $this->code = $code;
         $this->message = $message;
@@ -140,5 +137,22 @@ class AdditionalDetail extends BaseModel
             . "    code: " . $this->toIndentedString($this->code) . "\n"
             . "    message: " . $this->toIndentedString($this->message) . "\n"
             . "}";
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     *
+     * @param mixed $o
+     *
+     * @return string
+     */
+    protected function toIndentedString($o): string
+    {
+        if ($o === null) {
+            return "null";
+        }
+
+        return str_replace("\n", "\n    ", (string)$o);
     }
 }

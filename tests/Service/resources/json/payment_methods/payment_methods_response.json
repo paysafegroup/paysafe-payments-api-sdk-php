@@ -1,0 +1,14 @@
+{
+  "paymentMethods": [
+    {
+      "paymentMethod": "CARD",
+      "currencyCode": "USD",
+      "accountId": "12345"
+    },
+    {
+      "paymentMethod": "PAYSAFECARD",
+      "currencyCode": "USD",
+      "accountId": "12346"
+    }
+  ]
+}

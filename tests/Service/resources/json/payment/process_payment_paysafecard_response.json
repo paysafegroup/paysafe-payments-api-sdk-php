@@ -1,0 +1,25 @@
+{
+  "id": "f4d5e6f7-a8b9-0123-defa-456789012345",
+  "paymentType": "PAYSAFECARD",
+  "paymentHandleToken": "PHToken_Paysafecard_001",
+  "merchantRefNum": "merchant-ref-paysafecard-payment-001",
+  "currencyCode": "EUR",
+  "settleWithAuth": true,
+  "txnTime": "2025-01-15T10:05:00Z",
+  "billingDetails": {
+    "street": "100 Queen Street",
+    "city": "Toronto",
+    "zip": "M5H 2N2",
+    "state": "ON",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "COMPLETED",
+  "amount": 1000,
+  "paysafecard": {
+    "consumerId": "consumer@example.com",
+    "minAgeRestriction": 18,
+    "countryRestriction": "AT"
+  },
+  "liveMode": false
+}

@@ -9,10 +9,10 @@ use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Model\Customer\Address;
 use Paysafe\PhpSdk\Service\CustomerAddressService;
 
-class CustomerAddressServiceTest extends BasePaysafeTest
+class CustomerAddressServiceTest extends BasePaysafeService
 {
     const CUSTOMER_ID = "921cd968-6882-422c-ae4f-a10ddbae95ff";
-    const ADDRESS_ID = "921cd968-6882-422c-ae4f-a10ddbae95fe";
+    const ADDRESS_ID = "99999-6882-422c-ae4f-a10ddbae95fe";
     const CUSTOMER_ADDRESS_ENDPOINT = "/paymenthub/v1/customers/%s/addresses";
 
     private CustomerAddressService $customerAddressService;
@@ -44,7 +44,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateAddressResponse()
+                    $this->get_resource_json("customer_address/create_address_response.json")
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -92,7 +92,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockGetAddressResponse()
+                    $this->get_resource_json("customer_address/get_address_response.json")
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -136,7 +136,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -177,7 +177,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockUpdateAddressResponse()
+                    $this->get_resource_json("customer_address/update_address_response.json")
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -233,7 +233,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -285,8 +285,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                     200,
                     [
                         'Content-Type' => 'application/json',
-                    ],
-                    $this->mockUpdateAddressResponse()
+                    ]
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -319,7 +318,7 @@ class CustomerAddressServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -338,65 +337,5 @@ class CustomerAddressServiceTest extends BasePaysafeTest
             $this->assertEquals("5269", $exception->getError()->getCode());
             $this->assertEquals("Entity not found", $exception->getError()->getMessage());
         }
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCreateAddressResponse(): string
-    {
-        return "{\n" .
-            "  \"id\": \"921cd968-6882-422c-ae4f-a10ddbae95ff\",\n" .
-            "  \"nickName\": \"Home\",\n" .
-            "  \"street\": \"N.G.O's Colony\",\n" .
-            "  \"street2\": \"Besdie Sri Ramakrishna P.G College\",\n" .
-            "  \"city\": \"Nandyal\",\n" .
-            "  \"state\": \"ON\",\n" .
-            "  \"country\": \"CA\",\n" .
-            "  \"zip\": \"518502\",\n" .
-            "  \"phone\": \"647-788-3901\",\n" .
-            "  \"status\": \"ACTIVE\",\n" .
-            "  \"defaultShippingAddressIndicator\": false\n" .
-            "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockGetAddressResponse(): string
-    {
-        return "{\n" .
-            "  \"id\": \"" . self::ADDRESS_ID . "\",\n" .
-            "  \"nickName\": \"Home\",\n" .
-            "  \"street\": \"N.G.O's Colony\",\n" .
-            "  \"street2\": \"Besdie Sri Ramakrishna P.G College\",\n" .
-            "  \"city\": \"Nandyal\",\n" .
-            "  \"state\": \"ON\",\n" .
-            "  \"country\": \"CA\",\n" .
-            "  \"zip\": \"518502\",\n" .
-            "  \"phone\": \"647-788-3901\",\n" .
-            "  \"status\": \"ACTIVE\",\n" .
-            "  \"defaultShippingAddressIndicator\": false\n" .
-            "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockUpdateAddressResponse(): string
-    {
-        return "{\n" .
-            "  \"id\": \"" . self::ADDRESS_ID . "\",\n" .
-            "  \"nickName\": \"Office\",\n" .
-            "  \"street\": \"101 Queen\",\n" .
-            "  \"street2\": \"Unit 202\",\n" .
-            "  \"city\": \"Toronto0\",\n" .
-            "  \"state\": \"NY\",\n" .
-            "  \"country\": \"US\",\n" .
-            "  \"zip\": \"M5H 2N2\",\n" .
-            "  \"phone\": \"903-788-3901\",\n" .
-            "  \"status\": \"ACTIVE\",\n" .
-            "  \"defaultShippingAddressIndicator\": false\n" .
-            "}";
     }
 }

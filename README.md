@@ -3,31 +3,42 @@
 ## Table of contents
 
 <!-- TOC -->
-* [Introduction](#introduction)
-* [Before you begin](#before-you-begin)
-* [Installation](#installation)
-  * [Requirements](#requirements)
-  * [Install via Composer](#install-via-composer)
-    * [Add manually to composer.json](#add-manually-to-composerjson)
-    * [Install via Composer CLI:](#install-via-composer-cli)
-* [Usage](#usage)
-  * [Instantiating new PaysafeClient instance](#instantiating-new-paysafeclient-instance)
-  * [PaysafeClient customizations](#paysafeclient-customizations)
-    * [Maximum automatic retries](#maximum-automatic-retries)
-    * [Connect and response timeouts](#connect-and-response-timeouts)
-    * [Proxy](#proxy)
-    * [SSLContext](#sslcontext)
-  * [Transaction flows](#transaction-flows)
-    * [Check the status of Payments API](#check-the-status-of-payments-api)
-    * [Create a payment handle](#create-a-payment-handle)
-  * [Request customizations](#request-customizations)
-  * [Error handling](#error-handling)
-  * [Overriding base url](#overriding-base-url)
-  * [Using undocumented parameters](#using-undocumented-parameters)
-* [API Coverage](#api-coverage)
-    * [Transactions types and functionalities supported in the SDK:](#transactions-types-and-functionalities-supported-in-the-sdk)
-    * [Not supported in current version of the SDK:](#not-supported-in-current-version-of-the-sdk)
-* [License](#license)
+* [Paysafe PHP SDK](#paysafe-php-sdk)
+  * [Table of contents](#table-of-contents)
+  * [Introduction](#introduction)
+  * [Before you begin](#before-you-begin)
+  * [Installation](#installation)
+    * [Requirements](#requirements)
+    * [Install via Composer](#install-via-composer)
+      * [Add manually to composer.json](#add-manually-to-composerjson)
+      * [Install via Composer CLI:](#install-via-composer-cli)
+  * [Usage](#usage)
+    * [Instantiating new PaysafeClient instance](#instantiating-new-paysafeclient-instance)
+    * [PaysafeClient customizations](#paysafeclient-customizations)
+      * [Maximum automatic retries](#maximum-automatic-retries)
+      * [Connect and response timeouts](#connect-and-response-timeouts)
+      * [Proxy](#proxy)
+      * [SSLContext](#sslcontext)
+    * [Transaction flows](#transaction-flows)
+      * [Check the status of Payments API](#check-the-status-of-payments-api)
+      * [Create a payment handle](#create-a-payment-handle)
+      * [Process Payment](#process-payment)
+      * [Process Settlement](#process-settlement)
+      * [Process Refund](#process-refund)
+    * [Request customizations](#request-customizations)
+    * [LPM Payment Methods](#lpm-payment-methods)
+    * [Unsupported HTTP Requests](#unsupported-http-requests)
+    * [Logging](#logging)
+    * [Webhook Handler](#webhook-handler)
+    * [Examples Module](#examples-module)
+    * [Error handling](#error-handling)
+    * [Overriding base url](#overriding-base-url)
+    * [Using undocumented parameters](#using-undocumented-parameters)
+    * [End-to-end integration example](#end-to-end-integration-example)
+  * [API Coverage](#api-coverage)
+      * [Transactions types and functionalities supported in the SDK:](#transactions-types-and-functionalities-supported-in-the-sdk)
+      * [Not supported in current version of the SDK:](#not-supported-in-current-version-of-the-sdk)
+  * [License](#license)
 <!-- TOC -->
 
 
@@ -107,7 +118,7 @@ You need to provide `apiKey` in format "username:password", for example:
 
     MerchantXYZ:B-tst1-0-51ed39e4-312d02345d3f123120881dff9bb4020a89e8ac44cdfdcecd702151182fdc952272661d290ab2e5849e31bb03deede7
 
-Please keep your `apiKey` in safe location, for example load it from HashiCorp vault, Java Keystore, Kubernetes Secrets etc.
+Please keep your `apiKey` in safe location, for example load it from your local .env file, HashiCorp vault, Kubernetes Secrets etc.
 
 PaysafeClient can be configured for either **Live** or **Test** environment.
 
@@ -118,15 +129,16 @@ Any upload of real cardholder data is strictly prohibited, as described in the T
 ---
 
 You can create a PaysafeClient instance using constructor:
-
+```php
     $paysafeClient = new PaysafeClient($apiKey, Environment::TEST);
-
+```
 Such `PaysafeClient` will use default client configuration (connect and response timeout, automatic retries).
 
 ### PaysafeClient customizations
 
 `PaysafeClient` can also be instantiated using setters. This enables additional API client configurations:
 
+```php
     $paysafeClient = new PaysafeClient();
     $paysafeClient->setApiKey('API Key');
     $paysafeClient->setEnvironment(Environment::LIVE);
@@ -139,6 +151,7 @@ Such `PaysafeClient` will use default client configuration (connect and response
       'key'  => '/path/to/client-key.pem',
       'ca'   => '/path/to/ca-cert.pem'
     ])
+```
 
 If some values are not overwritten via setters, default values from `PaysafeConfiguration` will be 
 used.
@@ -163,6 +176,7 @@ Default values are:
 
 The client allows for custom proxies. Proxy object can be provided directly in the constructor:
 
+```php
     $proxy = 'http://custom-proxy:8080';
 
     $config = array(
@@ -170,6 +184,7 @@ The client allows for custom proxies. Proxy object can be provided directly in t
       'environment' => 'test',
       'proxy' =>  $proxy)
     $paysafeClient = new PaysafeClient($config);
+```
 
 Additionally, proxy can be automatically discerned from system properties:
 
@@ -191,7 +206,7 @@ will automatically recognize and use system properties for proxy.
 #### SSLContext
 
 The client also allows for custom SslContext. For example, custom SSLContext can be created like this:
-
+```php
     $sslOptions = [
       'cert' => '/path/to/client-cert.pem',
       'key'  => '/path/to/client-key.pem',
@@ -199,7 +214,7 @@ The client also allows for custom SslContext. For example, custom SSLContext can
     ];
     $paysafeClient = new PaysafeClient();
     $paysafeClient->setSslContext($sslOptions);
-
+```
 ---
 
 ### Transaction flows
@@ -207,11 +222,11 @@ The client also allows for custom SslContext. For example, custom SSLContext can
 #### Check the status of Payments API
 
 As a first step, you may check the status of Payments API by calling:
-
+```php
     $paysafeClient = new PaysafeClient('API KEY', Environment::TEST);
     $monitorResponse = $paysafeClient->monitorService()->monitor();
     assertEquals("READY", $monitorResponse->getStatus());
-
+```
 ---
 
 #### Create a payment handle
@@ -223,7 +238,7 @@ Once the Payment Handle is created, you then include the paymentHandleToken in a
 To create a Payment Handle, please use unique merchant reference number for each request.
 
 Use the provided builder to create Payment Handle Request:
-
+```php
     $paymentHandleRequest = new PaymentHandleRequest();
     $paymentHandleRequest->merchantRefNum('MERCHANT_REF_NUM')
         ->transactionType(TransactionType::PAYMENT)
@@ -270,7 +285,7 @@ Use the provided builder to create Payment Handle Request:
     //Return Links
     $returnLinks = [];
     $returnLink1 = new ReturnLink();
-    $returnLink1->rel(ReturnLinkRel::DEFAULT)
+    $returnLink1->rel(ReturnLinkRel::_DEFAULT)
         ->href('https://usgaminggamblig.com/payment/return/')
         ->method('GET');
     $returnLinks[] = $returnLink1;
@@ -287,10 +302,10 @@ Use the provided builder to create Payment Handle Request:
         ->method('GET');
     $returnLinks[] = $returnLink3;
     $paymentHandleRequest->returnLinks($returnLinks);
-
+```
 After which you can call the corresponding method:
 
-
+```php
     $paysafeClient = new PaysafeClient('API KEY', Environment::TEST);
     try {
       $paymentHandle = $paysafeClient->paymentHandleService()->createPaymentHandle($paymentHandleRequest);
@@ -298,11 +313,13 @@ After which you can call the corresponding method:
     catch (PaysafeSdkException e) {
       echo "PaysafeSDKException: ". $e->getMessage();
     }
+```
 
 #### Process Payment
 
 To process Payment, you can create the Payment Request and submit it:
 
+```php
     $merchantDescriptor = new MerchantDescriptor();
     $merchantDescriptor->dynamicDescriptor('test')
         ->phone('1000000000');
@@ -322,6 +339,7 @@ To process Payment, you can create the Payment Request and submit it:
     } catch (PaysafeSdkException $e) {
         echo "PaysafeSDKException: " . $e->getMessage();
     }
+```
 
 In you want to authorize and settle the Payment in a single request, use `settleWithAuth(true)`.
 
@@ -332,7 +350,7 @@ Returned Payment object will, among other fields, contain `id`. This is the uniq
 #### Process Settlement
 
 To process a Settlement for a Payment Request created with `settleWithAuth(false)`, you need to create a Settlement Request:
-
+```php
     $paymentId = $payment->getId();
     $settlementRequest = new SettlementRequest();
     $settlementRequest->merchantRefNum('YOUR_UNIQUE_MERCHANT_REF_NUMBER')
@@ -343,31 +361,36 @@ To process a Settlement for a Payment Request created with `settleWithAuth(false
     } catch (PaysafeSdkException $e) {
         echo "PaysafeSDKException: " . $e->getMessage();
     }
+```
 
 #### Process Refund
 
 To process a Refund, you need to create a Refund Request:
-
+```php
     $refundRequest = new RefundRequest();
     $refundRequest->merchantRefNum('YOUR_UNIQUE_MERCHANT_REF_NUMBER')
         ->amount(500)
         ->dupCheck(true);
+```
 
 If the payment was settled immediately, use:
-
+```php
     $paymentId = $payment->getId();
+```
 
 If the payment was settled manually, by calling Process Settlement, use:
-
+```php
     $paymentId = $settlement->getId();
+```
 
 Finally, execute the request:
-
+```php
     try {
         $refund = $paysafeClient->refundService()->processRefund($id, $refundRequest);
     } catch (PaysafeSdkException $e) {
         echo "PaysafeSDKException: " . $e->getMessage();
     }
+```
 
 ---
 
@@ -382,6 +405,7 @@ Besides client level customizations, following values can also be customized at 
 
 To customize a request, simply provide `RequestOptions` object in method calls:
 
+```php
     $paymentHandleRequest = new PaymentHandleRequest();
     $requestOptions = new RequestOptions();
     $requestOptions->setMaxAutomaticRetries(3);
@@ -391,8 +415,149 @@ To customize a request, simply provide `RequestOptions` object in method calls:
     
     $paysafeClient = new PaysafeClient('API_KEY', Environment::TEST)
     $paymentHandle = $paysafeClient->paymentHandleService->createPaymentHandle(paymentHandleRequest, requestOptions);
+```
 
 If some value is not provided (in this case, `responseTimeout`), value from `PaysafeClient` will be used.
+
+---
+
+### LPM Payment Methods
+
+The SDK supports Local Payment Methods (LPM) such as Skrill, PaysafeCash, PaysafeCard, Neteller, and PayPal. You can create payment handles for these methods by specifying the appropriate `PaymentType` in your `PaymentHandleRequest`.
+
+**Example for Skrill:**
+```php
+    $returnLink = new ReturnLink();
+    $returnLink
+      ->rel(ReturnLinkRel::_DEFAULT)
+      ->href("https://example.com/payment/return/")
+      ->method(HttpMethod::GET);
+    
+    $skrillHandleRequest = new PaymentHandleRequest();
+    $skrillHandleRequest
+      ->merchantRefNum("YOUR_REF")
+      ->transactionType(TransactionType::PAYMENT)
+      ->paymentType(PaymentType::SKRILL)
+      ->accountId("YOUR_ACCOUNT_ID")
+      ->amount(500)
+      ->currencyCode(CurrencyCode::EUR)
+      ->returnLinks(
+        [
+            $returnLink
+        ]
+      );
+```
+
+**Other supported LPMs:**
+- `PaymentType::PAYSAFECASH`
+- `PaymentType::PAYSAFECARD`
+- `PaymentType::NETELLER`
+- `PaymentType::PAYPAL`
+
+The rest of the flow (processing the payment, handling redirects, etc.) is similar to card payments. See the `/examples` module for end-to-end flows.
+
+---
+
+### Unsupported HTTP Requests
+
+If you attempt to use an HTTP method or endpoint not supported by the SDK, a `PaysafeSdkException` will be thrown. The SDK only exposes supported API operations. 
+
+For unsupported or custom requests, use the `DirectRequestOptions`.
+
+```php
+// Create HTTP request headers array, allowing you to set per-request
+// configuration options like additional headers if required by the API
+$requestHeaders = [
+    'MID' => '6571856178'
+];
+
+// Build per-request options
+$requestOptions = (new RequestOptions())
+    ->setConnectTimeout(10 * 1000)
+    ->setResponseTimeout(20 * 1000)
+    ->setMaxAutomaticRetries(3)
+    ->setSimulator(RequestOptions::PAYMENT_SIMULATOR_INTERNAL);
+
+// Build DirectRequestOptions
+$options = (new DirectRequestOptions())
+    ->setAdditionalHeaders($requestHeaders)
+    ->setRequestOptions($requestOptions);
+
+// Initialize Paysafe client
+$client = new PaysafeClient('apiKey', Environment::TEST);
+
+// Make the request using PaysafeClient::directRequest()
+$response = $client->directRequest(PaysafeClient::REQUEST_METHOD_GET, 'paymenthub/v1/balances', 'name=johndoe&email=johndoe@example.com', $options);
+
+// POST request
+// For POST requests, pass serialized JSON (or object/array directly).
+$params = [
+    'merchantRefNum' => 'merchantRefNum',
+    'transactionType' => 'PAYMENT',
+    'amount' => 1250,
+    'currencyCode' => 'BRL',
+];
+$requestBody = $client->serialize($params);
+
+$response = $client->directRequest(PaysafeClient::REQUEST_METHOD_POST, 'paymenthub/v1/vippreferred/registrations', $requestBody, $options);
+
+// Cast the response into a specific SDK response class if available
+$paymentHandle = $client->deserialize($response->getResponseBody(), PaymentHandle::class);
+```
+
+---
+
+### Logging
+
+The SDK logging is client-level. Logger type is `Psr\Log\LoggerInterface`. 
+
+Default logger is always present on `PaysafeClient` (`Monolog\Logger`).
+
+There are two log levels:
+- `LoggingLevel::ERROR` logs only errors (default);
+- `LoggingLevel::ALL` logs errors plus non-error SDK events.
+
+**Initialization:**
+```php
+    use Monolog\Logger;
+    use Paysafe\PhpSdk\Config\Environment;
+    use Paysafe\PhpSdk\Logging\LoggingLevel;
+    use Paysafe\PhpSdk\PaysafeClient;
+
+    $paysafeClient = new PaysafeClient('API_KEY', Environment::TEST);
+    $paysafeClient->setLogger(new Logger('PaysafeSdk'));
+    $paysafeClient->setLoggingLevel(LoggingLevel::ALL);
+```
+
+Any PSR-3 compliant logger works (Monolog, Symfony logger, Laravel logger, etc.).
+
+---
+
+### Webhook Handler
+
+The SDK provides a `WebhookHandler` utility to validate and parse webhook events securely:
+
+```php
+    use Monolog\Logger;
+    use Paysafe\PhpSdk\Logging\LoggingLevel;
+    use Paysafe\PhpSdk\Webhook\WebhookHandler;
+
+    $handler = new WebhookHandler(
+        new Logger('PaysafeSdkWebhook'),
+        LoggingLevel::ERROR
+    );
+    $event = $handler->parseAndValidate($payload, $signatureHeader, $secretKey);
+```
+
+- Signature is verified before parsing.
+- All events and errors are logged via the provided logger.
+- See `WebhookHandler` and `WebhookEvent` classes for details.
+
+---
+
+### Examples Module
+
+A new `/examples` module is included, providing runnable Spring Boot applications that demonstrate integration flows for all supported payment methods, including LPMs, 3DS, and webhooks. See the `/examples` directory for details.
 
 ---
 
@@ -438,7 +603,7 @@ However, the Payments API includes some undocumented or experimental properties,
 To use such parameters in classes representing API payloads (for example `PaymentHandleRequest`),
 we have provided field `additionalParameters` which can be added one-by-one or as a complete map:
 
-
+```php
     // Add a new additional parameter
     public function addAdditionalParameter(string $key, $value): self
     {
@@ -458,16 +623,161 @@ we have provided field `additionalParameters` which can be added one-by-one or a
       $this->additionalParameters = array_merge($this->additionalParameters, $additionalParameters);
       return $this;
     }
+```
 
 Usage:
-
+```php
     paymentHandleRequest->addAdditionalParameter('booleanParameter', true);
     paymentHandleRequest->addAdditionalParameter("arrayParameter",[
       'city' => 'London',
       'country' => 'United Kingdom',
       'phone' => '+2139243'
     ]);
+```
 
+---
+
+### End-to-end integration example
+
+The following example demonstrates a complete payment flow: SDK initialization, processing a charge, handling errors, and looking up a transaction.
+
+```php
+    declare(strict_types=1);
+    
+    require __DIR__ . '/vendor/autoload.php';
+    
+    use Paysafe\PhpSdk\PaysafeClient;
+    use Paysafe\PhpSdk\Config\Environment;
+    use Paysafe\PhpSdk\Client\RequestOptions;
+    use Paysafe\PhpSdk\Model\PaymentHandleRequest;
+    use Paysafe\PhpSdk\Model\PaymentRequest;
+    use Paysafe\PhpSdk\Model\Card;
+    use Paysafe\PhpSdk\Model\CardExpiry;
+    use Paysafe\PhpSdk\Model\BillingDetails;
+    use Paysafe\PhpSdk\Model\MerchantDescriptor;
+    use Paysafe\PhpSdk\Model\TransactionType;
+    use Paysafe\PhpSdk\Model\CurrencyCode;
+    use Paysafe\PhpSdk\Exception\PaysafeSdkException;
+    use Paysafe\PhpSdk\Exception\ApiConnectionException;
+    use Paysafe\PhpSdk\Exception\InvalidCredentialsException;
+    use Paysafe\PhpSdk\Exception\InvalidRequestException;
+    use Paysafe\PhpSdk\Exception\RequestDeclinedException;
+    
+    // --- 1. Initialize the SDK --------------------------------------------------
+    // Load your API key from a secure vault - never hardcode credentials.
+    $apiKey = getenv('PAYSAFE_API_KEY'); // e.g. "MerchantXYZ:B-tst1-0-..."
+    
+    $client = new PaysafeClient($apiKey, Environment::TEST);
+    
+    // Optional: customize timeouts and retry behavior
+    $client->setConnectTimeout(10);
+    $client->setResponseTimeout(30);
+    $client->setMaxAutomaticRetries(3);
+    
+    // --- 2. Create a Payment Handle ---------------------------------------------
+    $cardExpiry = new CardExpiry();
+    $cardExpiry->month('12')->year(2027);
+    
+    $card = new Card();
+    $card->cardNum('4000000000001026')
+        ->cardExpiry($cardExpiry)
+        ->cvv('123');
+    
+    $billingDetails = new BillingDetails();
+    $billingDetails->street('100 Queen Street')
+        ->city('Toronto')
+        ->state('ON')
+        ->country('CA')
+        ->zip('M5H 2N2');
+    
+    $paymentHandleRequest = new PaymentHandleRequest();
+    $paymentHandleRequest
+        ->merchantRefNum('order-' . uniqid())
+        ->transactionType(TransactionType::PAYMENT)
+        ->amount(2500)                    // $25.00 in minor units
+        ->currencyCode(CurrencyCode::USD)
+        ->accountId('1009688230')
+        ->card($card)
+        ->billingDetails($billingDetails);
+    
+    try {
+        $paymentHandle = $client->paymentHandleService()->createPaymentHandle($paymentHandleRequest);
+        echo "Payment Handle created: " . $paymentHandle->getId() . PHP_EOL;
+        echo "Token: " . $paymentHandle->getPaymentHandleToken() . PHP_EOL;
+    } catch (InvalidRequestException $e) {
+        // 400 - validation errors (missing fields, invalid currency, etc.)
+        echo "Validation error: " . $e->getError()->getMessage() . PHP_EOL;
+        if ($e->getError()->getFieldErrors()) {
+            foreach ($e->getError()->getFieldErrors() as $fieldError) {
+                echo "  Field '{$fieldError->getField()}': {$fieldError->getError()}" . PHP_EOL;
+            }
+        }
+        exit(1);
+    } catch (InvalidCredentialsException $e) {
+        // 401 - bad API key
+        echo "Authentication failed. Check your API key." . PHP_EOL;
+        exit(1);
+    }
+    
+    // --- 3. Process a Payment ----------------------------------------------------
+    $merchantDescriptor = new MerchantDescriptor();
+    $merchantDescriptor->dynamicDescriptor('MyStore')
+        ->phone('1234567890');
+    
+    $paymentRequest = new PaymentRequest();
+    $paymentRequest
+        ->merchantRefNum('charge-' . uniqid())
+        ->amount(2500)
+        ->currencyCode('USD')
+        ->paymentHandleToken($paymentHandle->getPaymentHandleToken())
+        ->settleWithAuth(true)           // Authorize + settle in one step
+        ->merchantDescriptor($merchantDescriptor);
+    
+    // Use per-request options to override client-level settings
+    $requestOptions = new RequestOptions();
+    $requestOptions->setConnectTimeout(15);
+    $requestOptions->setResponseTimeout(45);
+    
+    try {
+        $payment = $client->paymentService()->processPayment($paymentRequest, $requestOptions);
+    
+        echo "Payment successful!" . PHP_EOL;
+        echo "  Payment ID: " . $payment->getId() . PHP_EOL;
+        echo "  Status:     " . $payment->getStatus() . PHP_EOL;
+        echo "  Amount:     " . $payment->getAmount() . PHP_EOL;
+    
+    } catch (RequestDeclinedException $e) {
+        // 402 - payment declined by processor
+        echo "Payment declined: " . $e->getError()->getMessage() . PHP_EOL;
+        echo "  Correlation ID: " . $e->getInternalCorrelationId() . PHP_EOL;
+    
+        // Access partial response data (e.g. gateway response)
+        if ($e->getApiResponse() !== null) {
+            echo "  Partial response available for diagnostics." . PHP_EOL;
+        }
+    
+    } catch (ApiConnectionException $e) {
+        // Network failure - safe to retry
+        echo "Network error: " . $e->getMessage() . PHP_EOL;
+    
+    } catch (PaysafeSdkException $e) {
+        // Catch-all for any other API error (403, 409, 5xx, etc.)
+        echo "API error [{$e->getCode()}]: " . $e->getMessage() . PHP_EOL;
+        if ($e->getInternalCorrelationId()) {
+            echo "  Provide this to Paysafe Support: " . $e->getInternalCorrelationId() . PHP_EOL;
+        }
+    }
+    
+    // --- 4. Look up a Payment by ID ---------------------------------------------
+    if (isset($payment)) {
+        try {
+            $fetched = $client->paymentService()->getPaymentById($payment->getId());
+            echo "Fetched payment status: " . $fetched->getStatus() . PHP_EOL;
+        } catch (PaysafeSdkException $e) {
+            echo "Lookup failed: " . $e->getMessage() . PHP_EOL;
+        }
+    }
+```
 
 ---
 

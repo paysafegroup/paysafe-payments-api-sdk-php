@@ -1,0 +1,25 @@
+{
+  "id": "f5e6f7a8-b9c0-1234-efab-567890123456",
+  "paymentType": "PAYPAL",
+  "paymentHandleToken": "PHToken_PayPal_001",
+  "merchantRefNum": "merchant-ref-paypal-payment-001",
+  "currencyCode": "USD",
+  "settleWithAuth": true,
+  "txnTime": "2025-01-15T10:05:00Z",
+  "billingDetails": {
+    "street": "100 Queen Street",
+    "city": "Toronto",
+    "zip": "M5H 2N2",
+    "state": "ON",
+    "country": "CA"
+  },
+  "customerIp": "172.0.0.1",
+  "status": "COMPLETED",
+  "amount": 1000,
+  "payPal": {
+    "consumerId": "consumer@example.com",
+    "recipientDescription": "Merchant Store",
+    "consumerMessage": "Thank you for your purchase"
+  },
+  "liveMode": false
+}

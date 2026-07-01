@@ -8,7 +8,7 @@ use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Service\PaymentMethodsService;
 
-class PaymentMethodsServiceTest extends BasePaysafeTest
+class PaymentMethodsServiceTest extends BasePaysafeService
 {
     const PAYMENT_METHODS_ENDPOINT = "/paymenthub/v1/paymentmethods";
 
@@ -29,21 +29,6 @@ class PaymentMethodsServiceTest extends BasePaysafeTest
      */
     public function testLookUpPaymentMethods_isSuccessful(): void
     {
-        $mockResponse = "{\n" .
-            "  \"paymentMethods\": [\n" .
-            "    {\n" .
-            "      \"paymentMethod\": \"CARD\",\n" .
-            "      \"currencyCode\": \"USD\",\n" .
-            "      \"accountId\": \"12345\"\n" .
-            "    },\n" .
-            "    {\n" .
-            "      \"paymentMethod\": \"PAYSAFECARD\",\n" .
-            "      \"currencyCode\": \"USD\",\n" .
-            "      \"accountId\": \"12346\"\n" .
-            "    }\n" .
-            "  ]\n" .
-            "}";
-
         $paymentMethodService = clone $this->paymentMethodsService;
 
         $mockCore = $this->createMock(PaysafeApiClient::class);
@@ -54,7 +39,7 @@ class PaymentMethodsServiceTest extends BasePaysafeTest
                   [
                       'Content-Type' => 'application/json',
                   ],
-                  $mockResponse
+                  $this->get_resource_json("payment_methods/payment_methods_response.json")
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -90,7 +75,7 @@ class PaymentMethodsServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::BAD_REQUEST_ERROR_RESPONSE
+                        $this->get_resource_json("error/400_bad_request_invalid_currency_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -111,5 +96,4 @@ class PaymentMethodsServiceTest extends BasePaysafeTest
             $this->fail($exception->getMessage());
         }
     }
-
 }

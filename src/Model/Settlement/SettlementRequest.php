@@ -1,27 +1,42 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Settlement;
-
 use Paysafe\PhpSdk\Model\BaseModel;
 use Paysafe\PhpSdk\Model\Common\Travel\Airline\AirlineTravelDetails;
-use Paysafe\PhpSdk\Model\Common\Travel\Carrental\CarRentalDetails;
+use Paysafe\PhpSdk\Model\Common\Travel\CarRental\CarRentalDetails;
 use Paysafe\PhpSdk\Model\Common\Travel\Cruise\CruiselineTravelDetails;
 use Paysafe\PhpSdk\Model\Common\Travel\Lodging\LodgingDetails;
 use Paysafe\PhpSdk\Model\Lpm\Splitpay;
 
+
+/**
+ * A Settlement request allows you to settle a previous authorization that was not settled in the original Purchase request (i.e., where settleWithAuth was set to false). <ul>   <li>A regular Settlement, where the initial request was an Authorization that is to be settled.</li>   <li>A Settlement that is split into multiple merchant accounts. This is applicable for those merchants whose accounts are configured to do so.</li>   <li>A Settlement for the authorization with the full airline travel details for the AIRLINE Merchants.</li> </ul>
+ */
 class SettlementRequest extends BaseModel
 {
-    private string $merchantRefNum;
-    private int $amount;
-    private bool $dupCheck;
-    private array $splitpay;
-    private AirlineTravelDetails $airlineTravelDetails;
-    private CruiselineTravelDetails $cruiselineTravelDetails;
-    private LodgingDetails $lodgingDetails;
-    private CarRentalDetails $carRentalDetails;
-    private array $additionalParameters;
-
+    /**
+     * This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
+     */
+    private ?string $merchantRefNum = null;
+    /**
+     * This is the amount of the request, in minor units.For example, to process US $10.99, this value should be 1099. Maximum: 99999999999
+     */
+    private ?int $amount = null;
+    /**
+     * This validates that this request is not a duplicate. A request is considered a duplicate if the merchantRefNum has already been used in a previous request within the past 90 days. **Note:** This value defaults to true
+     */
+    private ?bool $dupCheck = null;
+    /**
+     * Get splitpay
+     */
+    private array $splitpay = [];
+    private ?AirlineTravelDetails $airlineTravelDetails = null;
+    private ?CruiselineTravelDetails $cruiselineTravelDetails = null;
+    private ?LodgingDetails $lodgingDetails = null;
+    private ?CarRentalDetails $carRentalDetails = null;
 
     /**
      * Builder function for merchantRefNum
@@ -30,7 +45,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function merchantRefNum(string $merchantRefNum): self
+    public function merchantRefNum(?string $merchantRefNum): self
     {
         $this->setMerchantRefNum($merchantRefNum);
 
@@ -44,7 +59,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setMerchantRefNum(string $merchantRefNum): void
+    public function setMerchantRefNum(?string $merchantRefNum): void
     {
         $this->merchantRefNum = $merchantRefNum;
     }
@@ -52,13 +67,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for merchantRefNum
      *
-     * @return string
+     * @return ?string
      */
-    public function getMerchantRefNum(): string
+    public function getMerchantRefNum(): ?string
     {
         return $this->merchantRefNum;
     }
-
     /**
      * Builder function for amount
      *
@@ -66,7 +80,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function amount(int $amount): self
+    public function amount(?int $amount): self
     {
         $this->setAmount($amount);
 
@@ -80,7 +94,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setAmount(int $amount): void
+    public function setAmount(?int $amount): void
     {
         $this->amount = $amount;
     }
@@ -88,13 +102,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for amount
      *
-     * @return int
+     * @return ?int
      */
-    public function getAmount(): int
+    public function getAmount(): ?int
     {
         return $this->amount;
     }
-
     /**
      * Builder function for dupCheck
      *
@@ -102,7 +115,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function dupCheck(bool $dupCheck): self
+    public function dupCheck(?bool $dupCheck): self
     {
         $this->setDupCheck($dupCheck);
 
@@ -116,7 +129,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setDupCheck(bool $dupCheck): void
+    public function setDupCheck(?bool $dupCheck): void
     {
         $this->dupCheck = $dupCheck;
     }
@@ -124,17 +137,16 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for dupCheck
      *
-     * @return bool
+     * @return ?bool
      */
-    public function getDupCheck(): bool
+    public function getDupCheck(): ?bool
     {
-        return $this->dupCheck ?? false;
+        return $this->dupCheck;
     }
-
     /**
      * Builder function for splitpay
      *
-     * @param array $splitpay
+     * @param Splitpay[] $splitpay
      *
      * @return $this
      */
@@ -148,7 +160,7 @@ class SettlementRequest extends BaseModel
     /**
      * Setter function for splitpay
      *
-     * @param array $splitpay
+     * @param Splitpay[] $splitpay
      *
      * @return void
      */
@@ -160,42 +172,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for splitpay
      *
-     * @return array
+     * @return Splitpay[]
      */
     public function getSplitpay(): array
     {
-        return $this->splitpay;
+        return $this->splitpay ?? [];
     }
-
-
-    /**
-     * Add a new splitpay Item
-     *
-     * @param Splitpay $splitpayItem
-     *
-     * @return $this
-     */
-    public function addSplitpayItem(Splitpay $splitpayItem): self
-    {
-        $this->splitpay[] = $splitpayItem;
-
-        return $this;
-    }
-
-    /**
-     * Remove a splitpay item
-     *
-     * @param Splitpay $splitpayItem
-     *
-     * @return $this
-     */
-    public function removeSplitpayItem(Splitpay $splitpayItem): self
-    {
-        $this->setSplitpay(array_diff($this->getSplitpay(), [$splitpayItem]));
-
-        return $this;
-    }
-
     /**
      * Builder function for airlineTravelDetails
      *
@@ -203,7 +185,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function airlineTravelDetails(AirlineTravelDetails $airlineTravelDetails): self
+    public function airlineTravelDetails(?AirlineTravelDetails $airlineTravelDetails): self
     {
         $this->setAirlineTravelDetails($airlineTravelDetails);
 
@@ -217,7 +199,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setAirlineTravelDetails(AirlineTravelDetails $airlineTravelDetails): void
+    public function setAirlineTravelDetails(?AirlineTravelDetails $airlineTravelDetails): void
     {
         $this->airlineTravelDetails = $airlineTravelDetails;
     }
@@ -225,13 +207,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for airlineTravelDetails
      *
-     * @return AirlineTravelDetails
+     * @return ?AirlineTravelDetails
      */
-    public function getAirlineTravelDetails(): AirlineTravelDetails
+    public function getAirlineTravelDetails(): ?AirlineTravelDetails
     {
         return $this->airlineTravelDetails;
     }
-
     /**
      * Builder function for cruiselineTravelDetails
      *
@@ -239,7 +220,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function cruiselineTravelDetails(CruiselineTravelDetails $cruiselineTravelDetails): self
+    public function cruiselineTravelDetails(?CruiselineTravelDetails $cruiselineTravelDetails): self
     {
         $this->setCruiselineTravelDetails($cruiselineTravelDetails);
 
@@ -253,7 +234,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setCruiselineTravelDetails(CruiselineTravelDetails $cruiselineTravelDetails): void
+    public function setCruiselineTravelDetails(?CruiselineTravelDetails $cruiselineTravelDetails): void
     {
         $this->cruiselineTravelDetails = $cruiselineTravelDetails;
     }
@@ -261,13 +242,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for cruiselineTravelDetails
      *
-     * @return CruiselineTravelDetails
+     * @return ?CruiselineTravelDetails
      */
-    public function getCruiselineTravelDetails(): CruiselineTravelDetails
+    public function getCruiselineTravelDetails(): ?CruiselineTravelDetails
     {
         return $this->cruiselineTravelDetails;
     }
-
     /**
      * Builder function for lodgingDetails
      *
@@ -275,7 +255,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function lodgingDetails(LodgingDetails $lodgingDetails): self
+    public function lodgingDetails(?LodgingDetails $lodgingDetails): self
     {
         $this->setLodgingDetails($lodgingDetails);
 
@@ -289,7 +269,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setLodgingDetails(LodgingDetails $lodgingDetails): void
+    public function setLodgingDetails(?LodgingDetails $lodgingDetails): void
     {
         $this->lodgingDetails = $lodgingDetails;
     }
@@ -297,13 +277,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for lodgingDetails
      *
-     * @return LodgingDetails
+     * @return ?LodgingDetails
      */
-    public function getLodgingDetails(): LodgingDetails
+    public function getLodgingDetails(): ?LodgingDetails
     {
         return $this->lodgingDetails;
     }
-
     /**
      * Builder function for carRentalDetails
      *
@@ -311,7 +290,7 @@ class SettlementRequest extends BaseModel
      *
      * @return $this
      */
-    public function carRentalDetails(CarRentalDetails $carRentalDetails): self
+    public function carRentalDetails(?CarRentalDetails $carRentalDetails): self
     {
         $this->setCarRentalDetails($carRentalDetails);
 
@@ -325,7 +304,7 @@ class SettlementRequest extends BaseModel
      *
      * @return void
      */
-    public function setCarRentalDetails(CarRentalDetails $carRentalDetails): void
+    public function setCarRentalDetails(?CarRentalDetails $carRentalDetails): void
     {
         $this->carRentalDetails = $carRentalDetails;
     }
@@ -333,94 +312,12 @@ class SettlementRequest extends BaseModel
     /**
      * Getter function for carRentalDetails
      *
-     * @return CarRentalDetails
+     * @return ?CarRentalDetails
      */
-    public function getCarRentalDetails(): CarRentalDetails
+    public function getCarRentalDetails(): ?CarRentalDetails
     {
         return $this->carRentalDetails;
     }
-
-    /**
-     * This map holds additional parameters that can be used for features not available in this client library.
-     *  During serialization, each key-value pair is treated
-     *  as if the key were a top-level field in the serialized object,
-     *  i.e.
-     * <code>
-     *     {"merchantRefNum" : "uuid", "additionalParameter1" : 100, "additionalParameter2" : "string" }
-     * </code> .
-     *
-     * @return array|null
-     */
-    public function getAdditionalParameters(): ?array
-    {
-        return $this->additionalParameters;
-    }
-
-    /**
-     * Builder function for this Request
-     *
-     * @param array $additionalParameters
-     *
-     * @return $this
-     */
-    public function additionalParameters(array $additionalParameters): self
-    {
-        $this->setAdditionalParameters($additionalParameters);
-
-        return $this;
-    }
-
-    /**
-     * Set the additional parameters list
-     *
-     * @param array $additionalParameters
-     *
-     * @return void
-     */
-    public function setAdditionalParameters(array $additionalParameters): self
-    {
-        $this->additionalParameters = $additionalParameters;
-
-        return $this;
-    }
-
-    /**
-     * Add a new additional parameter
-     *
-     * @param string $key
-     * @param object $value
-     *
-     * @return $this
-     */
-    public function addAdditionalParameter(string $key, object $value): self
-    {
-        if ($this->additionalParameters === null) {
-            $this->additionalParameters = [];
-        }
-
-        $this->additionalParameters[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Add a new additional parameters to the list
-     *
-     * @param array $additionalParameters
-     *
-     * @return $this
-     */
-    public function addAdditionalParameters(array $additionalParameters): self
-    {
-        if ($this->additionalParameters === null) {
-            $this->additionalParameters = [];
-        }
-
-        $this->additionalParameters = array_merge($this->additionalParameters, $additionalParameters);
-
-        return $this;
-    }
-
     /**
      * Convert the object to a string representation.
      *
@@ -429,15 +326,42 @@ class SettlementRequest extends BaseModel
     public function __toString(): string
     {
         return "class SettlementRequest {" . PHP_EOL
-            . "    merchantRefNum: " . $this->toIndentedString($this->merchantRefNum) . PHP_EOL
-            . "    amount: " . $this->toIndentedString($this->amount) . PHP_EOL
-            . "    dupCheck: " . $this->toIndentedString($this->dupCheck) . PHP_EOL
-            . "    splitpay: " . $this->toIndentedString($this->splitpay) . PHP_EOL
-            . "    airlineTravelDetails: " . $this->toIndentedString($this->airlineTravelDetails) . PHP_EOL
-            . "    cruiselineTravelDetails: " . $this->toIndentedString($this->cruiselineTravelDetails) . PHP_EOL
-            . "    lodgingDetails: " . $this->toIndentedString($this->lodgingDetails) . PHP_EOL
-            . "    carRentalDetails: " . $this->toIndentedString($this->carRentalDetails) . PHP_EOL
-            . "    additionalParameters: " . $this->toIndentedString($this->additionalParameters) . PHP_EOL
+            . "    merchantRefNum: " . $this->toIndentedString($this->merchantRefNum ?? null) . PHP_EOL
+            . "    amount: " . $this->toIndentedString($this->amount ?? null) . PHP_EOL
+            . "    dupCheck: " . $this->toIndentedString($this->dupCheck ?? null) . PHP_EOL
+            . "    splitpay: " . $this->toIndentedString($this->splitpay ?? null) . PHP_EOL
+            . "    airlineTravelDetails: " . $this->toIndentedString($this->airlineTravelDetails ?? null) . PHP_EOL
+            . "    cruiselineTravelDetails: " . $this->toIndentedString($this->cruiselineTravelDetails ?? null) . PHP_EOL
+            . "    lodgingDetails: " . $this->toIndentedString($this->lodgingDetails ?? null) . PHP_EOL
+            . "    carRentalDetails: " . $this->toIndentedString($this->carRentalDetails ?? null) . PHP_EOL
             . "}";
     }
+    private ?array $additionalParameters = null;
+
+    /**
+     * This map holds additional parameters for features not yet available in this library.
+     * Each key-value pair is serialized as a top-level field in the request/response.
+     *
+     * @return array|null
+     */
+    public function getAdditionalParameters(): ?array
+    {
+        return $this->additionalParameters;
+    }
+
+    public function setAdditionalParameters(array $additionalParameters): void
+    {
+        $this->additionalParameters = $additionalParameters;
+    }
+
+    public function addAdditionalParameter(string $key, $value): self
+    {
+        if ($this->additionalParameters === null) {
+            $this->additionalParameters = [];
+        }
+        $this->additionalParameters[$key] = $value;
+        return $this;
+    }
+
+
 }

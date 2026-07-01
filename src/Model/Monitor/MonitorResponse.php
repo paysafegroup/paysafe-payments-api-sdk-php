@@ -1,20 +1,27 @@
 <?php
-/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
+/** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2026. For more information see LICENSE */
+
+declare(strict_types=1);
 
 namespace Paysafe\PhpSdk\Model\Monitor;
-
 use Paysafe\PhpSdk\Model\BaseModel;
 
+
+/**
+ * The response returned by /v1/monitor endpoint.
+ */
 class MonitorResponse extends BaseModel
 {
-    private string $status;
+    private ?string $status = null;
 
     /**
+     * Builder function for status
+     *
      * @param string $status
      *
      * @return $this
      */
-    public function status(string $status): self
+    public function status(?string $status): self
     {
         $this->setStatus($status);
 
@@ -22,30 +29,35 @@ class MonitorResponse extends BaseModel
     }
 
     /**
+     * Setter function for status
+     *
      * @param string $status
      *
-     * @return $this
+     * @return void
      */
-    public function setStatus(string $status): self
+    public function setStatus(?string $status): void
     {
         $this->status = $status;
-        return $this;
     }
 
     /**
-     * This is the status of the service. Expected value: READY
+     * Getter function for status
      *
-     * @return string|null
+     * @return ?string
      */
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
-
-    public function __toString()
+    /**
+     * Convert the object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
     {
-        return "class MonitorResponse {\n"
-            . "    status: " . $this->toIndentedString($this->status) . "\n"
+        return "class MonitorResponse {" . PHP_EOL
+            . "    status: " . $this->toIndentedString($this->status ?? null) . PHP_EOL
             . "}";
     }
 }

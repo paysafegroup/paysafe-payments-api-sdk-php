@@ -1,6 +1,7 @@
 <?php
 /** All Rights Reserved, Copyright © Paysafe Holdings UK Limited 2025. For more information see LICENSE */
 
+declare(strict_types=1);
 namespace Paysafe\PhpSdk\Service;
 
 use Paysafe\PhpSdk\Client\PaysafeApiClient;

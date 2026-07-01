@@ -1,0 +1,16 @@
+{
+  "paymentType": "BACS",
+  "bacs": {
+    "accountHolderName": "Sally Barnes",
+    "accountNumber": "09411772",
+    "sortCode": "086081",
+    "nickName": "Sally's Barclays Account"
+  },
+  "billingDetails": {
+    "nickName": "Home",
+    "street": "100 Queen",
+    "city": "London",
+    "zip": "SW1A 1AA",
+    "country": "GB"
+  }
+}

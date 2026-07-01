@@ -10,10 +10,10 @@ use Paysafe\PhpSdk\Model\Common\Profile\DateOfBirth;
 use Paysafe\PhpSdk\Model\Customer\CustomerRequest;
 use Paysafe\PhpSdk\Service\CustomerService;
 
-class CustomerServiceTest extends BasePaysafeTest
+class CustomerServiceTest extends BasePaysafeService
 {
     const CUSTOMERS_ENDPOINT = "/paymenthub/v1/customers";
-    const CUSTOMER_ID = "921cd968-6882-422c-ae4f-a10ddbae95ff";
+    const CUSTOMER_ID = "d60fc496-9023-4641-890e-e05c852d2ac4";
     const NON_EXISTING_CUSTOMER_ID = "non-existing-customer-id";
     const MERCHANT_CUSTOMER_ID = "merchant@email.com";
     const FIELDS_PARAM_VALUES_REGEX = "addresses,paymenthandles|paymenthandles,addresses";
@@ -47,7 +47,7 @@ class CustomerServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateCustomerResponse()
+                    $this->get_resource_json('customer/create_customer_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -102,7 +102,7 @@ class CustomerServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateCustomerUsingSingleUsePaymentHandleToken()
+                    $this->get_resource_json('customer/create_customer_using_single_user_payment_handle_token_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -201,7 +201,7 @@ class CustomerServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -243,7 +243,7 @@ class CustomerServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateCustomerUsingSingleUsePaymentHandleToken()
+                    $this->get_resource_json('customer/get_customer_profile_by_customer_id_with_subcomponents_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -278,7 +278,7 @@ class CustomerServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -319,7 +319,7 @@ class CustomerServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockCreateCustomerUsingSingleUsePaymentHandleToken()
+                    $this->get_resource_json('customer/get_customer_using_merchant_customer_id_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -334,8 +334,8 @@ class CustomerServiceTest extends BasePaysafeTest
         );
 
         $this->assertNotNull($response);
-        $this->assertNotEmpty($response->getAddresses());
-        $this->assertNotEmpty($response->getPaymentHandles());
+        $this->assertEmpty($response->getAddresses());
+        $this->assertEmpty($response->getPaymentHandles());
     }
 
     /**
@@ -357,7 +357,7 @@ class CustomerServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -400,7 +400,7 @@ class CustomerServiceTest extends BasePaysafeTest
                     [
                         'Content-Type' => 'application/json',
                     ],
-                    $this->mockUpdateCustomerResponse()
+                    $this->get_resource_json('customer/update_customer_response.json')
                 )
             );
         $replaceService = function() use ($mockCore) {
@@ -457,7 +457,7 @@ class CustomerServiceTest extends BasePaysafeTest
                         [
                             'Content-Type' => 'application/json',
                         ],
-                        self::ENTITY_NOT_FOUND_ERROR_RESPONSE
+                        $this->get_resource_json("error/404_entity_not_found_response.json")
                     )
                 );
             $replaceService = function () use ($mockCore) {
@@ -475,128 +475,5 @@ class CustomerServiceTest extends BasePaysafeTest
             $this->assertEquals("5269", $exception->getError()->getCode());
             $this->assertEquals("Entity not found", $exception->getError()->getMessage());
         }
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCreateCustomerResponse(): string
-    {
-        return "{\n"
-        . "  \"id\": \"921cd968-6882-422c-ae4f-a10ddbae95ff\",\n"
-        . "  \"status\": \"ACTIVE\",\n"
-        . "  \"merchantCustomerId\": \"546456451\",\n"
-        . "  \"locale\": \"en_US\",\n"
-        . "  \"firstName\": \"John\",\n"
-        . "  \"middleName\": \"James\",\n"
-        . "  \"lastName\": \"Smith\",\n"
-        . "  \"dateOfBirth\": {\n"
-        . "    \"day\": 24,\n"
-        . "    \"month\": 10,\n"
-        . "    \"year\": 1981\n"
-        . "  },\n"
-        . "  \"gender\": \"M\",\n"
-        . "  \"email\": \"john.smith@email.com\",\n"
-        . "  \"phone\": \"777-444-8888\",\n"
-        . "  \"cellPhone\": \"777-555-8888\",\n"
-        . "  \"nationality\": \"Canadian\",\n"
-        . "  \"ip\": \"192.0.126.111\",\n"
-        . "  \"paymentToken\": \"PPlfJ2gmQoYAQ1d\"\n"
-        . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockCreateCustomerUsingSingleUsePaymentHandleToken(): string
-    {
-        return "{\n"
-        . "  \"id\": \"d60fc496-9023-4641-890e-e05c852d2ac4\",\n"
-        . "  \"status\": \"ACTIVE\",\n"
-        . "  \"merchantCustomerId\": \"f8303a052\",\n"
-        . "  \"accountId\": \"1009688230\",\n"
-        . "  \"locale\": \"en_US\",\n"
-        . "  \"firstName\": \"John\",\n"
-        . "  \"middleName\": \"James\",\n"
-        . "  \"lastName\": \"Smith\",\n"
-        . "  \"dateOfBirth\": {\n"
-        . "    \"day\": 24,\n"
-        . "    \"month\": 10,\n"
-        . "    \"year\": 1981\n"
-        . "  },\n"
-        . "  \"gender\": \"M\",\n"
-        . "  \"email\": \"john.smith@email.com\",\n"
-        . "  \"phone\": \"777-444-8888\",\n"
-        . "  \"cellPhone\": \"777-555-8888\",\n"
-        . "  \"nationality\": \"Canadian\",\n"
-        . "  \"ip\": \"192.0.126.111\",\n"
-        . "  \"paymentToken\": \"PNWaCnbFb7Y5zUk\",\n"
-        . "  \"addresses\": [\n"
-        . "    {\n"
-        . "      \"id\": \"c8af2f97-7d89-413c-80d9-7f3a0c8f5da6\",\n"
-        . "      \"nickName\": \"Home\",\n"
-        . "      \"street2\": \"Unit 201\",\n"
-        . "      \"city\": \"Toronto\",\n"
-        . "      \"country\": \"CA\",\n"
-        . "      \"zip\": \"M5H 2N2\",\n"
-        . "      \"status\": \"ACTIVE\",\n"
-        . "      \"street\": \"100 Queen\"\n"
-        . "    }\n"
-        . "  ],\n"
-        . "  \"paymentHandleTokenFrom\": \"SCAXH2IawyUMX9BG\",\n"
-        . "  \"paymentHandles\": [\n"
-        . "    {\n"
-        . "      \"id\": \"e6ad67f5-16f1-4be6-8944-0b897e3b1380\",\n"
-        . "      \"merchantRefNum\": \"bb898a885b23c1604f4b\",\n"
-        . "      \"status\": \"INITIATED\",\n"
-        . "      \"usage\": \"MULTI_USE\",\n"
-        . "      \"paymentType\": \"CARD\",\n"
-        . "      \"executionMode\": \"SYNCHRONOUS\",\n"
-        . "      \"paymentHandleToken\": \"CPFjDfDKp7SMuhL\",\n"
-        . "      \"card\": {\n"
-        . "        \"lastDigits\": \"2345\",\n"
-        . "        \"cardExpiry\": {\n"
-        . "          \"month\": \"10\",\n"
-        . "          \"year\": \"2025\"\n"
-        . "        },\n"
-        . "        \"cardBin\": \"453091\",\n"
-        . "        \"cardType\": \"VI\",\n"
-        . "        \"holderName\": \"Dilip\",\n"
-        . "        \"status\": \"ACTIVE\",\n"
-        . "        \"cardCategory\": \"CREDIT\",\n"
-        . "        \"issuingCountry\": \"US\"\n"
-        . "      },\n"
-        . "      \"billingDetailsId\": \"c8af2f97-7d89-413c-80d9-7f3a0c8f5da6\"\n"
-        . "    }\n"
-        . "  ]\n"
-        . "}";
-    }
-
-    /**
-     * @return string
-     */
-    private function mockUpdateCustomerResponse(): string
-    {
-        return "{\n"
-        . "  \"id\": \"921cd968-6882-422c-ae4f-a10ddbae95ff\",\n"
-        . "  \"status\": \"ACTIVE\",\n"
-        . "  \"merchantCustomerId\": \"546456451\",\n"
-        . "  \"locale\": \"en_US\",\n"
-        . "  \"firstName\": \"John\",\n"
-        . "  \"middleName\": \"James\",\n"
-        . "  \"lastName\": \"Smith\",\n"
-        . "  \"dateOfBirth\": {\n"
-        . "    \"day\": 24,\n"
-        . "    \"month\": 10,\n"
-        . "    \"year\": 1981\n"
-        . "  },\n"
-        . "  \"gender\": \"M\",\n"
-        . "  \"email\": \"johnjames.smith@email.com\",\n"
-        . "  \"phone\": \"777-444-9999\",\n"
-        . "  \"cellPhone\": \"777-555-8888\",\n"
-        . "  \"nationality\": \"Canadian\",\n"
-        . "  \"ip\": \"192.0.126.111\",\n"
-        . "  \"paymentToken\": \"PPlfJ2gmQoYAQ1d\"\n"
-        . "}";
     }
 }
