@@ -1,8 +1,0 @@
-{
-  "interacEtransfer": {
-    "consumerId": "123456",
-    "fraudStatus": "CONFIRM_FRAUD",
-    "fraudType": "FRAUD_BUSINESS",
-    "comments": "Valid Txn"
-  }
-}

@@ -8,6 +8,9 @@ use Paysafe\PhpSdk\Client\PaysafeApiClient;
 use Paysafe\PhpSdk\Exception\PaysafeSdkException;
 use Paysafe\PhpSdk\Model\Card\MerchantDescriptor;
 use Paysafe\PhpSdk\Model\Common\Cancel\CancelRequest;
+use Paysafe\PhpSdk\Config\ObjectMapperConfiguration;
+use Paysafe\PhpSdk\Model\Common\Enums\StoredCredentialOccurrence;
+use Paysafe\PhpSdk\Model\Common\Enums\StoredCredentialType;
 use Paysafe\PhpSdk\Model\Common\Travel\Airline\AirlineTicket;
 use Paysafe\PhpSdk\Model\Common\Travel\Airline\AirlineTravelDetails;
 use Paysafe\PhpSdk\Model\Common\Travel\Airline\Passenger;
@@ -587,6 +590,53 @@ class PaymentServiceTest extends BasePaysafeService
         $response = $paymentService->processPayment($paymentRequest);
 
         $this->assertNotNull($response);
+    }
+
+    /**
+     * @test
+     * @covers \Paysafe\PhpSdk\Service\PaymentService::processPayment
+     * @covers \Paysafe\PhpSdk\Model\Common\StoredCredential
+     *
+     * @return void
+     */
+    public function testProcessPayment_withStoredCredential_isSuccessful(): void
+    {
+        $paymentService = clone $this->paymentService;
+
+        $mockCore = $this->createMock(PaysafeApiClient::class);
+        $mockCore->method('executePost')
+            ->willReturn(
+                new Response(
+                    200,
+                    [
+                        'Content-Type' => 'application/json',
+                    ],
+                    $this->get_resource_json('payment/process_payment_card_without_settlement_response.json')
+                )
+            );
+        $replaceService = function () use ($mockCore) {
+            $this->paysafeApiClient = $mockCore;
+        };
+        $doReplaceService = $replaceService->bindTo($paymentService, PaymentService::class);
+        $doReplaceService();
+
+        /** @var PaymentRequest $paymentRequest */
+        $paymentRequest = ObjectMapperConfiguration::deserialize(
+            $this->get_resource_json('payment/process_payment_card_without_settlement_request.json'),
+            PaymentRequest::class
+        );
+
+        $this->assertNotNull($paymentRequest->getStoredCredential());
+        $this->assertEquals(StoredCredentialType::RECURRING, $paymentRequest->getStoredCredential()->getType());
+        $this->assertEquals(
+            StoredCredentialOccurrence::INITIAL,
+            $paymentRequest->getStoredCredential()->getOccurrence()
+        );
+
+        $response = $paymentService->processPayment($paymentRequest);
+
+        $this->assertNotNull($response);
+        $this->assertEquals('COMPLETED', $response->getStatus());
     }
 
     /**

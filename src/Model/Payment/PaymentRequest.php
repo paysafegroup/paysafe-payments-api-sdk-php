@@ -64,7 +64,7 @@ class PaymentRequest extends BaseModel
     private ?AccordD $accordD = null;
     private ?Recipient $recipient = null;
     private ?Splitpay $splitpay = null;
-    private ?StoredCredential $storedCredentialDetails = null;
+    private ?StoredCredential $storedCredential = null;
     private ?AirlineTravelDetails $airlineTravelDetails = null;
     private ?FundingTransaction $fundingTransaction = null;
     private ?CruiselineTravelDetails $cruiselineTravelDetails = null;
@@ -569,39 +569,39 @@ class PaymentRequest extends BaseModel
         return $this->splitpay;
     }
     /**
-     * Builder function for storedCredentialDetails
+     * Builder function for storedCredential
      *
-     * @param StoredCredential $storedCredentialDetails
+     * @param StoredCredential $storedCredential
      *
      * @return $this
      */
-    public function storedCredentialDetails(?StoredCredential $storedCredentialDetails): self
+    public function storedCredential(?StoredCredential $storedCredential): self
     {
-        $this->setStoredCredentialDetails($storedCredentialDetails);
+        $this->setStoredCredential($storedCredential);
 
         return $this;
     }
 
     /**
-     * Setter function for storedCredentialDetails
+     * Setter function for storedCredential
      *
-     * @param StoredCredential $storedCredentialDetails
+     * @param StoredCredential $storedCredential
      *
      * @return void
      */
-    public function setStoredCredentialDetails(?StoredCredential $storedCredentialDetails): void
+    public function setStoredCredential(?StoredCredential $storedCredential): void
     {
-        $this->storedCredentialDetails = $storedCredentialDetails;
+        $this->storedCredential = $storedCredential;
     }
 
     /**
-     * Getter function for storedCredentialDetails
+     * Getter function for storedCredential
      *
      * @return ?StoredCredential
      */
-    public function getStoredCredentialDetails(): ?StoredCredential
+    public function getStoredCredential(): ?StoredCredential
     {
-        return $this->storedCredentialDetails;
+        return $this->storedCredential;
     }
     /**
      * Builder function for airlineTravelDetails
@@ -940,7 +940,7 @@ class PaymentRequest extends BaseModel
             . "    accordD: " . $this->toIndentedString($this->accordD ?? null) . PHP_EOL
             . "    recipient: " . $this->toIndentedString($this->recipient ?? null) . PHP_EOL
             . "    splitpay: " . $this->toIndentedString($this->splitpay ?? null) . PHP_EOL
-            . "    storedCredentialDetails: " . $this->toIndentedString($this->storedCredentialDetails ?? null) . PHP_EOL
+            . "    storedCredential: " . $this->toIndentedString($this->storedCredential ?? null) . PHP_EOL
             . "    airlineTravelDetails: " . $this->toIndentedString($this->airlineTravelDetails ?? null) . PHP_EOL
             . "    fundingTransaction: " . $this->toIndentedString($this->fundingTransaction ?? null) . PHP_EOL
             . "    cruiselineTravelDetails: " . $this->toIndentedString($this->cruiselineTravelDetails ?? null) . PHP_EOL

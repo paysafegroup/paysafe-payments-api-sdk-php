@@ -3,7 +3,6 @@
   "description": "Paysafe Payments API SDK for PHP",
   "type": "library",
   "license": "MIT",
-  "version": "2.0.0",
   "require": {
     "php": ">=7.4.0",
     "ext-curl": "*",

@@ -1,4 +1,0 @@
-# Files listed here will not be overwritten by the generator.
-# BaseModel is a handcrafted helper class and must not be regenerated.
-src/Model/BaseModel.php
-

@@ -9,5 +9,9 @@
   "description": "Magazine subscription",
   "keywords": [
     "SILVER"
-  ]
+  ],
+  "storedCredential": {
+    "type": "RECURRING",
+    "occurrence": "INITIAL"
+  }
 }

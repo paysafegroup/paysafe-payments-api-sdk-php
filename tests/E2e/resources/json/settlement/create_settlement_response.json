@@ -1,9 +1,0 @@
-{
-  "id": "bb6bae3c-3e65-4bf9-93a0-bbfb65bb2819",
-  "merchantRefNum": "100001222",
-  "amount": 500,
-  "status": "COMPLETED",
-  "txnTime": "2025-01-28T14:18:57Z",
-  "availableToRefund": 500,
-  "gatewayReconciliationId": "4470329260"
-}
